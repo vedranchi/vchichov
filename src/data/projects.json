@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T15:35:31.768Z",
+  "generatedAt": "2026-09-01T16:26:41.686Z",
   "user": "vedranchi",
   "projects": [
     {
@@ -35,7 +35,7 @@
       "name": "personal-site",
       "description": "personal website",
       "url": "https://github.com/vedranchi/personal-site",
-      "homepage": null,
+      "homepage": "https://vchichov.com",
       "languages": ["Astro", "JavaScript", "CSS", "Python", "TypeScript"],
       "topics": [],
       "stars": 0,
