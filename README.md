@@ -7,7 +7,8 @@ _Stardew Valley_-style pixel theme, built with [Astro](https://astro.build).
 
 - **Astro** static site (no runtime backend).
 - **Content**: blog posts are Markdown files written in **Obsidian** (the vault
-  lives in `src/content/blog/`); projects live in `src/content/projects/`.
+  lives in `src/content/blog/`); projects are synced from GitHub into
+  `src/data/projects.json`.
 - **Cycling**: a Python scraper (`scripts/scrape_pcs.py`) pulls results from
   [procyclingstats.com](https://www.procyclingstats.com) into
   `src/data/cycling.json`, which the site reads at build time.
@@ -34,10 +35,10 @@ src/
 ├─ layouts/      # shared page shells
 ├─ components/   # reusable pixel-theme UI pieces
 ├─ pages/        # routes (index, projects, cycling, blog)
-├─ content/      # blog/ (Obsidian vault) and projects/
-├─ data/         # cycling.json (generated) + site config
+├─ content/      # blog/ — the Obsidian vault
+├─ data/         # projects.json + cycling.json (both generated) + site config
 ├─ styles/       # design tokens + global styles
-└─ assets/       # fonts, pixel art
+└─ lib/          # remark-wikilinks + formatting helpers
 scripts/         # scrape_pcs.py and helpers
 ```
 
