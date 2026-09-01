@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
       {
         site.socials.map((s) => (
           <li>
-            <a href={s.href} rel="me noopener" target="_blank">
+            <a href={s.href} rel={s.me ? 'me noopener' : 'noopener'} target="_blank">
               {s.label}
             </a>
           </li>

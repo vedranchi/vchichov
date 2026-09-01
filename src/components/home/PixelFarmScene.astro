@@ -1,0 +1,107 @@
+---
+// Decorative pixel-farm strip under the hero: hills, a barn, a fence and a few crops.
+// Drawn as inline SVG on a 160x40 grid so every edge lands on a whole "pixel". Colours come
+// from the theme tokens, so it swaps between day and night farm with everything else.
+---
+
+<div class="scene" aria-hidden="true">
+  <svg viewBox="0 0 160 40" preserveAspectRatio="none" role="presentation">
+    <!-- far hills -->
+    <path class="hill-far" d="M0 22h12l4-3h10l5 3h18l6-4h14l5 4h20l6-3h16l5 3h39v18H0z"></path>
+    <!-- near hills -->
+    <path class="hill-near" d="M0 28h20l6-3h18l5 3h26l7-3h15l6 3h57v12H0z"></path>
+
+    <!-- barn -->
+    <g class="barn">
+      <path class="barn-body" d="M104 20h16v10h-16z"></path>
+      <path class="barn-roof" d="M102 20l10-6 10 6z"></path>
+      <rect class="barn-door" x="110" y="24" width="4" height="6"></rect>
+    </g>
+
+    <!-- trees -->
+    <g class="tree">
+      <rect x="26" y="24" width="2" height="6"></rect>
+      <path class="leaf" d="M23 24l4-7 4 7z"></path>
+    </g>
+    <g class="tree">
+      <rect x="140" y="25" width="2" height="5"></rect>
+      <path class="leaf" d="M137 25l4-6 4 6z"></path>
+    </g>
+
+    <!-- crop rows in the near field -->
+    <g class="crops">
+      <rect x="8" y="32" width="2" height="4"></rect>
+      <rect x="16" y="33" width="2" height="3"></rect>
+      <rect x="24" y="32" width="2" height="4"></rect>
+      <rect x="48" y="33" width="2" height="3"></rect>
+      <rect x="56" y="32" width="2" height="4"></rect>
+      <rect x="80" y="33" width="2" height="3"></rect>
+      <rect x="88" y="32" width="2" height="4"></rect>
+      <rect x="128" y="33" width="2" height="3"></rect>
+      <rect x="136" y="32" width="2" height="4"></rect>
+    </g>
+
+    <!-- fence line along the bottom -->
+    <g class="fence">
+      <rect x="0" y="36" width="160" height="1"></rect>
+      <rect x="0" y="38" width="160" height="1"></rect>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .scene {
+    width: 100%;
+    line-height: 0;
+  }
+  .scene svg {
+    display: block;
+    width: 100%;
+    height: clamp(90px, 16vw, 160px);
+    shape-rendering: crispEdges;
+  }
+  .hill-far {
+    fill: var(--accent);
+    opacity: 0.45;
+  }
+  .hill-near {
+    fill: var(--accent-strong);
+    opacity: 0.7;
+  }
+  .barn-body {
+    fill: var(--frame);
+  }
+  .barn-roof {
+    fill: var(--frame-dark);
+  }
+  .barn-door {
+    fill: var(--frame-dark);
+  }
+  .tree rect {
+    fill: var(--frame-dark);
+  }
+  .leaf {
+    fill: var(--accent-strong);
+  }
+  .crops {
+    fill: var(--highlight);
+  }
+  .fence {
+    fill: var(--frame);
+    opacity: 0.55;
+  }
+
+  /* Night farm: the same scene, turned down so it reads as dusk rather than noon. */
+  :global(:root[data-theme='dark']) .hill-far {
+    opacity: 0.28;
+  }
+  :global(:root[data-theme='dark']) .hill-near {
+    opacity: 0.42;
+  }
+  :global(:root[data-theme='dark']) .crops {
+    opacity: 0.75;
+  }
+  :global(:root[data-theme='dark']) .leaf {
+    opacity: 0.5;
+  }
+</style>

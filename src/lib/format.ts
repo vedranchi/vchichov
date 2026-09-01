@@ -16,3 +16,10 @@ export function slugifyTag(tag: string): string {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 }
+
+/** 1 -> "1st", 2 -> "2nd", 11 -> "11th". Used for race placings. */
+export function ordinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
+}

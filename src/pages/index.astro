@@ -1,65 +1,112 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WoodPanel from '../components/WoodPanel.astro';
 import PixelButton from '../components/PixelButton.astro';
+import HomeSection from '../components/home/HomeSection.astro';
+import PixelFarmScene from '../components/home/PixelFarmScene.astro';
+import ProjectSpotlight from '../components/home/ProjectSpotlight.astro';
+import CyclingSpotlight from '../components/home/CyclingSpotlight.astro';
+import BlogSpotlight from '../components/home/BlogSpotlight.astro';
+import type { Project } from '../components/ProjectCard.astro';
 import { site } from '../data/site';
+import { home } from '../data/home';
+import projectData from '../data/projects.json';
 
-// Home page "shop-window" cards. Copy is placeholder — Vedran, edit freely!
-const cards = [
-  {
-    href: '/projects',
-    title: 'Projects',
-    blurb: 'Things I have built — apps, tools, and experiments, with the tech behind them.',
-  },
-  {
-    href: '/cycling',
-    title: 'Cycling',
-    blurb: 'Races, results, and numbers pulled straight from my ProCyclingStats page.',
-  },
-  {
-    href: '/blog',
-    title: 'Blog',
-    blurb: 'Notes and stories on code, riding, and whatever else I am figuring out.',
-  },
-];
+// Featured project, by repo name from src/data/home.ts.
+const projects = projectData.projects as Project[];
+const project = projects.find((p) => p.name === home.featuredProject) ?? projects[0];
+
+// Pinned post, by slug — falling back to the newest published one if it's gone or drafted.
+const posts = (
+  await getCollection('blog', ({ data }) => (import.meta.env.PROD ? !data.draft : true))
+).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const post = posts.find((p) => p.id === home.pinnedPost) ?? posts[0];
 ---
 
 <BaseLayout>
-  <section class="hero container">
-    <p class="eyebrow pixel-label">Welcome to my little farm on the web</p>
-    <h1 class="hero-title">{site.name}</h1>
-    <p class="hero-tagline">{site.tagline}</p>
-    <p class="hero-intro">
-      Hey, I'm Vedran — a fresh high-school grad from Macedonia who spends his time
-      <strong>writing code</strong> and <strong>racing bikes</strong>. This is where I keep my
-      projects, my race results, and the odd blog post. Pull up a stool and have a look around.
-    </p>
-    <div class="hero-cta">
-      <PixelButton href="/projects">See my projects</PixelButton>
-      <PixelButton href="/cycling" variant="ghost">My cycling</PixelButton>
+  <section class="hero">
+    <div class="container hero-inner">
+      <p class="eyebrow pixel-label">Welcome to my little farm on the web</p>
+      <h1 class="hero-title">{site.name}</h1>
+      <p class="hero-tagline">{site.tagline}</p>
+      <p class="hero-intro">
+        Hey, I'm Vedran — a fresh high-school grad from Macedonia who spends his time{' '}
+        <strong>writing code</strong> and <strong>racing bikes</strong>. This is where I keep my
+        projects, my race results, and the odd blog post. Pull up a stool and have a look around.
+      </p>
+      <div class="hero-cta">
+        <PixelButton href="#projects">See what I've built</PixelButton>
+        <PixelButton href="/cycling" variant="ghost">My cycling</PixelButton>
+      </div>
     </div>
+
+    <PixelFarmScene />
+
+    <a class="scroll-cue" href="#projects">
+      <span class="pixel-label">Scroll down</span>
+      <span class="arrow" aria-hidden="true"></span>
+    </a>
   </section>
 
-  <section class="container cards" aria-label="Explore the site">
-    {
-      cards.map((card) => (
-        <WoodPanel as="article" class="card">
-          <h2 class="card-title">{card.title}</h2>
-          <p class="card-blurb">{card.blurb}</p>
-          <a class="card-link pixel-label" href={card.href}>
-            Enter →
-          </a>
-        </WoodPanel>
-      ))
-    }
-  </section>
+  {
+    project && (
+      <HomeSection
+        id="projects"
+        tone="alt"
+        eyebrow="What I've built"
+        title="Projects"
+        lede="The one I've put the most into so far — a tool for people managing diabetes day to day."
+      >
+        <ProjectSpotlight project={project} />
+        <Fragment slot="cta">
+          <PixelButton href="/projects" variant="ghost">
+            All projects →
+          </PixelButton>
+        </Fragment>
+      </HomeSection>
+    )
+  }
+
+  <HomeSection
+    id="cycling"
+    eyebrow="On the bike"
+    title="Cycling"
+    lede="I race on the road — a time-trial rider at heart. Here's the result I'm proudest of."
+  >
+    <CyclingSpotlight />
+    <Fragment slot="cta">
+      <PixelButton href="/cycling" variant="ghost">All results →</PixelButton>
+    </Fragment>
+  </HomeSection>
+
+  {
+    post && (
+      <HomeSection
+        id="blog"
+        tone="alt"
+        eyebrow="Notes from the field"
+        title="Blog"
+        lede="Thoughts on code, riding, and whatever else I'm figuring out."
+      >
+        <BlogSpotlight post={post} />
+        <Fragment slot="cta">
+          <PixelButton href="/blog" variant="ghost">
+            All posts →
+          </PixelButton>
+        </Fragment>
+      </HomeSection>
+    )
+  }
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: clamp(2.5rem, 8vw, 5rem) 2rem;
+    padding-top: clamp(2.5rem, 8vw, 5rem);
+  }
+  .hero-inner {
     text-align: center;
     max-width: 780px;
+    padding-bottom: 2rem;
   }
   .eyebrow {
     color: var(--accent-strong);
@@ -92,43 +139,39 @@ const cards = [
     margin-top: 1.75rem;
   }
 
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    padding-block: 1.5rem 1rem;
-  }
-  .card {
+  .scroll-cue {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.4rem;
-  }
-  /* small pixel accent bar in place of an icon */
-  .card::before {
-    content: '';
-    display: block;
-    width: 2.5rem;
-    height: 0.5rem;
-    margin-bottom: 0.6rem;
-    background: var(--accent);
-    border: 2px solid var(--frame-dark);
-    border-radius: 2px;
-  }
-  .card-title {
-    margin: 0;
-  }
-  .card-blurb {
-    margin: 0;
+    padding-block: 1.25rem 1.75rem;
     color: var(--text-muted);
-    flex: 1;
-  }
-  .card-link {
-    align-self: flex-start;
-    margin-top: 0.5rem;
     text-decoration: none;
+  }
+  .scroll-cue:hover {
     color: var(--accent-strong);
   }
-  .card-link:hover {
-    color: var(--link-hover);
+  /* chunky pixel chevron, built from borders so it stays crisp at any zoom */
+  .arrow {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-right: 4px solid currentColor;
+    border-bottom: 4px solid currentColor;
+    transform: rotate(45deg);
+    animation: nudge 1.8s ease-in-out infinite;
+  }
+  @keyframes nudge {
+    0%,
+    100% {
+      transform: rotate(45deg) translate(0, 0);
+    }
+    50% {
+      transform: rotate(45deg) translate(3px, 3px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arrow {
+      animation: none;
+    }
   }
 </style>
