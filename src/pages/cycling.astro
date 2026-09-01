@@ -3,8 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import WoodPanel from '../components/WoodPanel.astro';
 import PixelButton from '../components/PixelButton.astro';
 import data from '../data/cycling.json';
+import { site } from '../data/site';
+import { allResults, highlights, medalClass } from '../lib/cycling';
+import { ordinal } from '../lib/format';
 
-const { rider, results, source, generatedAt } = data;
+const { rider, source, generatedAt } = data;
+
+// Scraped PCS results merged with the hand-written ones PCS doesn't carry.
+const results = allResults();
+const hasManual = results.some((r) => r.source === 'manual');
 
 // Age from birthdate.
 function ageFrom(iso: string | null): number | null {
@@ -27,22 +34,7 @@ function fmtDate(iso: string | null): string {
   });
 }
 
-function ordinal(n: number): string {
-  const s = ['th', 'st', 'nd', 'rd'];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
-}
-
-type Result = (typeof results)[number];
-
-// Palmarès = ranked results (drop DNFs), best placing first. Focus on the strong ones.
-const ranked = results.filter((r): r is Result & { rank: number } => r.rank != null);
-const highlights = [...ranked]
-  .filter((r) => r.rank <= 10)
-  .sort((a, b) => a.rank - b.rank || (b.date ?? '').localeCompare(a.date ?? ''));
-
-const medalClass = (rank: number) =>
-  rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'plain';
+const palmares = highlights();
 ---
 
 <BaseLayout
@@ -55,7 +47,7 @@ const medalClass = (rank: number) =>
       <h1>Cycling</h1>
       <p class="lede">
         I race on the road — a time-trial rider at heart. Here are my career highlights and results,
-        pulled from ProCyclingStats.
+        mostly pulled from ProCyclingStats.
       </p>
     </header>
 
@@ -77,7 +69,11 @@ const medalClass = (rank: number) =>
             <div>
               <>
                 <dt class="pixel-label">Team</dt>
-                <dd>{rider.team.name}</dd>
+                <dd>
+                  <a href={site.team.url} target="_blank" rel="noopener">
+                    {rider.team.name}
+                  </a>
+                </dd>
               </>
             </div>
           )
@@ -87,11 +83,11 @@ const medalClass = (rank: number) =>
     </WoodPanel>
 
     {
-      highlights.length > 0 && (
+      palmares.length > 0 && (
         <section class="block" aria-labelledby="palmares-h">
           <h2 id="palmares-h">Career highlights</h2>
           <ul class="palmares">
-            {highlights.map((r) => (
+            {palmares.map((r) => (
               <li>
                 <WoodPanel as="article" class="hl">
                   <span class:list={['medal', medalClass(r.rank)]} aria-hidden="true">
@@ -111,6 +107,11 @@ const medalClass = (rank: number) =>
                     <p class="hl-meta">
                       {fmtDate(r.date)}
                       {r.raceClass && <span class="tag pixel-label">{r.raceClass}</span>}
+                      {r.source === 'manual' && (
+                        <span class="tag off-pcs pixel-label" title="Not listed on ProCyclingStats">
+                          off-PCS
+                        </span>
+                      )}
                     </p>
                   </div>
                 </WoodPanel>
@@ -147,7 +148,14 @@ const medalClass = (rank: number) =>
                       r.race
                     )}
                   </td>
-                  <td data-label="Class">{r.raceClass ?? '—'}</td>
+                  <td data-label="Class">
+                    {r.raceClass ?? '—'}
+                    {r.source === 'manual' && (
+                      <span class="mark" title="Not listed on ProCyclingStats">
+                        *
+                      </span>
+                    )}
+                  </td>
                   <td data-label="Result" class="num">
                     {r.rank != null ? ordinal(r.rank) : 'DNF'}
                   </td>
@@ -161,6 +169,7 @@ const medalClass = (rank: number) =>
 
     <p class="synced pixel-label">
       Synced from ProCyclingStats · updated {fmtDate(generatedAt.slice(0, 10))}
+      {hasManual && <span class="synced-note">* added by hand — not listed on PCS</span>}
     </p>
   </section>
 </BaseLayout>
@@ -241,6 +250,11 @@ const medalClass = (rank: number) =>
     border: 3px solid var(--frame-dark);
     border-radius: 50%;
   }
+  /* gold/silver/bronze are light discs, so they keep the dark numeral; the plain disc uses
+     the surface colour and needs the theme's own text colour to stay readable in dark mode */
+  .medal.plain {
+    color: var(--text);
+  }
   .medal.gold {
     background: #f2c94c;
   }
@@ -318,9 +332,20 @@ const medalClass = (rank: number) =>
     text-decoration: underline;
   }
 
+  .off-pcs {
+    border-style: dashed;
+  }
+  .mark {
+    color: var(--text-muted);
+  }
+
   .synced {
     margin-top: 2rem;
     color: var(--text-muted);
+  }
+  .synced-note {
+    display: block;
+    margin-top: 0.25rem;
   }
 
   /* Stack the results table into cards on small screens. */

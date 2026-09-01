@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import WoodPanel from '../WoodPanel.astro';
+import photo from '../../assets/nc2026.jpg';
+import { home } from '../../data/home';
+import { site } from '../../data/site';
+import { featuredResult, medalClass, nationalTitles, seasonsRaced } from '../../lib/cycling';
+import { formatDate, ordinal } from '../../lib/format';
+import cyclingData from '../../data/cycling.json';
+
+const result = featuredResult();
+const teamName = cyclingData.rider.team?.name ?? site.team.name;
+
+// "National Championships North Macedonia MU - Road Race" -> "Road Race"
+const discipline = result?.race.split(' - ').at(-1) ?? '';
+const isNationalTitle = result?.rank === 1 && result?.raceClass === 'NC';
+
+const stats = [
+  { label: 'National titles', value: String(nationalTitles()) },
+  { label: 'Seasons raced', value: String(seasonsRaced()) },
+];
+---
+
+<div class="spotlight">
+  <figure class="photo">
+    <Image
+      src={photo}
+      alt={home.alt.cycling}
+      widths={[400, 578]}
+      sizes="(max-width: 780px) 100vw, 40vw"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
+
+  <div class="detail">
+    {
+      result && (
+        <WoodPanel class="result">
+          <span class:list={['medal', medalClass(result.rank)]} aria-hidden="true">
+            {result.rank}
+          </span>
+          <div class="result-body">
+            <p class="crown pixel-label">
+              {isNationalTitle ? 'National champion' : `${ordinal(result.rank)} place`}
+            </p>
+            <h3 class="race">{discipline}</h3>
+            <p class="meta">
+              {[result.location, formatDate(result.date)].filter(Boolean).join(' · ')}
+            </p>
+          </div>
+        </WoodPanel>
+      )
+    }
+
+    <dl class="stats">
+      {
+        stats.map((s) => (
+          <div class="stat">
+            <dt class="pixel-label">{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))
+      }
+      <div class="stat">
+        <dt class="pixel-label">Team</dt>
+        <dd>
+          <a href={site.team.url} target="_blank" rel="noopener">{teamName}</a>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<style>
+  .spotlight {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 2.25rem);
+    align-items: center;
+  }
+  .photo {
+    margin: 0;
+    border: 3px solid var(--frame-dark);
+    border-radius: var(--radius);
+    box-shadow: var(--pixel) var(--pixel) 0 0 var(--frame-dark);
+    overflow: hidden;
+    line-height: 0;
+  }
+  .photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .detail {
+    min-width: 0;
+  }
+
+  .result {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .medal {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    font-family: var(--font-num);
+    font-size: 1.9rem;
+    color: var(--wood-dark);
+    background: var(--surface-2);
+    border: 3px solid var(--frame-dark);
+    border-radius: 50%;
+  }
+  .medal.gold {
+    background: #f2c94c;
+  }
+  .medal.silver {
+    background: #d5d8dc;
+  }
+  .medal.bronze {
+    background: #d79a63;
+  }
+  .result-body {
+    min-width: 0;
+  }
+  .crown {
+    margin: 0 0 0.15rem;
+    color: var(--accent-strong);
+  }
+  .race {
+    margin: 0 0 0.3rem;
+    font-size: 1.15rem;
+  }
+  .meta {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    margin: 1.25rem 0 0;
+  }
+  .stat dt {
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+  }
+  .stat dd {
+    margin: 0;
+    font-family: var(--font-num);
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  .stat dd a {
+    font-family: var(--font-body);
+    font-size: 1rem;
+  }
+
+  @media (max-width: 780px) {
+    .spotlight {
+      grid-template-columns: 1fr;
+    }
+    .photo {
+      order: -1;
+      max-width: 24rem;
+    }
+  }
+</style>
