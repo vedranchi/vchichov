@@ -11,8 +11,9 @@ _Stardew Valley_-style pixel theme, built with [Astro](https://astro.build).
 - **Cycling**: a Python scraper (`scripts/scrape_pcs.py`) pulls results from
   [procyclingstats.com](https://www.procyclingstats.com) into
   `src/data/cycling.json`, which the site reads at build time.
-- **Hosting**: self-hosted on an Ubuntu VM behind nginx; auto-deployed from
-  `main` via GitHub Actions.
+- **Hosting**: [Vercel](https://vercel.com) at
+  [vchichov.com](https://vchichov.com); pushing `main` deploys, pull requests
+  get preview URLs.
 
 ## Commands
 

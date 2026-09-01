@@ -30,3 +30,6 @@ pnpm-debug.log*
 
 # obsidian vault config (blog content is an obsidian vault)
 .obsidian/
+
+# local-only deployment notes (see glucoread's HANDOFF.md convention)
+handoff.md

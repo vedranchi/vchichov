@@ -7,7 +7,7 @@ export const site = {
   description:
     'Personal site of Vedran Chichov — programming projects, cycling, and a blog. ' +
     'A fresh high-school grad from Macedonia building things and riding bikes.',
-  url: 'https://vchichov.duckdns.org',
+  url: 'https://vchichov.com',
   nav: [
     { href: '/', label: 'Home' },
     { href: '/projects', label: 'Projects' },
