@@ -1,17 +1,7 @@
 {
-  "generatedAt": "2026-07-13T13:34:45.904Z",
+  "generatedAt": "2026-09-01T16:26:41.686Z",
   "user": "vedranchi",
   "projects": [
-    {
-      "name": "personal-site",
-      "description": "personal website",
-      "url": "https://github.com/vedranchi/personal-site",
-      "homepage": null,
-      "languages": ["Astro", "JavaScript", "CSS", "Python", "TypeScript"],
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-07-13T13:26:06Z"
-    },
     {
       "name": "rajhl-site",
       "description": "Website for producer Luka Rajhl",
@@ -20,7 +10,36 @@
       "languages": ["TypeScript", "CSS", "JavaScript"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-07-13T12:53:37Z"
+      "updatedAt": "2026-09-01T10:38:40Z"
+    },
+    {
+      "name": "glucoread",
+      "description": "Glucose, insulin and meal tracking for people managing diabetes day to day. Django 5.2, PostgreSQL, deployed on Oracle Cloud.",
+      "url": "https://github.com/vedranchi/glucoread",
+      "homepage": "https://glucoread.com",
+      "languages": ["Python", "CSS", "HTML", "JavaScript", "Shell", "Dockerfile"],
+      "topics": [
+        "caddy",
+        "diabetes",
+        "django",
+        "docker",
+        "healthcare",
+        "postgresql",
+        "python",
+        "self-hosted"
+      ],
+      "stars": 0,
+      "updatedAt": "2026-08-31T21:36:12Z"
+    },
+    {
+      "name": "personal-site",
+      "description": "personal website",
+      "url": "https://github.com/vedranchi/personal-site",
+      "homepage": "https://vchichov.com",
+      "languages": ["Astro", "JavaScript", "CSS", "Python", "TypeScript"],
+      "topics": [],
+      "stars": 0,
+      "updatedAt": "2026-07-13T14:04:44Z"
     },
     {
       "name": "pos-system",
@@ -31,16 +50,6 @@
       "topics": [],
       "stars": 0,
       "updatedAt": "2026-07-07T13:31:51Z"
-    },
-    {
-      "name": "glucolog",
-      "description": "Diabetes Tracking App",
-      "url": "https://github.com/vedranchi/glucolog",
-      "homepage": null,
-      "languages": ["Python", "HTML", "CSS", "JavaScript", "Dockerfile"],
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-06-24T15:03:11Z"
     }
   ]
 }

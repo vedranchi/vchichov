@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://vchichov.duckdns.org/sitemap-index.xml

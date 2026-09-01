@@ -12,11 +12,17 @@ readable body). See the plan/memory for full context.
 - When in doubt about anything, ask before proceeding — resolve it together.
 - Remote: `git@github.com:vedranchi/personal-site.git`.
 
-## Deploy safety (hard rule)
+## Deploy
 
-- The target Ubuntu VM also hosts Vedran's **café POS** project. Any deploy or VM change
-  must be strictly **additive and non-destructive** — inspect the existing nginx config
-  first and verify the POS still works before/after. Never assume; confirm.
+- Hosted on **Vercel** (static Astro output, no adapter and no `vercel.json` needed).
+  Pushing `main` deploys to production; pull requests get preview URLs.
+- Canonical domain is **https://vchichov.com** — apex, with `www` redirecting to it.
+- **`src/data/site.ts` `url` is the single source of the domain.** Canonical links, Open
+  Graph URLs, `rss.xml`, the sitemap and `robots.txt` all derive from it. Change it there
+  and nowhere else; never hard-code the host in a page or in `public/`.
+- The site used to be self-hosted on an Oracle VM behind nginx alongside a café POS. That
+  box is gone — ignore any lingering references to `vchichov.duckdns.org`, and do **not**
+  deploy this project onto the VM that runs GlucoRead. The two share nothing.
 
 ## Conventions
 
