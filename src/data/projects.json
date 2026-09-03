@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T16:26:41.686Z",
+  "generatedAt": "2026-09-03T11:12:27.424Z",
   "user": "vedranchi",
   "projects": [
     {
@@ -10,7 +10,17 @@
       "languages": ["TypeScript", "CSS", "JavaScript"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-09-01T10:38:40Z"
+      "updatedAt": "2026-09-03T10:14:34Z"
+    },
+    {
+      "name": "personal-site",
+      "description": "personal website",
+      "url": "https://github.com/vedranchi/personal-site",
+      "homepage": "https://vchichov.com",
+      "languages": ["Astro", "TypeScript", "JavaScript", "CSS", "Python"],
+      "topics": [],
+      "stars": 0,
+      "updatedAt": "2026-09-01T19:34:50Z"
     },
     {
       "name": "glucoread",
@@ -30,26 +40,6 @@
       ],
       "stars": 0,
       "updatedAt": "2026-08-31T21:36:12Z"
-    },
-    {
-      "name": "personal-site",
-      "description": "personal website",
-      "url": "https://github.com/vedranchi/personal-site",
-      "homepage": "https://vchichov.com",
-      "languages": ["Astro", "JavaScript", "CSS", "Python", "TypeScript"],
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-07-13T14:04:44Z"
-    },
-    {
-      "name": "pos-system",
-      "description": "POS-system for reastaurants/cafes",
-      "url": "https://github.com/vedranchi/pos-system",
-      "homepage": null,
-      "languages": ["TypeScript", "Python", "SQL", "Dockerfile"],
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-07-07T13:31:51Z"
     }
   ]
 }

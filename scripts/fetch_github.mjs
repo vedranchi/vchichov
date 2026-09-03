@@ -11,11 +11,13 @@ const USER = process.env.GITHUB_USER ?? 'vedranchi';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '..', 'src', 'data', 'projects.json');
 
-// GitHub's linguist can return an empty language breakdown for some repos
-// (e.g. pos-system). Fill those in by hand rather than showing nothing.
-const MANUAL_LANGUAGES = {
-  'pos-system': ['TypeScript', 'Python', 'SQL', 'Dockerfile'],
-};
+// Repos to keep off the site even though they're public. Add a repo name here rather than
+// editing src/data/projects.json — that file is generated and this script overwrites it.
+const EXCLUDE = new Set(['pos-system']);
+
+// GitHub's linguist can return an empty language breakdown for some repos. Fill those in by
+// hand rather than showing nothing.
+const MANUAL_LANGUAGES = {};
 
 const headers = {
   Accept: 'application/vnd.github+json',
@@ -48,7 +50,7 @@ async function fetchLanguages(repo) {
   return detected.length > 0 ? detected : (MANUAL_LANGUAGES[repo.name] ?? []);
 }
 
-const showcased = repos.filter((r) => !r.fork && !r.archived && !r.private);
+const showcased = repos.filter((r) => !r.fork && !r.archived && !r.private && !EXCLUDE.has(r.name));
 
 const projects = (
   await Promise.all(
