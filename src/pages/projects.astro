@@ -34,7 +34,7 @@ const githubUrl = site.socials.find((s) => s.label === 'GitHub')?.href ?? 'https
           ))}
         </ul>
       ) : (
-        <p class="empty">No public projects to show yet — check back soon!</p>
+        <p class="body-text">No public projects to show yet — check back soon!</p>
       )
     }
 
@@ -46,35 +46,21 @@ const githubUrl = site.socials.find((s) => s.label === 'GitHub')?.href ?? 'https
 
 <style>
   .projects-page {
-    padding-block: clamp(2rem, 6vw, 3.5rem);
-  }
-  .page-head {
-    max-width: 60ch;
-    margin-bottom: 2rem;
+    padding-block: var(--space-2xl);
   }
   .eyebrow {
     color: var(--accent-strong);
-    margin: 0 0 0.5rem;
-  }
-  .page-head h1 {
-    margin: 0 0 0.5rem;
-  }
-  .lede {
-    margin: 0;
-    color: var(--text-muted);
+    margin: 0 0 var(--space-2xs);
   }
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: var(--space-md);
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .empty {
-    color: var(--text-muted);
-  }
   .more {
-    margin-top: 2.5rem;
+    margin-top: var(--space-xl);
   }
 </style>

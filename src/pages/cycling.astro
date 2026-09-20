@@ -53,12 +53,12 @@ const palmares = highlights();
 
     <WoodPanel class="profile">
       <dl class="profile-grid">
-        <div><dt class="pixel-label">Country</dt><dd>{rider.nationalityName ?? '—'}</dd></div>
+        <div><dt class="meta-label">Country</dt><dd>{rider.nationalityName ?? '—'}</dd></div>
         {
           age !== null && (
             <div>
               <>
-                <dt class="pixel-label">Age</dt>
+                <dt class="meta-label">Age</dt>
                 <dd>{age}</dd>
               </>
             </div>
@@ -68,7 +68,7 @@ const palmares = highlights();
           rider.team?.name && (
             <div>
               <>
-                <dt class="pixel-label">Team</dt>
+                <dt class="meta-label">Team</dt>
                 <dd>
                   <a href={site.team.url} target="_blank" rel="noopener">
                     {rider.team.name}
@@ -94,7 +94,7 @@ const palmares = highlights();
                     {r.rank}
                   </span>
                   <div class="hl-body">
-                    <p class="hl-place pixel-label">{ordinal(r.rank)} place</p>
+                    <p class="hl-place meta-label">{ordinal(r.rank)} place</p>
                     <h3 class="hl-race">
                       {r.url ? (
                         <a href={r.url} target="_blank" rel="noopener">
@@ -106,9 +106,9 @@ const palmares = highlights();
                     </h3>
                     <p class="hl-meta">
                       {fmtDate(r.date)}
-                      {r.raceClass && <span class="tag pixel-label">{r.raceClass}</span>}
+                      {r.raceClass && <span class="chip meta-label">{r.raceClass}</span>}
                       {r.source === 'manual' && (
-                        <span class="tag off-pcs pixel-label" title="Not listed on ProCyclingStats">
+                        <span class="chip off-pcs meta-label" title="Not listed on ProCyclingStats">
                           off-PCS
                         </span>
                       )}
@@ -167,7 +167,7 @@ const palmares = highlights();
       </WoodPanel>
     </section>
 
-    <p class="synced pixel-label">
+    <p class="synced meta-label">
       Synced from ProCyclingStats · updated {fmtDate(generatedAt.slice(0, 10))}
       {hasManual && <span class="synced-note">* added by hand — not listed on PCS</span>}
     </p>
@@ -176,22 +176,11 @@ const palmares = highlights();
 
 <style>
   .cycling {
-    padding-block: clamp(2rem, 6vw, 3.5rem);
-  }
-  .page-head {
-    max-width: 60ch;
-    margin-bottom: 1.75rem;
+    padding-block: var(--space-2xl);
   }
   .eyebrow {
     color: var(--accent-strong);
-    margin: 0 0 0.5rem;
-  }
-  .page-head h1 {
-    margin: 0 0 0.5rem;
-  }
-  .lede {
-    margin: 0;
-    color: var(--text-muted);
+    margin: 0 0 var(--space-2xs);
   }
 
   .profile {
@@ -208,19 +197,18 @@ const palmares = highlights();
     margin: 0;
   }
   .profile-grid dt {
-    color: var(--text-muted);
     margin-bottom: 0.15rem;
   }
   .profile-grid dd {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: var(--text-lg);
   }
 
   .block {
-    margin-top: 2.5rem;
+    margin-top: var(--space-xl);
   }
   .block h2 {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
   }
 
   .palmares {
@@ -273,7 +261,7 @@ const palmares = highlights();
   }
   .hl-race {
     margin: 0 0 0.35rem;
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
   }
   .hl-race a {
     color: var(--text);
@@ -285,16 +273,10 @@ const palmares = highlights();
   .hl-meta {
     margin: 0;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  .tag {
-    background: var(--surface-2);
-    border: 2px solid var(--frame);
-    border-radius: 2px;
-    padding: 0.1rem 0.35rem;
   }
 
   .table-wrap {
@@ -303,7 +285,7 @@ const palmares = highlights();
   .results {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.98rem;
+    font-size: var(--text-sm);
   }
   .results th,
   .results td {
@@ -312,10 +294,11 @@ const palmares = highlights();
     border-bottom: 2px solid var(--surface-2);
   }
   .results thead th {
-    font-family: var(--font-pixel);
-    font-size: 0.7rem;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: var(--tracking-meta);
     color: var(--text-muted);
   }
   .results .num {
@@ -340,8 +323,7 @@ const palmares = highlights();
   }
 
   .synced {
-    margin-top: 2rem;
-    color: var(--text-muted);
+    margin-top: var(--space-lg);
   }
   .synced-note {
     display: block;
@@ -374,9 +356,11 @@ const palmares = highlights();
     }
     .results td::before {
       content: attr(data-label);
-      font-family: var(--font-pixel);
-      font-size: 0.65rem;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: var(--tracking-meta);
       color: var(--text-muted);
     }
     .results .num {

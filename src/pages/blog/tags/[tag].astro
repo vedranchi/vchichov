@@ -51,31 +51,21 @@ const { label, posts } = Astro.props;
 
 <style>
   .tag-page {
-    padding-block: clamp(2rem, 6vw, 3.5rem);
-  }
-  .page-head {
-    margin-bottom: 2rem;
+    padding-block: var(--space-2xl);
   }
   .back {
     display: inline-block;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
     color: var(--accent-strong);
     text-decoration: none;
   }
   .back:hover {
     color: var(--link-hover);
   }
-  .page-head h1 {
-    margin: 0 0 0.4rem;
-  }
-  .lede {
-    margin: 0;
-    color: var(--text-muted);
-  }
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: var(--space-md);
     list-style: none;
     margin: 0;
     padding: 0;

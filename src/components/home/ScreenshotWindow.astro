@@ -22,7 +22,7 @@ const { src, alt, url, ratio = '1.9', class: className = '' } = Astro.props;
     <span class="dot" aria-hidden="true"></span>
     <span class="dot" aria-hidden="true"></span>
     <span class="dot" aria-hidden="true"></span>
-    <span class="url pixel-label">{url}</span>
+    <span class="url meta-label">{url}</span>
   </div>
   <div class="shot" style={`aspect-ratio:${ratio};`}>
     <Image src={src} alt={alt} widths={[640, 960, 1600]} loading="lazy" decoding="async" />
@@ -55,7 +55,7 @@ const { src, alt, url, ratio = '1.9', class: className = '' } = Astro.props;
   }
   .url {
     margin-left: 0.4rem;
-    color: var(--text-muted);
+    text-transform: none;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

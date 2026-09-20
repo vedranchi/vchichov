@@ -41,7 +41,7 @@ const stats = [
             {result.rank}
           </span>
           <div class="result-body">
-            <p class="crown pixel-label">
+            <p class="crown meta-label">
               {isNationalTitle ? 'National champion' : `${ordinal(result.rank)} place`}
             </p>
             <h3 class="race">{discipline}</h3>
@@ -57,13 +57,13 @@ const stats = [
       {
         stats.map((s) => (
           <div class="stat">
-            <dt class="pixel-label">{s.label}</dt>
+            <dt class="meta-label">{s.label}</dt>
             <dd>{s.value}</dd>
           </div>
         ))
       }
       <div class="stat">
-        <dt class="pixel-label">Team</dt>
+        <dt class="meta-label">Team</dt>
         <dd>
           <a href={site.team.url} target="_blank" rel="noopener">{teamName}</a>
         </dd>
@@ -132,12 +132,12 @@ const stats = [
   }
   .race {
     margin: 0 0 0.3rem;
-    font-size: 1.15rem;
+    font-size: var(--text-lg);
   }
   .meta {
     margin: 0;
     color: var(--text-muted);
-    font-size: 0.92rem;
+    font-size: var(--text-sm);
   }
 
   .stats {
@@ -147,7 +147,6 @@ const stats = [
     margin: 1.25rem 0 0;
   }
   .stat dt {
-    color: var(--text-muted);
     margin-bottom: 0.15rem;
   }
   .stat dd {
@@ -158,7 +157,7 @@ const stats = [
   }
   .stat dd a {
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
 
   @media (max-width: 780px) {
