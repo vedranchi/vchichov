@@ -33,3 +33,9 @@ pnpm-debug.log*
 
 # local-only deployment notes (see glucoread's HANDOFF.md convention)
 handoff.md
+
+# agent tooling and local scratch — never committed (the repo is public)
+docs/
+.claude/
+.agents/
+skills-lock.json
