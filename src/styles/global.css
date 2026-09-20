@@ -67,6 +67,7 @@ a {
   color: var(--link);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
+  transition: color 180ms ease;
 }
 a:hover {
   color: var(--link-hover);
@@ -171,6 +172,11 @@ main {
   color: var(--text-muted);
   text-decoration: none;
 }
+a.chip {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease;
+}
 a.chip:hover {
   color: var(--text);
   border-color: var(--accent);
@@ -184,6 +190,24 @@ a.chip:hover {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Scroll reveal.
+ *
+ * The hidden state is gated behind .reveal-ready, which only the script adds. If
+ * the script never runs (no JS, an error, an old browser), nothing is ever
+ * hidden and the page reads exactly as it does now. The script also bails out
+ * entirely under prefers-reduced-motion, so this is belt and braces.
+ * ------------------------------------------------------------------------- */
+.reveal-ready [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.reveal-ready [data-reveal] {
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -64,6 +64,28 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     </main>
     <Footer />
 
+    <script>
+      // Bands fade up as they come into view. Opt-in per element via data-reveal.
+      const targets = document.querySelectorAll('[data-reveal]');
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (targets.length && !still && 'IntersectionObserver' in window) {
+        document.documentElement.classList.add('reveal-ready');
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-revealed');
+              io.unobserve(entry.target);
+            }
+          },
+          // a little early, so a band is never caught mid-fade at rest
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+        );
+        for (const t of targets) io.observe(t);
+      }
+    </script>
+
     <style>
       .skip-link {
         position: absolute;

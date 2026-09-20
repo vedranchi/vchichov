@@ -12,7 +12,12 @@ interface Props {
 const { id, eyebrow, title, lede, tone = 'default', class: className = '' } = Astro.props;
 ---
 
-<section id={id} class:list={['band', `tone-${tone}`, className]} aria-labelledby={`${id}-h`}>
+<section
+  id={id}
+  class:list={['band', `tone-${tone}`, className]}
+  aria-labelledby={`${id}-h`}
+  data-reveal
+>
   <div class="container band-inner">
     <header class="band-head">
       <p class="eyebrow pixel-label">{eyebrow}</p>
