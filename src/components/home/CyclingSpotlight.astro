@@ -22,17 +22,6 @@ const stats = [
 ---
 
 <div class="spotlight">
-  <figure class="photo">
-    <Image
-      src={photo}
-      alt={home.alt.cycling}
-      widths={[400, 578]}
-      sizes="(max-width: 780px) 100vw, 40vw"
-      loading="lazy"
-      decoding="async"
-    />
-  </figure>
-
   <div class="detail">
     {
       result && (
@@ -52,32 +41,48 @@ const stats = [
         </WoodPanel>
       )
     }
-
-    <dl class="stats">
-      {
-        stats.map((s) => (
-          <div class="stat">
-            <dt class="meta-label">{s.label}</dt>
-            <dd>{s.value}</dd>
-          </div>
-        ))
-      }
-      <div class="stat">
-        <dt class="meta-label">Team</dt>
-        <dd>
-          <a href={site.team.url} target="_blank" rel="noopener">{teamName}</a>
-        </dd>
-      </div>
-    </dl>
   </div>
+
+  <figure class="photo">
+    <Image
+      src={photo}
+      alt={home.alt.cycling}
+      widths={[400, 578]}
+      sizes="(max-width: 780px) 100vw, 40vw"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
 </div>
 
+<dl class="stats">
+  {
+    stats.map((s) => (
+      <div class="stat">
+        <dt class="meta-label">{s.label}</dt>
+        <dd>{s.value}</dd>
+      </div>
+    ))
+  }
+  <div class="stat">
+    <dt class="meta-label">Team</dt>
+    <dd class="stat-team">
+      <a href={site.team.url} target="_blank" rel="noopener">{teamName}</a>
+    </dd>
+  </div>
+</dl>
+
 <style>
+  /* Projects above this runs image-left / text-right. This band mirrors it and then breaks
+     the grid entirely for the numbers, so the two do not read as the same template twice. */
   .spotlight {
     display: grid;
-    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
     gap: clamp(1.25rem, 4vw, 2.25rem);
     align-items: center;
+  }
+  .detail {
+    min-width: 0;
   }
   .photo {
     margin: 0;
@@ -92,14 +97,11 @@ const stats = [
     width: 100%;
     height: auto;
   }
-  .detail {
-    min-width: 0;
-  }
 
   .result {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-sm);
   }
   .medal {
     flex: none;
@@ -140,11 +142,18 @@ const stats = [
     font-size: var(--text-sm);
   }
 
+  /* The numbers get their own full-width row rather than being tucked beside the photo.
+     VT323 earns its place here: it is a numeral face and these are the numerals. */
   .stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem 2rem;
-    margin: 1.25rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm) var(--space-md);
+    margin: var(--space-lg) 0 0;
+    padding-top: var(--space-md);
+    border-top: 3px solid var(--frame);
+  }
+  .stat {
+    min-width: 0;
   }
   .stat dt {
     margin-bottom: 0.15rem;
@@ -152,21 +161,31 @@ const stats = [
   .stat dd {
     margin: 0;
     font-family: var(--font-num);
-    font-size: 1.5rem;
-    line-height: 1.2;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.1;
+    color: var(--text);
   }
-  .stat dd a {
+  /* the team is a name, not a numeral, so it opts out of the VT323 treatment */
+  .stat dd.stat-team {
     font-family: var(--font-body);
     font-size: var(--text-base);
+    line-height: var(--lh-snug);
   }
 
   @media (max-width: 780px) {
     .spotlight {
       grid-template-columns: 1fr;
     }
+    /* picture first on mobile: it is the hook */
     .photo {
       order: -1;
       max-width: 24rem;
+    }
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .stat-team {
+      grid-column: 1 / -1;
     }
   }
 </style>
