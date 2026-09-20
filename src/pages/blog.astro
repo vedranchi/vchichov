@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import PostCard from '../components/PostCard.astro';
 import { slugifyTag } from '../lib/format';
 
@@ -14,10 +15,8 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
 <BaseLayout title="Blog" description="Posts by Vedran Chichov on code, cycling, and life.">
   <section class="container blog">
-    <header class="page-head">
-      <p class="eyebrow pixel-label">Notes from the field</p>
-      <h1>Blog</h1>
-      <p class="lede">Thoughts on code, riding, and whatever else I'm figuring out.</p>
+    <PageHeader title="Blog">
+      <Fragment slot="lede">Thoughts on code, riding, and whatever else I'm figuring out.</Fragment>
       {
         tags.length > 0 && (
           <ul class="tag-cloud chip-row">
@@ -31,7 +30,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
           </ul>
         )
       }
-    </header>
+    </PageHeader>
 
     {
       posts.length > 0 ? (
@@ -53,16 +52,12 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
   .blog {
     padding-block: var(--space-2xl);
   }
-  .eyebrow {
-    color: var(--accent-strong);
-    margin: 0 0 var(--space-2xs);
-  }
   .tag-cloud {
     margin-top: var(--space-sm);
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-md);
     list-style: none;
     margin: 0;

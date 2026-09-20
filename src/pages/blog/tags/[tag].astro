@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostCard from '../../../components/PostCard.astro';
+import PageHeader from '../../../components/PageHeader.astro';
 import { slugifyTag } from '../../../lib/format';
 
 export const getStaticPaths = (async () => {
@@ -31,11 +32,11 @@ const { label, posts } = Astro.props;
 
 <BaseLayout title={`#${label}`} description={`Posts tagged ${label}.`}>
   <section class="container tag-page">
-    <header class="page-head">
-      <a href="/blog" class="back pixel-label">← All posts</a>
-      <h1>#{label}</h1>
-      <p class="lede">{posts.length} post{posts.length === 1 ? '' : 's'} tagged “{label}”.</p>
-    </header>
+    <PageHeader title={`#${label}`} back={{ href: '/blog', label: '← All posts' }}>
+      <Fragment slot="lede">
+        {posts.length} post{posts.length === 1 ? '' : 's'} tagged “{label}”.
+      </Fragment>
+    </PageHeader>
 
     <ul class="grid">
       {
@@ -53,18 +54,9 @@ const { label, posts } = Astro.props;
   .tag-page {
     padding-block: var(--space-2xl);
   }
-  .back {
-    display: inline-block;
-    margin-bottom: var(--space-sm);
-    color: var(--accent-strong);
-    text-decoration: none;
-  }
-  .back:hover {
-    color: var(--link-hover);
-  }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-md);
     list-style: none;
     margin: 0;
