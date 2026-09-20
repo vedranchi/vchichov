@@ -26,10 +26,9 @@ const post = posts.find((p) => p.id === home.pinnedPost) ?? posts[0];
 <BaseLayout>
   <section class="hero">
     <div class="container hero-inner">
-      <p class="eyebrow pixel-label">Welcome to my little farm on the web</p>
       <h1 class="hero-title">{site.name}</h1>
       <p class="hero-tagline">{site.tagline}</p>
-      <p class="hero-intro">
+      <p class="hero-intro lede">
         Hey, I'm Vedran — a fresh high-school grad from Macedonia who spends his time{' '}
         <strong>writing code</strong> and <strong>racing bikes</strong>. This is where I keep my
         projects, my race results, and the odd blog post. Pull up a stool and have a look around.
@@ -106,37 +105,36 @@ const post = posts.find((p) => p.id === home.pinnedPost) ?? posts[0];
   .hero-inner {
     text-align: center;
     max-width: 780px;
-    padding-bottom: 2rem;
-  }
-  .eyebrow {
-    color: var(--accent-strong);
-    margin: 0 0 0.75rem;
+    padding-bottom: var(--space-lg);
   }
   .hero-title {
     margin: 0;
-    text-shadow: var(--pixel) var(--pixel) 0 var(--frame-dark);
+    /* --title-shadow, not --frame-dark: in day mode the frame brown sits at 1.21:1 against
+       the heading colour, so the 4px offset just smeared the letterforms. */
+    text-shadow: var(--pixel) var(--pixel) 0 var(--title-shadow);
   }
   .hero-tagline {
     font-family: var(--font-num);
-    font-size: 1.8rem;
-    letter-spacing: 0.03em;
+    font-size: var(--text-2xl);
+    letter-spacing: 0.06em;
     color: var(--highlight);
-    margin: 0.25rem 0 1.25rem;
+    margin: var(--space-3xs) 0 var(--space-sm);
   }
+  /* centred copy wants a shorter measure than the 65ch default */
   .hero-intro {
     margin-inline: auto;
-    max-width: 60ch;
-    color: var(--text-muted);
+    max-width: var(--measure-narrow);
   }
   .hero-intro strong {
     color: var(--text);
+    font-weight: 700;
   }
   .hero-cta {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--space-xs);
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 1.75rem;
+    margin-top: var(--space-md);
   }
 
   .scroll-cue {

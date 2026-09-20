@@ -12,7 +12,9 @@ export const home = {
 
   /** Alt text for the two photos in src/assets. Describes the scene, names nobody. */
   alt: {
-    project: 'The GlucoRead homepage: a glucose trend chart plotted across one day.',
+    project:
+      'The GlucoRead homepage: a dashboard summary for one day, with tiles for ' +
+      'average glucose, total insulin, carbs consumed and time in range.',
     cycling:
       'Three riders in Velo-M Termalift kit on the national championship podium, ' +
       'Vedran on the top step with the gold medal.',

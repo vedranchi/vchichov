@@ -12,7 +12,9 @@ const { title, description, pubDate, tags } = post.data;
 ---
 
 <div class="spotlight">
-  <!-- Pixel notebook, drawn rather than photographed: the blog has no picture of its own. -->
+  <!-- Pixel notebook, drawn rather than photographed: the blog has no picture of its own.
+       It sits directly above the post it introduces, not beside it: the band already reads
+       left-aligned, and a side column left the motif floating against nothing. -->
   <div class="motif" aria-hidden="true">
     <svg viewBox="0 0 60 60" role="presentation">
       <rect class="page" x="10" y="8" width="40" height="44"></rect>
@@ -41,15 +43,15 @@ const { title, description, pubDate, tags } = post.data;
   </div>
 
   <WoodPanel class="card">
-    <p class="date pixel-label">{formatDate(pubDate)}</p>
+    <p class="date meta-label">{formatDate(pubDate)}</p>
     <h3 class="title"><a href={`/blog/${post.id}`}>{title}</a></h3>
-    {description && <p class="desc">{description}</p>}
+    {description && <p class="desc body-text">{description}</p>}
     {
       tags.length > 0 && (
-        <ul class="tags">
+        <ul class="tags chip-row">
           {tags.map((tag) => (
             <li>
-              <a class="tag pixel-label" href={`/blog/tags/${slugifyTag(tag)}`}>
+              <a class="chip meta-label" href={`/blog/tags/${slugifyTag(tag)}`}>
                 #{tag}
               </a>
             </li>
@@ -65,16 +67,14 @@ const { title, description, pubDate, tags } = post.data;
 
 <style>
   .spotlight {
-    display: grid;
-    grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
-    gap: clamp(1.25rem, 4vw, 2.25rem);
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
   }
   .motif svg {
     display: block;
-    width: 100%;
-    max-width: 15rem;
-    margin-inline: auto;
+    width: 6.5rem;
     height: auto;
     shape-rendering: crispEdges;
   }
@@ -100,15 +100,17 @@ const { title, description, pubDate, tags } = post.data;
   .card {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2xs);
+    /* the band is 1040px wide; an unconstrained card turns the summary into a 100ch line */
+    max-width: 62ch;
+    width: 100%;
   }
   .date {
     margin: 0;
-    color: var(--text-muted);
   }
   .title {
     margin: 0;
-    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    font-size: var(--text-2xl);
   }
   .title a {
     color: var(--text);
@@ -119,39 +121,11 @@ const { title, description, pubDate, tags } = post.data;
   }
   .desc {
     margin: 0;
-    color: var(--text-muted);
   }
   .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    list-style: none;
-    margin: 0.25rem 0 0;
-    padding: 0;
-  }
-  .tag {
-    display: inline-block;
-    background: var(--surface-2);
-    border: 2px solid var(--frame);
-    border-radius: 2px;
-    padding: 0.15rem 0.4rem;
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-  .tag:hover {
-    color: var(--text);
-    border-color: var(--accent);
+    margin-top: var(--space-3xs);
   }
   .actions {
-    margin-top: 0.5rem;
-  }
-
-  @media (max-width: 780px) {
-    .spotlight {
-      grid-template-columns: 1fr;
-    }
-    .motif svg {
-      max-width: 10rem;
-    }
+    margin-top: var(--space-2xs);
   }
 </style>

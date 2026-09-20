@@ -16,17 +16,23 @@ const displayUrl = project.homepage?.replace(/^https?:\/\//, '').replace(/\/$/, 
 ---
 
 <div class="spotlight">
-  <ScreenshotWindow src={shot} alt={home.alt.project} url={displayUrl} class="shot-col" />
+  <ScreenshotWindow
+    src={shot}
+    alt={home.alt.project}
+    url={displayUrl}
+    ratio="2.4"
+    class="shot-col"
+  />
 
   <div class="detail">
     <h3 class="name">{project.name}</h3>
-    {blurb && <p class="blurb">{blurb}.</p>}
+    {blurb && <p class="blurb body-text">{blurb}.</p>}
 
     {
       project.languages.length > 0 && (
-        <ul class="chips">
+        <ul class="chips chip-row">
           {project.languages.slice(0, 5).map((l) => (
-            <li class="chip pixel-label">{l}</li>
+            <li class="chip meta-label">{l}</li>
           ))}
         </ul>
       )
@@ -50,32 +56,19 @@ const displayUrl = project.homepage?.replace(/^https?:\/\//, '').replace(/\/$/, 
     min-width: 0;
   }
   .name {
-    margin: 0 0 0.4rem;
-    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    margin: 0 0 var(--space-3xs);
+    font-size: var(--text-2xl);
   }
   .blurb {
-    margin: 0 0 0.9rem;
-    color: var(--text-muted);
+    margin: 0 0 var(--space-xs);
   }
   .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    list-style: none;
-    margin: 0 0 1.1rem;
-    padding: 0;
-  }
-  .chip {
-    background: var(--surface-2);
-    border: 2px solid var(--frame);
-    border-radius: 2px;
-    padding: 0.15rem 0.4rem;
-    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
   }
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-2xs);
   }
 
   @media (max-width: 780px) {
