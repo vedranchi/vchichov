@@ -17,7 +17,4 @@ distance and the stopwatch tells you the truth.
 Warm-up, start ramp, and then the effort. Pacing is everything — go too hard early and the
 last kilometres fall apart. I held it together and came away with **2nd place**.
 
-There's a `code` side to this too: I track my numbers and I'm slowly building tools to make
-sense of the data. That's a story for a future post.
-
 Back to writing — you can head [[welcome|home to the intro post]] if you missed it.
