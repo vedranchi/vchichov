@@ -1,0 +1,34 @@
+{
+  "redirects": [
+    {
+      "source": "/blog",
+      "destination": "https://blog.vchichov.com/",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    },
+    {
+      "source": "/blog/tags/:tag*",
+      "destination": "https://blog.vchichov.com/tags/:tag*",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    },
+    {
+      "source": "/blog/:slug*",
+      "destination": "https://blog.vchichov.com/:slug*",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    },
+    {
+      "source": "/cycling",
+      "destination": "https://blog.vchichov.com/cycling",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    },
+    {
+      "source": "/rss.xml",
+      "destination": "https://blog.vchichov.com/rss.xml",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    }
+  ]
+}
