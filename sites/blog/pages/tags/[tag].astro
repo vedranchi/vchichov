@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import PostCard from '../../../components/PostCard.astro';
-import { slugifyTag } from '../../../lib/format';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { slugifyTag } from '@shared/lib/format';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('blog', ({ data }) =>
@@ -32,7 +32,7 @@ const { label, posts } = Astro.props;
 <BaseLayout title={`#${label}`} description={`Posts tagged ${label}.`}>
   <section class="container tag-page">
     <header class="page-head">
-      <a href="/blog" class="back pixel-label">← All posts</a>
+      <a href="/" class="back pixel-label">← All posts</a>
       <h1>#{label}</h1>
       <p class="lede">{posts.length} post{posts.length === 1 ? '' : 's'} tagged “{label}”.</p>
     </header>

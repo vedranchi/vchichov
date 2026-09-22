@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import WoodPanel from './WoodPanel.astro';
-import { formatDate, slugifyTag } from '../lib/format';
+import { formatDate, slugifyTag } from '@shared/lib/format';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -13,7 +13,7 @@ const { title, description, pubDate, tags } = post.data;
 <WoodPanel as="article" class="post-card">
   <p class="post-date pixel-label">{formatDate(pubDate)}</p>
   <h2 class="post-title">
-    <a href={`/blog/${post.id}`}>{title}</a>
+    <a href={`/${post.id}`}>{title}</a>
   </h2>
   {description && <p class="post-desc">{description}</p>}
   {
@@ -21,7 +21,7 @@ const { title, description, pubDate, tags } = post.data;
       <ul class="post-tags">
         {tags.map((tag) => (
           <li>
-            <a class="tag pixel-label" href={`/blog/tags/${slugifyTag(tag)}`}>
+            <a class="tag pixel-label" href={`/tags/${slugifyTag(tag)}`}>
               #{tag}
             </a>
           </li>

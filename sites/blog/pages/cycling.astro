@@ -2,10 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WoodPanel from '../components/WoodPanel.astro';
 import PixelButton from '../components/PixelButton.astro';
-import data from '../data/cycling.json';
-import { site } from '../data/site';
-import { allResults, highlights, medalClass } from '../lib/cycling';
-import { ordinal } from '../lib/format';
+import data from '@shared/data/cycling.json';
+import { site } from '@shared/data/site';
+import { allResults, highlights, medalClass } from '@shared/lib/cycling';
+import { ordinal } from '@shared/lib/format';
 
 const { rider, source, generatedAt } = data;
 

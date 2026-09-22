@@ -1,12 +1,17 @@
 ---
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatDate, slugifyTag } from '../../lib/format';
-import '../../styles/prose.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, slugifyTag } from '@shared/lib/format';
+import '../styles/prose.css';
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog');
+  // Drafts stay visible while writing but must not be built in production — without this
+  // filter a draft still gets a page and is reachable by direct URL, unlike everywhere
+  // else that lists posts.
+  const posts = await getCollection('blog', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true,
+  );
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -21,7 +26,7 @@ const { Content } = await render(post);
 <BaseLayout title={title} description={description}>
   <article class="container post">
     <header class="post-header">
-      <a href="/blog" class="back pixel-label">← Back to blog</a>
+      <a href="/" class="back pixel-label">← All posts</a>
       <h1>{title}</h1>
       <p class="meta pixel-label">
         {formatDate(pubDate)}
@@ -33,7 +38,7 @@ const { Content } = await render(post);
           <ul class="tags">
             {tags.map((tag) => (
               <li>
-                <a class="tag pixel-label" href={`/blog/tags/${slugifyTag(tag)}`}>
+                <a class="tag pixel-label" href={`/tags/${slugifyTag(tag)}`}>
                   #{tag}
                 </a>
               </li>

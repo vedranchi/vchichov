@@ -1,8 +1,8 @@
 // A tiny, dependency-free remark plugin for Obsidian-style [[wiki links]].
 //
 // Supports:
-//   [[slug]]              -> <a href="/blog/slug" class="wikilink">slug</a>
-//   [[slug|custom text]]  -> <a href="/blog/slug" class="wikilink">custom text</a>
+//   [[slug]]              -> <a href="/slug" class="wikilink">slug</a>
+//   [[slug|custom text]]  -> <a href="/slug" class="wikilink">custom text</a>
 //
 // It only rewrites plain-text nodes, so `[[...]]` inside code spans/blocks is left alone.
 
@@ -28,7 +28,7 @@ function splitText(value) {
     const [target, label] = match[1].split('|').map((s) => s.trim());
     nodes.push({
       type: 'link',
-      url: `/blog/${slugify(target)}`,
+      url: `/${slugify(target)}`,
       data: { hProperties: { className: 'wikilink' } },
       children: [{ type: 'text', value: label || target }],
     });

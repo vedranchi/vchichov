@@ -1,5 +1,5 @@
 ---
-import { site } from '../data/site';
+import { site } from '@shared/data/site';
 import ThemeToggle from './ThemeToggle.astro';
 
 const path = Astro.url.pathname;
@@ -21,12 +21,16 @@ const isActive = (href: string) =>
     <div class="nav-end">
       <ul id="nav-links" class="nav-links">
         {
-          site.nav.map((item) => (
+          site.nav.blog.map((item) => (
             <li>
               <a
                 href={item.href}
-                class:list={['nav-link', { active: isActive(item.href) }]}
-                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'nav-link',
+                  { active: !item.external && isActive(item.href), outbound: item.external },
+                ]}
+                aria-current={!item.external && isActive(item.href) ? 'page' : undefined}
+                rel={item.external ? 'noopener' : undefined}
               >
                 {item.label}
               </a>
@@ -105,6 +109,17 @@ const isActive = (href: string) =>
     background: var(--accent);
     color: var(--on-accent);
     border-color: var(--frame-dark);
+  }
+  /* The link back to the portfolio. Set apart so it reads as leaving the farm, and
+     labelled with the destination host rather than an arrow. */
+  .nav-link.outbound {
+    margin-left: 0.5rem;
+    color: var(--link);
+    text-transform: none;
+  }
+  .nav-link.outbound:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
   }
   .nav-toggle {
     display: none;
