@@ -1,4 +1,4 @@
-# Project rules — personal-site
+# Project rules — vchichov
 
 Vedran Chichov's personal site. **One repo, two sites, two Vercel projects:**
 
@@ -19,7 +19,8 @@ flatten the farm into the portfolio's palette.
 - **While a design is still being figured out, do not commit at all** — leave the work in
   the tree until Vedran has seen it and settled the look.
 - When in doubt about anything, ask before proceeding — resolve it together.
-- Remote: `git@github.com:vedranchi/personal-site.git`.
+- Remote: `git@github.com:vedranchi/vchichov.git` (renamed from `personal-site`; GitHub
+  still redirects the old URL, but update your local remote).
 
 ## Layout
 
