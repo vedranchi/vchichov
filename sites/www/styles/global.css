@@ -1,0 +1,167 @@
+@import './tokens.css';
+
+/* Base layer for vchichov.com.
+ *
+ * Rhythm lives here once, wrapped in :where() so it has zero specificity and page rules
+ * can override it without a fight. Never re-declare padding-block for the same element in
+ * a component — that is how section spacing silently breaks. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh; /* not 100vh — that jumps when iOS Safari's toolbar collapses */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+/* --- type ---------------------------------------------------------------------- */
+
+:where(h1, h2, h3, h4) {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+:where(p, ul, ol) {
+  margin: 0;
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/* --- links --------------------------------------------------------------------- */
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.18em;
+}
+
+/* Inline prose links are bold + underlined, as in the reference. Colour alone can't carry
+   them: in light mode --link is the same ink as body text. */
+.prose a,
+a.inline {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.prose a:hover,
+a.inline:hover {
+  text-decoration-color: var(--accent);
+}
+
+button,
+[role='button'],
+summary {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 50;
+  background: var(--accent);
+  color: var(--on-accent); /* black on orange, 5.87:1, identical in both modes */
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+}
+.skip-link:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+}
+
+/* --- the neobrutalist box -------------------------------------------------------
+ * The one shared gesture: hard black outline, hard offset shadow, and on press the thing
+ * physically travels into its own shadow. Used by .box, buttons and nav items alike. */
+
+.box {
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+}
+
+/* Interactive boxes react. Motion here answers a click, which is the kind worth having. */
+.box--press {
+  transition:
+    transform 80ms ease-out,
+    box-shadow 80ms ease-out;
+}
+.box--press:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--edge);
+}
+.box--press:active {
+  transform: translate(var(--press), var(--press));
+  box-shadow: 0 0 0 var(--edge);
+}
+
+/* --- layout -------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

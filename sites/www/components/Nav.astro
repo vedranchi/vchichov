@@ -1,0 +1,107 @@
+---
+import { site } from '@shared/data/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+---
+
+{/* A centred orange slab floating over the page, per the reference. */}
+<header class="site-header">
+  <nav class="nav box" aria-label="Primary">
+    <ul class="nav-links">
+      {
+        site.nav.www.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'nav-link',
+                { active: !item.external && isActive(item.href), outbound: item.external },
+              ]}
+              aria-current={!item.external && isActive(item.href) ? 'page' : undefined}
+              rel={item.external ? 'noopener' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <ThemeToggle />
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    justify-content: center;
+    padding: clamp(1rem, 3vw, 1.75rem) var(--gutter) 0;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* The one orange block on most pages. Always black-on-orange — see tokens.css. */
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: 0.4rem 0.6rem;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link {
+    display: inline-block;
+    padding: 0.5rem 0.85rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    color: var(--on-accent);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .nav-link:hover {
+    border-color: var(--on-accent);
+  }
+  /* The current page is outlined rather than filled — there is already a fill here. */
+  .nav-link.active {
+    border-color: var(--on-accent);
+    font-weight: 600;
+  }
+  /* The link off to the blog, set apart by a hairline and named for its destination. */
+  .nav-link.outbound {
+    margin-left: 0.4rem;
+    position: relative;
+  }
+  .nav-link.outbound::before {
+    content: '';
+    position: absolute;
+    left: -0.4rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 2px;
+    height: 1.1em;
+    background: var(--on-accent);
+    opacity: 0.35;
+  }
+
+  @media (max-width: 560px) {
+    .nav {
+      width: 100%;
+    }
+    .nav-link {
+      padding: 0.45rem 0.6rem;
+      font-size: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '@shared/data/site';
+import cycling from '@shared/data/cycling.json';
+
+const born = new Date(cycling.rider.birthdate);
+const now = new Date();
+let age = now.getFullYear() - born.getFullYear();
+const beforeBirthday =
+  now.getMonth() < born.getMonth() ||
+  (now.getMonth() === born.getMonth() && now.getDate() < born.getDate());
+if (beforeBirthday) age -= 1;
+---
+
+{
+  /*
+   * Everything here comes from data already in the repo (cycling.json, palmares.ts,
+   * projects.json), so it stays true as those update.
+   *
+   * VEDRAN — the one thing I could not source is what and where you are studying. Add it
+   * to the first paragraph; the page reads fine without it, it's just thinner than it
+   * needs to be.
+   */
+}
+<BaseLayout
+  title="About"
+  description="Vedran Chichov — a developer and bike racer from Skopje, North Macedonia."
+>
+  <section class="container page">
+    <h1 class="page-title">About</h1>
+
+    <div class="prose measure">
+      <p>
+        I'm {age}, from Skopje, and I spend my time on two things: building software and racing
+        bikes. Both reward the same habit — doing the boring part properly, over and over, long
+        before anyone sees a result.
+      </p>
+
+      <h2 class="section-title">Software</h2>
+      <p>
+        The project I care most about is <strong>GlucoRead</strong>: glucose, insulin and meal
+        tracking for people managing diabetes day to day. It's a Django and PostgreSQL app, and I
+        run it myself — Docker, Caddy, backups, the lot. Building it taught me more than any
+        tutorial, mostly because something that's actually deployed can't be left half-finished.
+      </p>
+      <p>
+        I like small, useful software that stays up. I'd rather ship one tool people rely on than
+        ten demos.
+      </p>
+
+      <h2 class="section-title">Racing</h2>
+      <p>
+        I ride for {site.team.name}. In 2026 I won the North Macedonian national road race title in
+        the under-23 category, and took silver in the time trial the day before. I've raced abroad
+        too, including the Tour of Bosnia and Herzegovina.
+      </p>
+      <p>
+        The time trial is my discipline. It's the honest one: no wheels to hide behind, no tactics
+        to blame, just the clock telling you exactly what you were worth that day.
+      </p>
+
+      <p class="more">
+        Race results live on <a class="inline" href={`${site.urls.blog}/cycling`} rel="noopener"
+          >the blog</a
+        >, along with anything I write down.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2.5rem, 8vw, 4rem) 1rem;
+  }
+  .page-title {
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
+  }
+  .prose p + p {
+    margin-top: 1.1rem;
+  }
+  .section-title {
+    font-size: clamp(1.5rem, 3.5vw, 1.875rem);
+    margin-top: 2.5rem;
+    margin-bottom: 0.9rem;
+    /* A short orange rule instead of a filled block — the accent stays a ground, and this
+       keeps the page from turning into a stack of orange bars. */
+    border-bottom: 4px solid var(--accent);
+    padding-bottom: 0.4rem;
+    display: inline-block;
+  }
+  .prose strong {
+    font-weight: 700;
+  }
+  .more {
+    margin-top: 2.25rem;
+    color: var(--text-muted);
+  }
+</style>

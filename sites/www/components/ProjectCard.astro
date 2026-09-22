@@ -1,0 +1,125 @@
+---
+// A project as a neobrutalist card: hard outline, hard offset shadow, and it presses into
+// its own shadow when you click it.
+import { home } from '@shared/data/home';
+
+export interface Project {
+  name: string;
+  description: string;
+  url: string;
+  homepage: string | null;
+  languages: string[];
+  topics: string[];
+  stars: number;
+  updatedAt: string;
+}
+interface Props {
+  project: Project;
+}
+const { project }: Props = Astro.props;
+
+const blurb = home.blurbs[project.name] ?? project.description;
+const year = new Date(project.updatedAt).getFullYear();
+// Top three only — the full list is noise on a card this size.
+const languages = project.languages.slice(0, 3);
+---
+
+<article class="card box">
+  <header class="card-head">
+    <h3 class="card-title">{project.name}</h3>
+    <time class="card-year tnum" datetime={String(year)}>{year}</time>
+  </header>
+
+  <p class="card-blurb">{blurb}</p>
+
+  {
+    languages.length > 0 && (
+      <ul class="tags">
+        {languages.map((lang) => (
+          <li class="tag">{lang}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  <p class="card-links">
+    {
+      project.homepage && (
+        <a class="btn btn--accent box box--press" href={project.homepage} rel="noopener">
+          Visit
+        </a>
+      )
+    }
+    <a class="btn box box--press" href={project.url} rel="noopener">Source</a>
+  </p>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .card-title {
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    font-weight: 700;
+  }
+  .card-year {
+    margin-left: auto;
+    flex: none;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .card-blurb {
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tag {
+    border: 2px solid var(--edge);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    background: var(--bg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.15rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  /* The one filled control per card: the project you can actually go and use. */
+  .btn--accent {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .btn--accent:hover {
+    background: var(--accent-hover);
+  }
+</style>
