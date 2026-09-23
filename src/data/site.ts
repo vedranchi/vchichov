@@ -38,7 +38,8 @@ export const site = {
       { href: urls.blog, label: 'Blog', external: true },
     ],
     blog: [
-      { href: '/', label: 'posts', external: false },
+      { href: '/', label: 'farm', external: false },
+      { href: '/archive', label: 'posts', external: false },
       { href: '/cycling', label: 'cycling', external: false },
       { href: urls.www, label: 'vchichov.com', external: true },
     ],

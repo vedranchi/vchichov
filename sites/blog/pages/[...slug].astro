@@ -12,6 +12,11 @@ export const getStaticPaths = (async () => {
   const posts = await getCollection('blog', ({ data }) =>
     import.meta.env.PROD ? !data.draft : true,
   );
+  // Static routes win over this catch-all, so a post with one of these slugs would be
+  // silently shadowed — fail the build instead.
+  const reserved = new Set(['archive', 'cycling', 'tags', 'rss.xml', 'robots.txt', '404']);
+  const clash = posts.find((post) => reserved.has(post.id));
+  if (clash) throw new Error(`Post "${clash.id}" clashes with a route; rename its file.`);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -26,7 +31,7 @@ const { Content } = await render(post);
 <BaseLayout title={title} description={description}>
   <article class="container post">
     <header class="post-header">
-      <a href="/" class="back pixel-label">← All posts</a>
+      <a href="/archive" class="back pixel-label">← All posts</a>
       <h1>{title}</h1>
       <p class="meta meta-label">
         {formatDate(pubDate)}

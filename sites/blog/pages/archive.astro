@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PostCard from '../components/PostCard.astro';
+import PixelFarmScene from '../components/PixelFarmScene.astro';
+import { slugifyTag } from '@shared/lib/format';
+
+const posts = (
+  await getCollection('blog', ({ data }) => (import.meta.env.PROD ? !data.draft : true))
+).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+// Unique tags for the little tag cloud.
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+{
+  /* Every post as a card, newest first. The farm at / is the playful way in; this is the
+    plain one, and the farm's no-JS and screen-reader fallback links here. */
+}
+<BaseLayout title="All posts">
+  <PixelFarmScene />
+  <section class="container blog">
+    <PageHeader title="All posts">
+      <Fragment slot="lede"
+        >Everything I've written, newest first: code, riding, and whatever else I'm figuring out.</Fragment
+      >
+      {
+        tags.length > 0 && (
+          <ul class="tag-cloud chip-row">
+            {tags.map((tag) => (
+              <li>
+                <a class="chip meta-label" href={`/tags/${slugifyTag(tag)}`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </PageHeader>
+
+    {
+      posts.length > 0 ? (
+        <ul class="grid">
+          {posts.map((post) => (
+            <li>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="body-text">No posts yet — the first one is on its way.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .blog {
+    padding-block: var(--space-2xl);
+  }
+  .tag-cloud {
+    margin-top: var(--space-sm);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

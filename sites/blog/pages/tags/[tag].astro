@@ -32,7 +32,7 @@ const { label, posts } = Astro.props;
 
 <BaseLayout title={`#${label}`} description={`Posts tagged ${label}.`}>
   <section class="container tag-page">
-    <PageHeader title={`#${label}`} back={{ href: '/', label: '← All posts' }}>
+    <PageHeader title={`#${label}`} back={{ href: '/archive', label: '← All posts' }}>
       <Fragment slot="lede">
         {posts.length} post{posts.length === 1 ? '' : 's'} tagged “{label}”.
       </Fragment>
