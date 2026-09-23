@@ -107,6 +107,20 @@
   --pixel: 4px;
   --radius: 3px;
 
+  /* The page backdrop (components/Backdrop.astro): sky at the top of every page, grass
+     along the footer. Day sky is a light wash of --sky that fades into the parchment
+     before the reading column gets going. */
+  --sky-height: clamp(300px, 50vh, 460px);
+  --sky-top: color-mix(in srgb, var(--sky) 45%, var(--bg));
+  --sky-mid: color-mix(in srgb, var(--sky) 20%, var(--bg));
+  --sun: var(--gold-bright);
+  --sun-core: #fbe7a1;
+  --cloud: #fdfaf1;
+  --cloud-shade: #e3edf0;
+  --star: #f2e7c4;
+  --moon: #efe6d2;
+  --fringe: #6f9f4c;
+
   /* The walkable farm at / (sites/blog/farm). Its sprites read these, so every colour on
      the canvas lives here with the rest of the palette. One daylight set: at night the
      engine multiplies the whole scene by --farm-night and lights the house windows, rather
@@ -169,4 +183,7 @@
   --link-hover: #c7e6b0;
   --focus: var(--gold-bright);
   --title-shadow: var(--frame-dark);
+  --sky-top: #0b0e1f;
+  --sky-mid: #111427;
+  --fringe: #3b5a3a;
 }

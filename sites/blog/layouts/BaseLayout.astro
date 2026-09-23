@@ -12,6 +12,7 @@ import '../styles/global.css';
 
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Backdrop from '../components/Backdrop.astro';
 import { site } from '@shared/data/site';
 
 interface Props {
@@ -56,11 +57,38 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           document.documentElement.setAttribute('data-theme', theme);
         } catch (e) {}
       })();
+
+      // Day/night is switched by the sun and moon in the sky (Backdrop.astro), marked
+      // data-theme-toggle and handled here — delegated, so it works wherever that button
+      // sits. data-theme-anim is set briefly so the sky can play its sunset/sunrise only on a
+      // real switch, not on every page load.
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest || !e.target.closest('[data-theme-toggle]')) return;
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        root.setAttribute('data-theme-anim', '');
+        clearTimeout(window.__themeAnim);
+        window.__themeAnim = setTimeout(function () {
+          root.removeAttribute('data-theme-anim');
+        }, 1000);
+        try {
+          localStorage.setItem('theme', next);
+        } catch (err) {
+          /* ignore storage errors (private mode) */
+        }
+      });
     </script>
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
     <Nav />
+    {
+      /* Drawn behind the top of the page wherever it sits in the source; placed here so its
+        sun/moon — the site's only day/night switch — comes straight after the nav in tab
+        order, before the page itself. */
+    }
+    <Backdrop />
     <main id="main">
       <slot />
     </main>

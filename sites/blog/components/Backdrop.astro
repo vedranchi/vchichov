@@ -1,0 +1,360 @@
+---
+// The sky behind the top of every blog page: a sun and slow clouds by day, a moon and stars
+// by night. The sky itself is decoration — it sits behind the content, fades into the
+// parchment within a screen, and follows the theme through the tokens. The sun and moon
+// are the exception: they are the button that switches day and night — the site's only
+// theme control. The ground half of the idea is the grass along the footer's top edge.
+
+// Pixel art as character grids; each '#' is one pixel, '-' a shaded one.
+const CLOUDS = [
+  [
+    '.....####.......',
+    '..#########.###.',
+    '.##############.',
+    '################',
+    '.--------------.',
+  ],
+  ['...####.....', '.#########..', '############', '.----------.'],
+  [
+    '......###..........',
+    '...#########..###..',
+    '.#################.',
+    '###################',
+    '.-----------------.',
+  ],
+];
+const SUN = [
+  '...####...',
+  '.########.',
+  '.###--###.',
+  '###----###',
+  '###----###',
+  '###----###',
+  '###----###',
+  '.###--###.',
+  '.########.',
+  '...####...',
+];
+// Sun and moon share a 16x16 box, the disc centred in it; 'r' marks the sun's rays, which
+// only show on hover and focus, to say the sun can be clicked.
+const inBox = (disc: string[], rays: [number, number][] = []) => {
+  const box = Array.from({ length: 16 }, () => [...'.'.repeat(16)]);
+  disc.forEach((row, y) => [...row].forEach((ch, x) => ch !== '.' && (box[y + 3][x + 3] = ch)));
+  for (const [x, y] of rays) box[y][x] = 'r';
+  return box.map((row) => row.join(''));
+};
+// prettier-ignore
+const RAYS: [number, number][] = [
+  [7, 0], [8, 0], [7, 1], [8, 1], [7, 14], [8, 14], [7, 15], [8, 15],
+  [0, 7], [0, 8], [1, 7], [1, 8], [14, 7], [14, 8], [15, 7], [15, 8],
+  [1, 1], [2, 2], [14, 1], [13, 2], [1, 14], [2, 13], [14, 14], [13, 13],
+];
+const MOON = [
+  '...####...',
+  '.####.....',
+  '.###......',
+  '###.......',
+  '###.......',
+  '###.......',
+  '###.......',
+  '.###......',
+  '.####.....',
+  '...####...',
+];
+
+/** A grid as SVG rects, one per run of pixels, so a cloud is a handful of shapes. */
+function runs(grid: string[]) {
+  const out: { x: number; y: number; w: number; shade: boolean; ch: string }[] = [];
+  grid.forEach((row, y) => {
+    let x = 0;
+    while (x < row.length) {
+      const ch = row[x];
+      if (ch === '.') {
+        x++;
+        continue;
+      }
+      let end = x;
+      while (row[end] === ch) end++;
+      out.push({ x, y, w: end - x, shade: ch === '-', ch });
+      x = end;
+    }
+  });
+  return out;
+}
+
+// Stars: scattered with a fixed seed, so every build draws the same sky.
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+const stars = Array.from({ length: 70 }, (_, i) => ({
+  x: Math.round(rand() * 1600),
+  y: Math.round(rand() * 380),
+  size: rand() < 0.15 ? 3 : 2,
+  dim: rand() < 0.5,
+  twinkle: i % 11 === 0,
+}));
+---
+
+<div class="backdrop" aria-hidden="true">
+  <div class="sky"></div>
+
+  <div class="day">
+    {
+      CLOUDS.map((grid, i) => (
+        <svg class={`cloud cloud-${i}`} viewBox={`0 0 ${grid[0].length} ${grid.length}`}>
+          {runs(grid).map((r) => (
+            <rect x={r.x} y={r.y} width={r.w} height="1" class={r.shade ? 'shade' : ''} />
+          ))}
+        </svg>
+      ))
+    }
+  </div>
+
+  <div class="night">
+    <svg class="stars" viewBox="0 0 1600 380" preserveAspectRatio="xMidYMin slice">
+      {
+        stars.map((s) => (
+          <rect
+            x={s.x}
+            y={s.y}
+            width={s.size}
+            height={s.size}
+            class:list={{ dim: s.dim, twinkle: s.twinkle }}
+          />
+        ))
+      }
+    </svg>
+  </div>
+</div>
+
+<button
+  class="sky-toggle"
+  type="button"
+  data-theme-toggle
+  aria-label="Toggle day / night"
+  title="Toggle day / night"
+>
+  <svg class="sun" viewBox="0 0 16 16" aria-hidden="true">
+    {
+      runs(inBox(SUN, RAYS)).map((r) => (
+        <rect
+          x={r.x}
+          y={r.y}
+          width={r.w}
+          height="1"
+          class={r.ch === 'r' ? 'ray' : r.shade ? 'core' : ''}
+        />
+      ))
+    }
+  </svg>
+  <svg class="moon" viewBox="0 0 16 16" aria-hidden="true">
+    {runs(inBox(MOON)).map((r) => <rect x={r.x} y={r.y} width={r.w} height="1" />)}
+  </svg>
+</button>
+
+<style>
+  .backdrop {
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--sky-height);
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--sky-top), var(--sky-mid) 45%, transparent);
+  }
+  svg {
+    position: absolute;
+    display: block;
+    shape-rendering: crispEdges;
+  }
+
+  .cloud {
+    left: 0;
+    fill: var(--cloud);
+    animation: drift linear infinite;
+  }
+  .cloud .shade {
+    fill: var(--cloud-shade);
+  }
+  /* Three clouds at different heights, sizes and speeds; the negative delays mean they are
+     already spread across the sky when the page loads rather than all queued off-screen. */
+  .cloud-0 {
+    top: 104px;
+    width: 96px;
+    animation-duration: 190s;
+    animation-delay: -60s;
+  }
+  .cloud-1 {
+    top: 170px;
+    width: 60px;
+    opacity: 0.8;
+    animation-duration: 260s;
+    animation-delay: -190s;
+  }
+  .cloud-2 {
+    top: 236px;
+    width: 114px;
+    opacity: 0.9;
+    animation-duration: 230s;
+    animation-delay: -30s;
+  }
+  @keyframes drift {
+    from {
+      transform: translateX(-8rem);
+    }
+    to {
+      transform: translateX(100vw);
+    }
+  }
+
+  .night {
+    display: none;
+  }
+  /* Stars stay out of the reading column: a star beside a word reads as a stray full stop.
+     They fill the band above the page title and, on wide screens, the margins. */
+  .stars {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--star);
+    --margins: linear-gradient(
+      to right,
+      #000 calc(50% - 37rem),
+      transparent calc(50% - 34rem),
+      transparent calc(50% + 34rem),
+      #000 calc(50% + 37rem)
+    );
+    --band: linear-gradient(#000 110px, transparent 135px);
+    -webkit-mask-image: var(--margins), var(--band);
+    mask-image: var(--margins), var(--band);
+  }
+  .stars .dim {
+    opacity: 0.45;
+  }
+  .stars .twinkle {
+    animation: twinkle 5s ease-in-out infinite alternate;
+  }
+  .stars .twinkle:nth-child(3n) {
+    animation-delay: -2s;
+  }
+  @keyframes twinkle {
+    to {
+      opacity: 0.2;
+    }
+  }
+
+  /* The sun and moon: a button above the content (the sky itself sits behind it). It sits
+     high enough that even a long page title passes underneath rather than behind it. */
+  .sky-toggle {
+    position: absolute;
+    top: 72px;
+    right: max(1rem, calc(50% - 30.5rem));
+    z-index: 1;
+    display: grid;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .sky-toggle svg {
+    grid-area: 1 / 1;
+    position: static;
+    width: 100%;
+    height: 100%;
+  }
+  .sun {
+    fill: var(--sun);
+  }
+  .sun .core {
+    fill: var(--sun-core);
+  }
+  .sun .ray {
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  .sky-toggle:hover .ray,
+  .sky-toggle:focus-visible .ray {
+    opacity: 1;
+  }
+  .moon {
+    display: none;
+    fill: var(--moon);
+    transition: filter 160ms ease;
+  }
+  .sky-toggle:hover .moon,
+  .sky-toggle:focus-visible .moon {
+    filter: drop-shadow(0 0 6px var(--moon));
+  }
+  :global(:root[data-theme='dark']) .sun {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .moon {
+    display: block;
+  }
+  /* Narrower screens: the title runs closer to the right edge, so the sun tucks in just
+     under the header, clear of even a long title's first line. */
+  @media (max-width: 1100px) {
+    .sky-toggle {
+      top: 62px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  /* On a real switch (not a page load) the new sun or moon rises into place and the
+     stars or clouds fade in. */
+  :global(:root[data-theme-anim]) .sky-toggle svg {
+    animation: rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  :global(:root[data-theme-anim]) .day,
+  :global(:root[data-theme-anim]) .night {
+    animation: fade-in 900ms ease-out;
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(28px);
+      opacity: 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  :global(:root[data-theme='dark']) .day {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .night {
+    display: block;
+  }
+
+  /* Still sky: clouds hold their places, stars stop twinkling. */
+  @media (prefers-reduced-motion: reduce) {
+    .cloud,
+    .stars .twinkle,
+    :global(:root[data-theme-anim]) .sky-toggle svg,
+    :global(:root[data-theme-anim]) .day,
+    :global(:root[data-theme-anim]) .night {
+      animation: none;
+    }
+    .ray,
+    .moon {
+      transition: none;
+    }
+    .cloud-0 {
+      transform: translateX(12vw);
+    }
+    .cloud-1 {
+      transform: translateX(46vw);
+    }
+    .cloud-2 {
+      transform: translateX(64vw);
+    }
+  }
+</style>
