@@ -5,6 +5,8 @@ import ThemeToggle from './ThemeToggle.astro';
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+const internal = site.nav.www.filter((item) => !item.external);
+const external = site.nav.www.filter((item) => item.external);
 ---
 
 {/* A centred orange slab floating over the page, per the reference. */}
@@ -12,16 +14,12 @@ const isActive = (href: string) =>
   <nav class="nav box" aria-label="Primary">
     <ul class="nav-links">
       {
-        site.nav.www.map((item) => (
+        internal.map((item) => (
           <li>
             <a
               href={item.href}
-              class:list={[
-                'nav-link',
-                { active: !item.external && isActive(item.href), outbound: item.external },
-              ]}
-              aria-current={!item.external && isActive(item.href) ? 'page' : undefined}
-              rel={item.external ? 'noopener' : undefined}
+              class:list={['nav-link', { active: isActive(item.href) }]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
             >
               {item.label}
             </a>
@@ -29,7 +27,17 @@ const isActive = (href: string) =>
         ))
       }
     </ul>
-    <ThemeToggle />
+    {/* The way off to the blog, kept apart from the pages of this site, plus the toggle. */}
+    <div class="nav-end">
+      {
+        external.map((item) => (
+          <a href={item.href} class="nav-link" rel="noopener">
+            {item.label}
+          </a>
+        ))
+      }
+      <ThemeToggle />
+    </div>
   </nav>
 </header>
 
@@ -78,30 +86,54 @@ const isActive = (href: string) =>
     border-color: var(--on-accent);
     font-weight: 600;
   }
-  /* The link off to the blog, set apart by a hairline and named for its destination. */
-  .nav-link.outbound {
-    margin-left: 0.4rem;
-    position: relative;
+  .nav-end {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .nav-link.outbound::before {
+  /* A hairline between this site's pages and the link that leaves for the blog. */
+  .nav-end::before {
     content: '';
-    position: absolute;
-    left: -0.4rem;
-    top: 50%;
-    translate: 0 -50%;
     width: 2px;
     height: 1.1em;
     background: var(--on-accent);
     opacity: 0.35;
   }
 
+  /* Too narrow for one row: this site's pages across the top, the blog link and the toggle
+     below, with the hairline turned horizontal between them. */
   @media (max-width: 560px) {
+    /* Capped so the spaced-out links stay close together on wider phones. */
     .nav {
-      width: 100%;
+      width: min(100%, 25rem);
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.25rem;
+    }
+    .nav-links {
+      justify-content: space-between;
+    }
+    .nav-end {
+      justify-content: space-between;
+      padding-top: 0.25rem;
+      border-top: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+    }
+    .nav-end::before {
+      content: none;
     }
     .nav-link {
       padding: 0.45rem 0.6rem;
       font-size: 1rem;
+    }
+  }
+  /* Smallest phones: just enough tighter to keep the four pages on one row. */
+  @media (max-width: 380px) {
+    .nav-links {
+      gap: 0;
+    }
+    .nav-link {
+      padding-inline: 0.3rem;
+      font-size: 0.9375rem;
     }
   }
 </style>

@@ -136,13 +136,14 @@ const isActive = (href: string) =>
     .nav-toggle {
       display: inline-block;
     }
+    /* Unwrap nav-end so the theme toggle sits beside the Menu button, and the opened link
+       list drops onto a row of its own below them. */
     .nav-end {
-      width: 100%;
-      margin-left: 0;
-      justify-content: space-between;
+      display: contents;
     }
     .nav-links {
       display: none;
+      order: 1;
       width: 100%;
       flex-direction: column;
       align-items: stretch;

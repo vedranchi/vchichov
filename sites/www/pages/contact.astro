@@ -93,7 +93,11 @@ const strip = (u: string) => u.replace(/^https:\/\//, '').replace(/\/$/, '');
     font-weight: 700;
     color: var(--text-muted);
   }
+  /* The basis makes every card wrap at the same width, so they stack together rather than
+     only the ones with long values. */
   .channel-value {
+    flex: 1 1 16rem;
+    min-width: 0;
     font-size: clamp(1rem, 2.5vw, 1.1875rem);
     overflow-wrap: anywhere;
   }
