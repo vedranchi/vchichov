@@ -274,13 +274,28 @@ preview URL:
 
 Recoverable with `git checkout 474a3e1 -- <path>`:
 `BlogSpotlight`, `CyclingSpotlight`, `ProjectSpotlight`, `ScreenshotWindow`, `HomeSection`,
-and the old pixel `ProjectCard`. `PixelFarmScene` survived and now heads the blog's landing
-page.
+and the old pixel `ProjectCard`. `PixelFarmScene` survived and now heads `/archive`.
 
 ---
 
-## What comes next
+## The farm (added after the split)
 
-`blog.vchichov.com/` is currently the plain post list with the farm scene above it. When the
-interactive Stardew farm is built, it takes `/` and this list moves to `/archive` — which
-the farm needs regardless, as its no-JS and screen-reader fallback.
+`blog.vchichov.com/` is a small walkable farm; the card list moved to `/archive`.
+
+- **Playing it:** click the farm, walk with the arrow keys or WASD, press Enter to look at
+  what is in front of you. On a phone, tap where to go; tapping a crop walks up to it and
+  opens it.
+- **Crops are posts.** One per post, newest nearest the gate; the field adds rows as posts
+  come in. A post's first tag picks the species (wheat, tomatoes, pumpkin, sunflower), so a
+  tag always grows the same crop. A post sprouts in its first week and is ripe after a
+  month — worked out when the page loads, so crops keep growing between deploys.
+- **Also on the farm:** a signpost to vchichov.com, and the farmhouse door (a hint).
+- **Movement** is free rather than tile-stepped, eased into the tile lanes, so keys answer on
+  the next frame; the farmer always stops on a whole tile. Under reduced motion they jump
+  tile to tile.
+- **Code:** `sites/blog/farm/` — `map.ts` (layout, pathfinding), `sprites.ts` (pixel art as
+  character grids), `engine.ts` (movement, drawing, day/night), `input.ts`, `main.ts`
+  (wiring, dialog). `components/Farm.astro` is the page markup and the fallback list.
+- **The sky:** every blog page has a sky at the top (`components/Backdrop.astro`) — sun and
+  drifting clouds by day, moon and stars by night — and a grass strip along the footer. The
+  sun/moon is the site's day/night switch; the nav no longer has one.
