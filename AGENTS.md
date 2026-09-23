@@ -42,6 +42,7 @@ src/            SHARED ONLY — no pages, no components, no styles
   assets/  content/blog/  data/  lib/
 sites/www/      pages/ layouts/ components/ styles/
 sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
+                farm/   the walkable farm at / (canvas engine, vanilla TS)
 ```
 
 - Both builds keep `root` at the repo root, so `sites/blog/content.config.ts` resolves its
@@ -56,6 +57,13 @@ sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
   Keep both re-exports.
 - `public/` is shared by both builds. Anything host-specific (`robots.txt`) is therefore a
   generated route, not a static file.
+- **The blog's `/` is a walkable farm; `/archive` is the plain post list.** Every post is a
+  crop, laid out from the post count, so writing a post needs nothing farm-specific. The
+  server-rendered list under the canvas is the real content (no-JS and screen-reader
+  fallback) — keep it. Its colours are `--farm-*` tokens in `sites/blog/styles/tokens.css`.
+  A post whose slug matches a route (`archive`, `cycling`, `tags`, …) fails the build.
+- **The blog's only day/night switch is the sun/moon in the sky** (`Backdrop.astro`); the
+  one click handler for anything marked `data-theme-toggle` lives in `BaseLayout.astro`.
 
 ## Deploy
 

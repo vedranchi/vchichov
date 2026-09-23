@@ -106,6 +106,58 @@
   --maxw: 1040px;
   --pixel: 4px;
   --radius: 3px;
+
+  /* The page backdrop (components/Backdrop.astro): sky at the top of every page, grass
+     along the footer. Day sky is a light wash of --sky that fades into the parchment
+     before the reading column gets going. */
+  --sky-height: clamp(300px, 50vh, 460px);
+  --sky-top: color-mix(in srgb, var(--sky) 45%, var(--bg));
+  --sky-mid: color-mix(in srgb, var(--sky) 20%, var(--bg));
+  --sun: var(--gold-bright);
+  --sun-core: #fbe7a1;
+  --cloud: #fdfaf1;
+  --cloud-shade: #e3edf0;
+  --star: #f2e7c4;
+  --moon: #efe6d2;
+  --fringe: #6f9f4c;
+
+  /* The walkable farm at / (sites/blog/farm). Its sprites read these, so every colour on
+     the canvas lives here with the rest of the palette. One daylight set: at night the
+     engine multiplies the whole scene by --farm-night and lights the house windows, rather
+     than keeping a second palette in step. */
+  --farm-ink: #2b1d14;
+  --farm-grass: #6f9f4c;
+  --farm-grass-dark: #557f3a;
+  --farm-grass-light: #8dbb60;
+  --farm-path: #c9a46f;
+  --farm-path-dark: #a9844f;
+  --farm-soil: #7a4e2c;
+  --farm-soil-dark: #5a371d;
+  --farm-water: #4b9ac4;
+  --farm-water-dark: #2f7299;
+  --farm-water-light: var(--sky);
+  --farm-leaf: #3f7b3b;
+  --farm-leaf-dark: #2b5a2b;
+  --farm-leaf-light: #67a24e;
+  --farm-wood: var(--wood);
+  --farm-wood-dark: var(--wood-dark);
+  --farm-wood-light: var(--wood-light);
+  --farm-roof: var(--berry);
+  --farm-roof-dark: #8a3150;
+  --farm-wall: #e8d3a9;
+  --farm-gold: var(--gold);
+  --farm-gold-light: var(--gold-bright);
+  --farm-orange: #e0822b;
+  --farm-orange-dark: #b35f17;
+  --farm-red: #cf4436;
+  --farm-red-dark: #962b22;
+  --farm-cream: var(--cream);
+  --farm-skin: #f1c39a;
+  --farm-hair: #5b3a22;
+  --farm-shirt: #3f6fb0;
+  --farm-pants: #34406e;
+  --farm-night: #5b63a8;
+  --farm-window: #ffd76a;
 }
 
 :root[data-theme='dark'] {
@@ -131,4 +183,7 @@
   --link-hover: #c7e6b0;
   --focus: var(--gold-bright);
   --title-shadow: var(--frame-dark);
+  --sky-top: #0b0e1f;
+  --sky-mid: #111427;
+  --fringe: #3b5a3a;
 }

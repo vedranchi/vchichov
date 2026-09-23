@@ -1,6 +1,5 @@
 ---
 import { site } from '@shared/data/site';
-import ThemeToggle from './ThemeToggle.astro';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -37,7 +36,6 @@ const isActive = (href: string) =>
           ))
         }
       </ul>
-      <ThemeToggle />
     </div>
   </nav>
 </header>

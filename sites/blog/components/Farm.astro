@@ -1,0 +1,183 @@
+---
+// The walkable farm on the blog's landing page. Every post is a crop in the field; walk up
+// to one to read it. The engine lives in sites/blog/farm/.
+//
+// It is built to fail soft. The server-rendered list below the canvas is the real content:
+// with JavaScript off the canvas never appears and the list is the page, and screen readers
+// and anyone who'd rather not play get the same list. The canvas only appears once the
+// script has started.
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '@shared/lib/format';
+import { site } from '@shared/data/site';
+import WoodPanel from './WoodPanel.astro';
+import PixelButton from './PixelButton.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+const { posts } = Astro.props;
+
+const data = {
+  posts: posts.map((post) => ({
+    slug: post.id,
+    title: post.data.title,
+    description: post.data.description ?? '',
+    date: post.data.pubDate.toISOString(),
+    dateLabel: formatDate(post.data.pubDate),
+    tags: post.data.tags,
+  })),
+  www: site.urls.www,
+};
+// Escaped so a "</script>" in a post title can't close the data block early.
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<div class="farm" data-farm>
+  <div class="farm-stage" data-farm-stage hidden>
+    <canvas
+      class="farm-canvas"
+      tabindex="0"
+      role="application"
+      aria-label="The farm. Every crop in the field is a post."
+      aria-describedby="farm-help"></canvas>
+    <p class="farm-status meta-label" data-farm-status aria-live="polite"></p>
+    <p id="farm-help" class="farm-help body-text">
+      Click the farm, then walk with the arrow keys or WASD and press Enter to look at what’s in
+      front of you. On a phone, tap where you want to go.
+    </p>
+  </div>
+
+  <section class="field-list" aria-labelledby="field-list-title">
+    <h2 id="field-list-title">In the field</h2>
+    {
+      posts.length > 0 ? (
+        <ol class="posts">
+          {posts.map((post) => (
+            <li>
+              <a href={`/${post.id}`}>{post.data.title}</a>
+              <span class="meta-label">{formatDate(post.data.pubDate)}</span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="body-text">Nothing planted yet — the first post is on its way.</p>
+      )
+    }
+    <p class="body-text"><a href="/archive">Every post, with descriptions and tags</a></p>
+  </section>
+
+  <dialog class="farm-dialog" aria-labelledby="farm-dialog-title">
+    <WoodPanel class="farm-dialog-panel">
+      <p class="meta-label" data-kicker></p>
+      <h2 id="farm-dialog-title" data-title></h2>
+      <p class="body-text" data-body></p>
+      <ul class="chip-row" data-tags></ul>
+      <div class="actions">
+        <PixelButton href="/" data-link>Read the post</PixelButton>
+        <PixelButton variant="ghost" data-close>Back to the farm</PixelButton>
+      </div>
+    </WoodPanel>
+  </dialog>
+
+  <script type="application/json" id="farm-data" is:inline set:html={json} />
+</div>
+
+<script>
+  import { startFarm } from '../farm/main';
+
+  const root = document.querySelector<HTMLElement>('[data-farm]');
+  if (root) startFarm(root);
+</script>
+
+<style>
+  .farm {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .farm-stage {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-xs);
+  }
+  .farm-stage[hidden] {
+    display: none;
+  }
+  .farm-canvas {
+    display: block;
+    /* The engine sets an exact integer multiple of the canvas size; with border-box the
+       border would eat into it and every pixel would come out 1.96px wide. */
+    box-sizing: content-box;
+    image-rendering: pixelated;
+    border: 3px solid var(--frame-dark);
+    border-radius: var(--radius);
+    box-shadow: var(--pixel) var(--pixel) 0 0 var(--frame-dark);
+    cursor: pointer;
+    /* taps walk; double-tap must not zoom mid-walk */
+    touch-action: manipulation;
+  }
+  .farm-status {
+    min-height: 1.4em;
+    text-align: center;
+    color: var(--text-soft);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .farm-help {
+    max-width: var(--measure-narrow);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .field-list h2 {
+    font-size: var(--text-2xl);
+  }
+  .posts {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0 0 var(--space-sm);
+    padding: 0;
+    list-style: none;
+  }
+  .posts li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3xs) var(--space-sm);
+  }
+  .posts a {
+    font-size: var(--text-lg);
+  }
+
+  .farm-dialog {
+    width: min(34rem, calc(100vw - 2rem));
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    overflow: visible;
+  }
+  .farm-dialog::backdrop {
+    background: rgb(20 14 8 / 0.55);
+  }
+  .farm-dialog h2 {
+    margin: var(--space-3xs) 0 var(--space-xs);
+    font-size: var(--text-2xl);
+  }
+  .farm-dialog [data-body] {
+    margin-bottom: var(--space-sm);
+  }
+  .farm-dialog [data-tags] {
+    margin-bottom: var(--space-md);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  /* The script hides the link (farmhouse) and the tag row (untagged posts). Their own
+     display rules would otherwise beat the plain [hidden] attribute. */
+  .farm-dialog :global([hidden]) {
+    display: none !important;
+  }
+</style>

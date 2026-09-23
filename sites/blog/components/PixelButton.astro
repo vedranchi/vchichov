@@ -1,16 +1,23 @@
 ---
 // Pixel-styled button. Renders as <a> when `href` is given, otherwise a <button>.
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+// Anything else (data-*, aria-*, hidden) is passed through to the element.
+type Props = {
   href?: string;
   variant?: 'primary' | 'ghost';
   class?: string;
   type?: 'button' | 'submit';
-}
-const { href, variant = 'primary', class: className = '', type = 'button' } = Astro.props;
+} & Omit<HTMLAttributes<'a'>, 'href' | 'class' | 'type'>;
+const { href, variant = 'primary', class: className = '', type = 'button', ...rest } = Astro.props;
 const Tag = href ? 'a' : 'button';
 ---
 
-<Tag class:list={['pixel-btn', `is-${variant}`, className]} {...href ? { href } : { type }}>
+<Tag
+  class:list={['pixel-btn', `is-${variant}`, className]}
+  {...href ? { href } : { type }}
+  {...rest}
+>
   <slot />
 </Tag>
 
