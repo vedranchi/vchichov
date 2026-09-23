@@ -1,0 +1,55 @@
+---
+import { site } from '@shared/data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-meta tnum">© {year} {site.name}</p>
+    <ul class="footer-links">
+      <li><a href="/about">About</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href={site.urls.blog} rel="noopener">Blog</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    /* A hard rule rather than a hairline — everything structural on this site is 2px. */
+    border-top: 2px solid var(--edge);
+  }
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem 1.5rem;
+    padding-block: 1.5rem 2.25rem;
+  }
+  .footer-meta {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    margin-left: auto;
+    padding: 0;
+  }
+  .footer-links a {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .footer-links a:hover {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+</style>

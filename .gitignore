@@ -1,7 +1,10 @@
-# build output
+# build output (two sites: dist/ = vchichov.com, dist-blog/ = blog.vchichov.com)
 dist/
+dist-blog/
 # generated types
 .astro/
+# vercel cli link data — never commit
+.vercel/
 
 # dependencies
 node_modules/
@@ -31,5 +34,6 @@ pnpm-debug.log*
 # obsidian vault config (blog content is an obsidian vault)
 .obsidian/
 
-# local-only deployment notes (see glucoread's HANDOFF.md convention)
-handoff.md
+# local-only deployment notes at the repo root (see glucoread's HANDOFF.md convention).
+# Anchored with a leading slash so it does NOT swallow the tracked docs/handoff.md.
+/handoff.md

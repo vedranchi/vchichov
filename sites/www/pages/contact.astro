@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { site } from '@shared/data/site';
+
+const github = site.socials.find((s) => s.label === 'GitHub');
+const pcs = site.socials.find((s) => s.label === 'ProCyclingStats');
+const strip = (u: string) => u.replace(/^https:\/\//, '').replace(/\/$/, '');
+---
+
+{
+  /*
+   * VEDRAN — deliberately no claim here about being open to internships or freelance work,
+   * because I don't know whether that's true right now. If it is, add a line under the
+   * heading; it's the single most useful sentence a contact page can carry.
+   */
+}
+<BaseLayout title="Contact" description="How to reach Vedran Chichov.">
+  <section class="container page">
+    <h1 class="page-title">Contact</h1>
+    <p class="lede measure">
+      Email is the surest way to reach me — I read all of it, and I reply to anything that isn't a
+      pitch.
+    </p>
+
+    <ul class="channels">
+      <li class="channel box">
+        <span class="channel-label">Email</span>
+        <a class="channel-value inline" href={`mailto:${site.email}`}>{site.email}</a>
+      </li>
+      {
+        github && (
+          <li class="channel box">
+            <span class="channel-label">GitHub</span>
+            <a class="channel-value inline" href={github.href} rel="me noopener">
+              {strip(github.href)}
+            </a>
+          </li>
+        )
+      }
+      {
+        pcs && (
+          <li class="channel box">
+            <span class="channel-label">Racing</span>
+            <a class="channel-value inline" href={pcs.href} rel="me noopener">
+              {strip(pcs.href)}
+            </a>
+          </li>
+        )
+      }
+      <li class="channel box">
+        <span class="channel-label">Writing</span>
+        <a class="channel-value inline" href={site.urls.blog} rel="noopener">
+          {strip(site.urls.blog)}
+        </a>
+      </li>
+    </ul>
+
+    <SocialLinks boxed />
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2.5rem, 8vw, 4rem) 1rem;
+  }
+  .page-title {
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .lede {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+  .channels {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    list-style: none;
+    padding: 0;
+  }
+  .channel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 1.5rem;
+    padding: 1rem 1.25rem;
+  }
+  .channel-label {
+    flex: 0 0 5.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  /* The basis makes every card wrap at the same width, so they stack together rather than
+     only the ones with long values. */
+  .channel-value {
+    flex: 1 1 16rem;
+    min-width: 0;
+    font-size: clamp(1rem, 2.5vw, 1.1875rem);
+    overflow-wrap: anywhere;
+  }
+  :global(.page .socials) {
+    margin-top: 2rem;
+  }
+</style>

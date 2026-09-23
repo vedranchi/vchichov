@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '@shared/data/site';
+---
+
+<BaseLayout title="Page not found">
+  <section class="container page">
+    <p class="code tnum box">404</p>
+    <h1 class="page-title">That page isn't here.</h1>
+    <p class="lede measure">
+      It may have moved when this site split in two — writing and race results now live on
+      <a class="inline" href={site.urls.blog} rel="noopener"
+        >{site.urls.blog.replace('https://', '')}</a
+      >.
+    </p>
+    <p class="actions">
+      <a class="btn btn--accent box box--press" href="/">Back to the start</a>
+      <a class="btn box box--press" href="/projects">See my work</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2.5rem, 8vw, 4.5rem);
+  }
+  .code {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: 0.2rem 0.8rem;
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .page-title {
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .lede {
+    margin-top: 1rem;
+    color: var(--text-muted);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn--accent {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .btn--accent:hover {
+    background: var(--accent-hover);
+  }
+</style>

@@ -1,0 +1,85 @@
+/* Design tokens for vchichov.com — neobrutalism.
+ *
+ * Taken from the reference in temp_ss/: dark espresso ground, one saturated orange, hard
+ * black borders and offset shadows, chunky geometric type. Every value below was sampled
+ * from that screenshot rather than guessed.
+ *
+ * The farm's pixel palette is NOT here. It lives in sites/blog/styles/tokens.css.
+ */
+
+:root {
+  /* --- raw palette (sampled) ---------------------------------------------------- */
+  --espresso: #292016; /* page ground */
+  --espresso-raised: #33291d; /* panels sitting on the ground */
+  --orange: #d16c19; /* the one accent */
+  /* Hover LIGHTENS rather than darkens. Darkening felt more natural but dropped black-on-
+     orange to 4.46:1, just under AA; lifting it instead takes 5.87:1 up to 6.88:1. */
+  --orange-lift: #dd7a24;
+  --bone: #e2e2e2; /* body + headings */
+  --bone-dim: #b3a99b; /* secondary text */
+  --cream: #f7efe3; /* light-mode ground */
+  --cream-raised: #fffaf2;
+  --soot: #1a140e; /* light-mode text */
+  --soot-dim: #5d5347;
+  --edge: #000000; /* borders and shadows are always true black */
+
+  /* --- semantic (dark is the reference; light is derived below) ------------------ */
+  --bg: var(--espresso);
+  --surface: var(--espresso-raised);
+  --text: var(--bone);
+  --text-muted: var(--bone-dim);
+  --accent: var(--orange);
+  --accent-hover: var(--orange-lift);
+  /* Black on orange is 5.87:1. Bone on orange is 2.76:1, and orange as text on the
+     ground is 4.47:1 — both fail. So ON ORANGE IT IS ALWAYS BLACK, and orange is never
+     text in either mode. It is a filled block or it is nothing. */
+  --on-accent: var(--edge);
+  --link: var(--bone);
+
+  /* --- the neobrutalist box ------------------------------------------------------
+   * Three values do all the work. Every raised thing in the UI uses exactly these. */
+  --border: 2px solid var(--edge);
+  --radius: 8px;
+  --shadow: 4px 4px 0 var(--edge);
+  --shadow-sm: 2px 2px 0 var(--edge);
+  /* How far a pressed element travels. Must equal the shadow offset so the element
+     lands exactly where its shadow was. */
+  --press: 4px;
+
+  /* --- type ---------------------------------------------------------------------- */
+  --font: 'Montserrat Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* --- layout --------------------------------------------------------------------- */
+  --maxw: 900px;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --measure: 62ch;
+}
+
+:root[data-theme='light'] {
+  --bg: var(--cream);
+  --surface: var(--cream-raised);
+  --text: var(--soot);
+  --text-muted: var(--soot-dim);
+  --link: var(--soot);
+  /* --accent and --on-accent are deliberately unchanged: the orange block with black on
+     it is the same object in both modes, which is what keeps the two looking related. */
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* With JavaScript off nothing sets data-theme, so the dark defaults above would reach
+   everyone — including people whose system asks for light. Mirror light here for that
+   case only; once the inline script runs, data-theme wins on specificity. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg: var(--cream);
+    --surface: var(--cream-raised);
+    --text: var(--soot);
+    --text-muted: var(--soot-dim);
+    --link: var(--soot);
+    color-scheme: light;
+  }
+}

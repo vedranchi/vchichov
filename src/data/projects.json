@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-09-01T16:26:41.686Z",
+  "generatedAt": "2026-09-11T20:11:50.309Z",
   "user": "vedranchi",
   "projects": [
     {
       "name": "rajhl-site",
       "description": "Website for producer Luka Rajhl",
       "url": "https://github.com/vedranchi/rajhl-site",
-      "homepage": "https://lukarajhl.vercel.app",
+      "homepage": "https://lukarajhl.com",
       "languages": ["TypeScript", "CSS", "JavaScript"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-09-01T10:38:40Z"
+      "updatedAt": "2026-09-11T20:09:01Z"
     },
     {
       "name": "glucoread",
       "description": "Glucose, insulin and meal tracking for people managing diabetes day to day. Django 5.2, PostgreSQL, deployed on Oracle Cloud.",
       "url": "https://github.com/vedranchi/glucoread",
       "homepage": "https://glucoread.com",
-      "languages": ["Python", "CSS", "HTML", "JavaScript", "Shell", "Dockerfile"],
+      "languages": ["Python", "HTML", "CSS", "JavaScript", "Shell", "Dockerfile"],
       "topics": [
         "caddy",
         "diabetes",
@@ -29,27 +29,17 @@
         "self-hosted"
       ],
       "stars": 0,
-      "updatedAt": "2026-08-31T21:36:12Z"
+      "updatedAt": "2026-09-11T14:33:40Z"
     },
     {
       "name": "personal-site",
       "description": "personal website",
       "url": "https://github.com/vedranchi/personal-site",
       "homepage": "https://vchichov.com",
-      "languages": ["Astro", "JavaScript", "CSS", "Python", "TypeScript"],
+      "languages": ["Astro", "TypeScript", "JavaScript", "CSS", "Python"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-07-13T14:04:44Z"
-    },
-    {
-      "name": "pos-system",
-      "description": "POS-system for reastaurants/cafes",
-      "url": "https://github.com/vedranchi/pos-system",
-      "homepage": null,
-      "languages": ["TypeScript", "Python", "SQL", "Dockerfile"],
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-07-07T13:31:51Z"
+      "updatedAt": "2026-09-03T11:13:25Z"
     }
   ]
 }

@@ -1,0 +1,168 @@
+---
+import { site } from '@shared/data/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+---
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary">
+    <a href="/" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">{site.shortName}</span>
+    </a>
+
+    <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="pixel-label">Menu</span>
+    </button>
+
+    <div class="nav-end">
+      <ul id="nav-links" class="nav-links">
+        {
+          site.nav.blog.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'nav-link',
+                  { active: !item.external && isActive(item.href), outbound: item.external },
+                ]}
+                aria-current={!item.external && isActive(item.href) ? 'page' : undefined}
+                rel={item.external ? 'noopener' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <ThemeToggle />
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    background: var(--bg-alt);
+    border-bottom: 3px solid var(--frame-dark);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 0.6rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .brand-mark {
+    width: 1.05rem;
+    height: 1.05rem;
+    background: var(--accent);
+    border: 3px solid var(--frame-dark);
+    border-radius: 2px;
+  }
+  .nav-end {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link {
+    display: inline-block;
+    font-family: var(--font-pixel);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 0.7rem;
+    border: 3px solid transparent;
+    border-radius: var(--radius);
+  }
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+  .nav-link.active {
+    background: var(--accent);
+    color: var(--on-accent);
+    border-color: var(--frame-dark);
+  }
+  /* The link back to the portfolio. Set apart so it reads as leaving the farm, and
+     labelled with the destination host rather than an arrow. */
+  .nav-link.outbound {
+    margin-left: 0.5rem;
+    color: var(--link);
+    text-transform: none;
+  }
+  .nav-link.outbound:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+  .nav-toggle {
+    display: none;
+    margin-left: auto;
+    background: var(--surface);
+    color: var(--text);
+    border: 3px solid var(--frame-dark);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+
+  @media (max-width: 640px) {
+    .nav-toggle {
+      display: inline-block;
+    }
+    /* Unwrap nav-end so the theme toggle sits beside the Menu button, and the opened link
+       list drops onto a row of its own below them. */
+    .nav-end {
+      display: contents;
+    }
+    .nav-links {
+      display: none;
+      order: 1;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .nav-links.open {
+      display: flex;
+    }
+    .nav-link {
+      display: block;
+      text-align: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  const toggle = document.getElementById('nav-toggle');
+  const links = document.getElementById('nav-links');
+  toggle?.addEventListener('click', () => {
+    const open = links?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>

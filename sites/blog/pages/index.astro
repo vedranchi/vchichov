@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import PixelFarmScene from '../components/PixelFarmScene.astro';
+import { slugifyTag } from '@shared/lib/format';
+
+const posts = (
+  await getCollection('blog', ({ data }) => (import.meta.env.PROD ? !data.draft : true))
+).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+// Unique tags for the little tag cloud.
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+{
+  /* The root of blog.vchichov.com. The farm scene sits here for now; eventually it becomes
+    the interactive farm and this plain list moves to /archive as its no-JS fallback. */
+}
+<BaseLayout>
+  <PixelFarmScene />
+  <section class="container blog">
+    <header class="page-head">
+      <p class="eyebrow pixel-label">Notes from the field</p>
+      <h1>The farm</h1>
+      <p class="lede">Thoughts on code, riding, and whatever else I'm figuring out.</p>
+      {
+        tags.length > 0 && (
+          <ul class="tag-cloud">
+            {tags.map((tag) => (
+              <li>
+                <a class="tag pixel-label" href={`/tags/${slugifyTag(tag)}`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {
+      posts.length > 0 ? (
+        <ul class="grid">
+          {posts.map((post) => (
+            <li>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">No posts yet — the first one is on its way.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .blog {
+    padding-block: clamp(2rem, 6vw, 3.5rem);
+  }
+  .page-head {
+    max-width: 60ch;
+    margin-bottom: 2rem;
+  }
+  .eyebrow {
+    color: var(--accent-strong);
+    margin: 0 0 0.5rem;
+  }
+  .page-head h1 {
+    margin: 0 0 0.5rem;
+  }
+  .lede {
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+  }
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tag {
+    display: inline-block;
+    background: var(--surface-2);
+    border: 2px solid var(--frame);
+    border-radius: 2px;
+    padding: 0.15rem 0.45rem;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .tag:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .empty {
+    color: var(--text-muted);
+  }
+</style>

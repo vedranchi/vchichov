@@ -1,0 +1,62 @@
+---
+// Sun/moon toggle, matching the reference's nav. Inline SVG rather than an icon library —
+// the repo ships no external assets, and two glyphs don't justify a dependency.
+// Sits on the orange nav bar, so its colour is --on-accent (black) in both modes.
+---
+
+<button id="theme-toggle" type="button" class="theme-toggle" aria-label="Switch colour theme">
+  <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.25"></circle>
+    <g stroke-linecap="round">
+      <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2"></path>
+      <path d="M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+    </g>
+  </svg>
+  <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z" stroke-linejoin="round"></path>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44x44 minimum touch target */
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    color: var(--on-accent);
+  }
+  .theme-toggle:hover {
+    border-color: var(--on-accent);
+  }
+  .icon {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+  /* Show the mode you would switch TO, which is the convention people expect. */
+  :root[data-theme='dark'] .icon-moon,
+  :root[data-theme='light'] .icon-sun {
+    display: none;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    btn?.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {}
+    });
+  })();
+</script>

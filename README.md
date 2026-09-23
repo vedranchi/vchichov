@@ -1,7 +1,12 @@
-# personal-site
+# vchichov
 
-Vedran Chichov's personal site — programming projects, cycling, and a blog. Cozy
-_Stardew Valley_-style pixel theme, built with [Astro](https://astro.build).
+Vedran Chichov's personal site, built with [Astro](https://astro.build) as **two sites
+from one repo**:
+
+- **[vchichov.com](https://vchichov.com)**: the portfolio (projects, about, contact).
+  Neobrutalist theme; source in `sites/www/`.
+- **[blog.vchichov.com](https://blog.vchichov.com)**: the blog and cycling results.
+  Cozy _Stardew Valley_-style pixel farm; source in `sites/blog/`.
 
 ## Tech at a glance
 
@@ -12,33 +17,33 @@ _Stardew Valley_-style pixel theme, built with [Astro](https://astro.build).
 - **Cycling**: a Python scraper (`scripts/scrape_pcs.py`) pulls results from
   [procyclingstats.com](https://www.procyclingstats.com) into
   `src/data/cycling.json`, which the site reads at build time.
-- **Hosting**: [Vercel](https://vercel.com) at
-  [vchichov.com](https://vchichov.com); pushing `main` deploys, pull requests
-  get preview URLs.
+- **Hosting**: [Vercel](https://vercel.com), one project per site. Merging to
+  `main` deploys both; pull requests get preview URLs.
 
 ## Commands
 
 | Command                 | Action                                              |
 | :---------------------- | :-------------------------------------------------- |
 | `npm install`           | Install dependencies                                |
-| `npm run dev`           | Start the dev server at `localhost:4321`            |
-| `npm run build`         | Build the production site to `./dist/`              |
-| `npm run preview`       | Preview the production build locally                |
-| `npm run check`         | Type-check the project (`astro check`)              |
+| `npm run dev`           | Portfolio dev server at `localhost:4321`            |
+| `npm run dev:blog`      | Blog dev server at `localhost:4322`                 |
+| `npm run build:all`     | Build both sites to `./dist/` and `./dist-blog/`    |
+| `npm run check:all`     | Type-check both sites (`astro check`)               |
 | `npm run format`        | Format all files with Prettier                      |
 | `npm run sync:projects` | Pull public GitHub repos → `src/data/projects.json` |
+
+Each site also has its own `build`/`check`/`preview` script (`…:blog` for the blog).
 
 ## Project structure
 
 ```text
-src/
-├─ layouts/      # shared page shells
-├─ components/   # reusable pixel-theme UI pieces
-├─ pages/        # routes (index, projects, cycling, blog)
+src/             # shared by both sites (imported as @shared/*)
 ├─ content/      # blog/ — the Obsidian vault
-├─ data/         # projects.json + cycling.json (both generated) + site config
-├─ styles/       # design tokens + global styles
-└─ lib/          # remark-wikilinks + formatting helpers
+├─ data/         # site config (both domains), projects.json + cycling.json (generated)
+├─ lib/          # content collections, remark-wikilinks, formatting helpers
+└─ assets/
+sites/www/       # the portfolio: pages, layouts, components, styles
+sites/blog/      # the blog: pages, layouts, components, styles
 scripts/         # scrape_pcs.py and helpers
 ```
 
@@ -75,12 +80,12 @@ draft: false
 Write your post here in normal Markdown.
 ```
 
-- **Filename = URL**: `my-post.md` → `/blog/my-post`.
+- **Filename = URL**: `my-post.md` → `blog.vchichov.com/my-post`.
 - **Drafts**: `draft: true` hides a post in the built site but shows it in `npm run dev`.
 - **Wiki links**: `[[my-post]]` or `[[my-post|custom text]]` link to another post
-  (resolves to `/blog/<slug>`). See `src/lib/remark-wikilinks.mjs`.
+  (resolves to `/<slug>` on the blog). See `src/lib/remark-wikilinks.mjs`.
 - **Images**: put an image next to the post and use standard Markdown:
   `![alt text](./my-image.png)` — Astro optimizes it at build.
-- **Tags** get their own pages at `/blog/tags/<tag>`, and posts appear in `/rss.xml`.
+- **Tags** get their own pages at `/tags/<tag>`, and posts appear in `/rss.xml`.
 
 Commit the file on a `feat/...` branch; it appears on the site after review + deploy.

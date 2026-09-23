@@ -1,5 +1,12 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist", "dist-blog"],
+  "compilerOptions": {
+    // Shared content/data/lib live in src/ and are consumed by both sites in sites/*.
+    // Paths resolve relative to this file; `baseUrl` is deprecated as of TypeScript 6.
+    "paths": {
+      "@shared/*": ["./src/*"]
+    }
+  }
 }

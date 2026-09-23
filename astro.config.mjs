@@ -2,15 +2,16 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-import remarkWikilinks from './src/lib/remark-wikilinks.mjs';
 import { site } from './src/data/site.ts';
 
-// https://astro.build/config
+// The professional portfolio at vchichov.com.
+//
+// This repo builds two sites from one tree. Both share `src/` (content, data, lib) and
+// differ only by `srcDir`/`outDir`. The farm blog is the other one — see
+// astro.config.blog.mjs. No Markdown is rendered here, so the wikilink plugin is omitted.
 export default defineConfig({
-  site: site.url,
+  site: site.urls.www,
+  srcDir: './sites/www',
+  outDir: './dist',
   integrations: [sitemap()],
-  markdown: {
-    // Obsidian [[wiki links]] -> /blog/<slug>. See src/lib/remark-wikilinks.mjs.
-    remarkPlugins: [remarkWikilinks],
-  },
 });
