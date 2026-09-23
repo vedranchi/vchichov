@@ -1,0 +1,46 @@
+---
+// The header block at the top of a standalone page: optional back link, title, lede,
+// and room for extras (the blog's tag cloud). Four pages had their own copy of this.
+//
+// No eyebrow: on a page whose <h1> already reads "Projects", a small-caps label above it
+// saying "What I've been building" repeats the heading. The homepage bands keep theirs,
+// where they mark sections as you scroll past them.
+interface Props {
+  title: string;
+  /** Rendered above the title, e.g. back to the listing. */
+  back?: { href: string; label: string };
+  class?: string;
+}
+const { title, back, class: className = '' } = Astro.props;
+---
+
+<header class:list={['page-head', className]}>
+  {
+    back && (
+      <a href={back.href} class="back pixel-label">
+        {back.label}
+      </a>
+    )
+  }
+  <h1>{title}</h1>
+  {
+    Astro.slots.has('lede') && (
+      <p class="lede">
+        <slot name="lede" />
+      </p>
+    )
+  }
+  <slot />
+</header>
+
+<style>
+  .back {
+    display: inline-block;
+    margin-bottom: var(--space-sm);
+    color: var(--accent-strong);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--link-hover);
+  }
+</style>

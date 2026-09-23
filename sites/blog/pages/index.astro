@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
 import PostCard from '../components/PostCard.astro';
 import PixelFarmScene from '../components/PixelFarmScene.astro';
 import { slugifyTag } from '@shared/lib/format';
@@ -20,16 +21,14 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 <BaseLayout>
   <PixelFarmScene />
   <section class="container blog">
-    <header class="page-head">
-      <p class="eyebrow pixel-label">Notes from the field</p>
-      <h1>The farm</h1>
-      <p class="lede">Thoughts on code, riding, and whatever else I'm figuring out.</p>
+    <PageHeader title="The farm">
+      <Fragment slot="lede">Thoughts on code, riding, and whatever else I'm figuring out.</Fragment>
       {
         tags.length > 0 && (
-          <ul class="tag-cloud">
+          <ul class="tag-cloud chip-row">
             {tags.map((tag) => (
               <li>
-                <a class="tag pixel-label" href={`/tags/${slugifyTag(tag)}`}>
+                <a class="chip meta-label" href={`/tags/${slugifyTag(tag)}`}>
                   #{tag}
                 </a>
               </li>
@@ -37,7 +36,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
           </ul>
         )
       }
-    </header>
+    </PageHeader>
 
     {
       posts.length > 0 ? (
@@ -49,7 +48,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
           ))}
         </ul>
       ) : (
-        <p class="empty">No posts yet — the first one is on its way.</p>
+        <p class="body-text">No posts yet — the first one is on its way.</p>
       )
     }
   </section>
@@ -57,53 +56,17 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
 <style>
   .blog {
-    padding-block: clamp(2rem, 6vw, 3.5rem);
-  }
-  .page-head {
-    max-width: 60ch;
-    margin-bottom: 2rem;
-  }
-  .eyebrow {
-    color: var(--accent-strong);
-    margin: 0 0 0.5rem;
-  }
-  .page-head h1 {
-    margin: 0 0 0.5rem;
-  }
-  .lede {
-    margin: 0 0 1rem;
-    color: var(--text-muted);
+    padding-block: var(--space-2xl);
   }
   .tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .tag {
-    display: inline-block;
-    background: var(--surface-2);
-    border: 2px solid var(--frame);
-    border-radius: 2px;
-    padding: 0.15rem 0.45rem;
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-  .tag:hover {
-    color: var(--text);
-    border-color: var(--accent);
+    margin-top: var(--space-sm);
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-  .empty {
-    color: var(--text-muted);
   }
 </style>
