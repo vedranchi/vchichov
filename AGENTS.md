@@ -2,10 +2,10 @@
 
 Vedran Chichov's personal site. **One repo, two sites, two Vercel projects:**
 
-| Site      | Domain              | `srcDir`     | Config                  | Output       | Look                                                                  |
-| --------- | ------------------- | ------------ | ----------------------- | ------------ | --------------------------------------------------------------------- |
-| Portfolio | `vchichov.com`      | `sites/www`  | `astro.config.mjs`      | `dist/`      | Minimal "start house" signage — ink/chalk, one signal yellow, Archivo |
-| Blog      | `blog.vchichov.com` | `sites/blog` | `astro.config.blog.mjs` | `dist-blog/` | Cozy _Stardew Valley_ pixel farm                                      |
+| Site      | Domain              | `srcDir`     | Config                  | Output       | Look                                                                     |
+| --------- | ------------------- | ------------ | ----------------------- | ------------ | ------------------------------------------------------------------------ |
+| Portfolio | `vchichov.com`      | `sites/www`  | `astro.config.mjs`      | `dist/`      | Neobrutalism — espresso ground, orange blocks, black borders, Montserrat |
+| Blog      | `blog.vchichov.com` | `sites/blog` | `astro.config.blog.mjs` | `dist-blog/` | Cozy _Stardew Valley_ pixel farm                                         |
 
 Projects, about and contact live on the portfolio. Blog posts **and cycling** live on the
 blog. The two looks share nothing — do not leak pixel styling into `sites/www`, and do not
@@ -72,8 +72,9 @@ sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
   Cycling data is generated to `src/data/cycling.json` by `scripts/scrape_pcs.py`; off-PCS
   results go in `src/data/palmares.ts`. **Never hand-edit a generated file.**
 - **Design:** readable body text always, light and dark modes on both sites, everything
-  responsive. The portfolio's one hard colour rule: the signal yellow is never text in
-  light mode (1.4:1) — there it is only ever a ground with ink on top.
+  responsive. The portfolio's one hard colour rule: the orange (`#d16c19`) is always a
+  filled block with black on it, never text — orange-as-text and light-on-orange both fail
+  AA. Hover lightens it (`#dd7a24`); darkening fails contrast.
 - Design skills live in `.agents/skills/` (not `.claude/skills/`), so they are **not**
   auto-loaded — read the `SKILL.md` files directly. Most assume React/Tailwind/GSAP; this
   repo is static Astro with hand-rolled CSS, so take their craft rules and drop their stack
