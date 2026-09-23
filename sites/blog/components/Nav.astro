@@ -10,12 +10,11 @@ const isActive = (href: string) =>
 <header class="site-header">
   <nav class="container nav" aria-label="Primary">
     <a href="/" class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
       <span class="brand-name">{site.shortName}</span>
     </a>
 
     <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="nav-links">
-      <span class="pixel-label">Menu</span>
+      <span class="pixel-label" data-label>Menu</span>
     </button>
 
     <div class="nav-end">
@@ -54,59 +53,58 @@ const isActive = (href: string) =>
   .nav {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-sm);
     flex-wrap: wrap;
-    padding-block: 0.6rem;
+    /* keeps the bar at ~66px: a nav eating more than 80px of the viewport is a tax on
+       every page, and this one only holds four links */
+    padding-block: var(--space-2xs);
   }
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
     text-decoration: none;
     color: var(--text);
     font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: var(--text-xl);
     font-weight: 700;
-  }
-  .brand-mark {
-    width: 1.05rem;
-    height: 1.05rem;
-    background: var(--accent);
-    border: 3px solid var(--frame-dark);
-    border-radius: 2px;
   }
   .nav-end {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-xs);
     margin-left: auto;
   }
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: var(--space-3xs);
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .nav-link {
-    display: inline-block;
+    display: grid;
+    place-items: center;
+    min-height: 44px;
     font-family: var(--font-pixel);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     text-decoration: none;
     color: var(--text);
-    padding: 0.5rem 0.7rem;
+    padding: 0.35rem 0.7rem;
     border: 3px solid transparent;
     border-radius: var(--radius);
+    transition:
+      background-color 180ms ease,
+      color 180ms ease;
   }
   .nav-link:hover {
     color: var(--text);
     background: var(--surface);
   }
   .nav-link.active {
-    background: var(--accent);
+    background: var(--accent-ui);
     color: var(--on-accent);
     border-color: var(--frame-dark);
   }
@@ -123,10 +121,11 @@ const isActive = (href: string) =>
   }
   .nav-toggle {
     display: none;
+    min-height: 44px;
     margin-left: auto;
     background: var(--surface);
     color: var(--text);
-    border: 3px solid var(--frame-dark);
+    border: 3px solid var(--frame-ui);
     border-radius: var(--radius);
     padding: 0.5rem 0.75rem;
     cursor: pointer;
@@ -150,10 +149,11 @@ const isActive = (href: string) =>
     }
     .nav-links.open {
       display: flex;
+      gap: var(--space-3xs);
+      padding-block: var(--space-2xs) var(--space-3xs);
     }
     .nav-link {
-      display: block;
-      text-align: center;
+      width: 100%;
     }
   }
 </style>
@@ -164,5 +164,7 @@ const isActive = (href: string) =>
   toggle?.addEventListener('click', () => {
     const open = links?.classList.toggle('open');
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const label = toggle.querySelector('[data-label]');
+    if (label) label.textContent = open ? 'Close' : 'Menu';
   });
 </script>

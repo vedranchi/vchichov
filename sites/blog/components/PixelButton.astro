@@ -16,29 +16,33 @@ const Tag = href ? 'a' : 'button';
 
 <style>
   .pixel-btn {
-    display: inline-block;
+    /* grid rather than inline-block so the label centres inside the 44px min touch target */
+    display: inline-grid;
+    place-items: center;
+    min-height: 44px;
     font-family: var(--font-pixel);
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     text-decoration: none;
     line-height: 1;
-    padding: 0.75em 1.1em;
+    padding: 0.7em 1.1em;
     cursor: pointer;
-    border: 3px solid var(--frame-dark);
+    border: 3px solid var(--frame-ui);
     border-radius: var(--radius);
-    box-shadow: var(--pixel) var(--pixel) 0 0 var(--frame-dark);
+    box-shadow: var(--pixel) var(--pixel) 0 0 var(--frame-ui);
     transition:
       transform 0.05s ease,
       box-shadow 0.05s ease,
       background-color 0.1s ease;
   }
+  /* --accent-ui, not --accent: the lighter leaf only reaches 3.75:1 behind the label */
   .is-primary {
-    background: var(--accent);
+    background: var(--accent-ui);
     color: var(--on-accent);
   }
   .is-primary:hover {
-    background: var(--accent-strong);
+    background: var(--accent-ui-hover);
     color: var(--on-accent);
   }
   .is-ghost {
@@ -52,6 +56,6 @@ const Tag = href ? 'a' : 'button';
   /* pressed-in effect: button slides into its shadow */
   .pixel-btn:active {
     transform: translate(var(--pixel), var(--pixel));
-    box-shadow: 0 0 0 0 var(--frame-dark);
+    box-shadow: 0 0 0 0 var(--frame-ui);
   }
 </style>

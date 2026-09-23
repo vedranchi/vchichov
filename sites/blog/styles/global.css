@@ -26,8 +26,8 @@ body {
     8px 8px;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  line-height: 1.65;
+  font-size: var(--text-base);
+  line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
@@ -39,25 +39,35 @@ h3,
 h4 {
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--lh-tight);
   color: var(--text);
   margin: 0 0 0.5em;
+  /* Pixelify Sans sets wide; long headings break better than they wrap */
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-size: var(--text-4xl);
 }
 h2 {
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-size: var(--text-3xl);
 }
 h3 {
-  font-size: 1.3rem;
+  font-size: var(--text-xl);
+}
+h4 {
+  font-size: var(--text-lg);
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {
   color: var(--link);
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
+  transition: color 180ms ease;
 }
 a:hover {
   color: var(--link-hover);
@@ -74,7 +84,7 @@ img {
 }
 
 :focus-visible {
-  outline: 3px solid var(--highlight);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -91,12 +101,95 @@ main {
   width: 100%;
 }
 
-/* small pixel-font label, used for eyebrows / tags / nav */
+/* ---------------------------------------------------------------------------
+ * Shared text system.
+ *
+ * These five classes replace what used to be ~35 one-off declarations spread
+ * across scoped component styles. Astro scopes every <style> block, so each of
+ * those was a genuinely separate rule that could drift from the others — and
+ * did. Anything describing or introducing content should use one of these
+ * rather than restyling a paragraph locally.
+ * ------------------------------------------------------------------------- */
+
+/* Section/page introduction: one step up from body, never muted. */
+.lede {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: var(--text-lg);
+  line-height: var(--lh-snug);
+  color: var(--text-soft);
+}
+
+/* Running descriptive copy: card blurbs, summaries, empty states. */
+.body-text {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: var(--text-base);
+  line-height: var(--lh-body);
+  color: var(--text-soft);
+}
+
+/* Page/section header block. */
+.page-head {
+  max-width: var(--measure);
+  margin-bottom: var(--space-lg);
+}
+.page-head > h1,
+.page-head > h2 {
+  margin: 0 0 var(--space-2xs);
+}
+
+/* Small pixel-font label — CHROME ONLY: nav, buttons, eyebrows, the fake URL bar.
+   Silkscreen is a bitmap face; below 12px it turns to mush, and it is unreadable
+   for anything longer than two or three words. Never use it for content. */
 .pixel-label {
   font-family: var(--font-pixel);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  line-height: 1.4;
+}
+
+/* Metadata label — dates, counts, stat captions, table-ish meta. Body font, so it
+   stays legible at small sizes where Silkscreen does not. */
+.meta-label {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* Tag / topic / language chip. Was duplicated in seven components. */
+.chip {
+  display: inline-block;
+  background: var(--surface-2);
+  border: 2px solid var(--frame);
+  border-radius: 2px;
+  padding: 0.2rem 0.45rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+a.chip {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease;
+}
+a.chip:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* Horizontal list of chips. */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
