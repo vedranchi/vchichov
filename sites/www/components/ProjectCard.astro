@@ -18,6 +18,7 @@ interface Props {
 }
 const { project }: Props = Astro.props;
 
+const title = home.names[project.name] ?? project.name;
 const blurb = home.blurbs[project.name] ?? project.description;
 const year = new Date(project.updatedAt).getFullYear();
 // Top three only — the full list is noise on a card this size.
@@ -26,7 +27,7 @@ const languages = project.languages.slice(0, 3);
 
 <article class="card box">
   <header class="card-head">
-    <h3 class="card-title">{project.name}</h3>
+    <h3 class="card-title">{title}</h3>
     <time class="card-year tnum" datetime={String(year)}>{year}</time>
   </header>
 
