@@ -209,7 +209,6 @@ Not verified by anyone yet: how the farm feels on a real phone.
 | `src/assets/` images unreferenced               | `glucoread.png`, `nc2026.jpg` — reuse on the blog or remove    |
 | Cycling scraper has no scheduled home           | procyclingstats is Cloudflare-blocked from CI IPs; run locally |
 | Redundant Vercel rebuilds                       | optional Ignored Build Step, see Hosting facts                 |
-| Merged branches still on GitHub                 | seven, all merged or closed — delete on GitHub                 |
 | `.agents/`, `skills-lock.json` untracked        | the design skills AGENTS.md points to; kept on purpose         |
 
 Ideas raised but not acted on: the ripe tomatoes' red is subtle at this size; crops are hard
