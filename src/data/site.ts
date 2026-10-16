@@ -19,8 +19,8 @@ export const site = {
   // joint tagline no longer describes either.
   descriptions: {
     www:
-      'Vedran Chichov — I write software for hardware that measures people. ' +
-      'Projects, background, and how to reach me.',
+      'Vedran Chichov — a developer and computer science student in Skopje. ' +
+      'Projects, background, and how to work with me.',
     blog:
       'Writing and race results from Vedran Chichov: notes on building software, ' +
       'bike racing, and whatever else is growing on the farm.',
@@ -32,9 +32,9 @@ export const site = {
   nav: {
     www: [
       { href: '/', label: 'Home', external: false },
-      { href: '/projects', label: 'Work', external: false },
+      { href: '/projects', label: 'Projects', external: false },
       { href: '/about', label: 'About', external: false },
-      { href: '/contact', label: 'Contact', external: false },
+      { href: '/work-with-me', label: 'Work with me', external: false },
       { href: urls.blog, label: 'Blog', external: true },
     ],
     blog: [
@@ -53,6 +53,7 @@ export const site = {
       label: 'ProCyclingStats',
       me: true,
     },
+    { href: 'https://www.instagram.com/vchichovv/', label: 'Instagram', me: true },
     { href: 'https://cyclingvelom.com/', label: 'My team', me: false },
   ],
 } as const;

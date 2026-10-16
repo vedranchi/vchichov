@@ -1,6 +1,7 @@
 ---
 // A project as a neobrutalist card: hard outline, hard offset shadow, and it presses into
 // its own shadow when you click it.
+import { Image } from 'astro:assets';
 import { home } from '@shared/data/home';
 
 export interface Project {
@@ -20,12 +21,25 @@ const { project }: Props = Astro.props;
 
 const title = home.names[project.name] ?? project.name;
 const blurb = home.blurbs[project.name] ?? project.description;
+const shot = home.shots[project.name];
 const year = new Date(project.updatedAt).getFullYear();
 // Top three only — the full list is noise on a card this size.
 const languages = project.languages.slice(0, 3);
 ---
 
 <article class="card box">
+  {
+    shot && (
+      <Image
+        class:list={['card-shot', { 'card-shot--whole': shot.fill }]}
+        style={shot.fill ? `background: ${shot.fill}` : undefined}
+        src={shot.src}
+        alt={shot.alt}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 900px) 280px, (min-width: 600px) 45vw, 90vw"
+      />
+    )
+  }
   <header class="card-head">
     <h3 class="card-title">{title}</h3>
     <time class="card-year tnum" datetime={String(year)}>{year}</time>
@@ -61,6 +75,21 @@ const languages = project.languages.slice(0, 3);
     flex-direction: column;
     gap: 0.9rem;
     padding: clamp(1.1rem, 3vw, 1.6rem);
+  }
+  /* A window onto the site itself, framed like everything else here: hard edge, no fade.
+     Cropped from the top, where every home page keeps its headline. */
+  .card-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+    border: var(--border);
+    border-radius: calc(var(--radius) - 2px);
+  }
+  .card-shot--whole {
+    object-fit: contain;
   }
   .card-head {
     display: flex;

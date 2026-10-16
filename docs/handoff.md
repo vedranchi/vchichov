@@ -30,7 +30,7 @@ blog.
 
 ```text
 src/                SHARED ONLY — no pages, no components, no styles
-  assets/           glucoread.png, nc2026.jpg (currently unreferenced)
+  assets/           project screenshots, og.png (share image), nc2026.jpg (unreferenced)
   content/blog/     *.md + .obsidian/   ← the Obsidian vault. DO NOT MOVE.
   data/             site.ts, home.ts, projects.json, cycling.json, palmares.ts
   lib/              collections.ts, format.ts, cycling.ts, remark-wikilinks.mjs
@@ -261,12 +261,10 @@ preview URL:
 
 | Item                                                     | Where                                                             |
 | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| What and where you are studying                          | `sites/www/pages/about.astro` — marked with a comment             |
-| Whether you are open to internships / freelance          | `sites/www/pages/contact.astro` — no claim made, deliberately     |
 | Contact email is `vchichovv@gmail.com`                   | `src/data/site.ts` — change if you want a different one           |
 | Local git remote still points at the old repo name       | `git remote set-url origin git@github.com:vedranchi/vchichov.git` |
 | Root `handoff.md` documents the decommissioned Oracle VM | delete it; it is gitignored but misleading                        |
-| `src/assets/` images now unreferenced                    | `glucoread.png`, `nc2026.jpg` — reuse on the blog or remove       |
+| `src/assets/nc2026.jpg` unreferenced                     | reuse on the blog or remove                                       |
 | `.agents/`, `skills-lock.json`, `temp_ss/` untracked     | design skills and the reference screenshot; commit or delete      |
 | Cycling scraper has no scheduled home                    | GitHub Actions IPs are Cloudflare-blocked by procyclingstats      |
 

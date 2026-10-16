@@ -12,28 +12,33 @@ const all = projectData.projects as Project[];
 const projects = home.featured
   .map((name) => all.find((p) => p.name === name))
   .filter((p): p is Project => Boolean(p));
+const blogHost = site.urls.blog.replace(/^https:\/\//, '');
 ---
 
 <BaseLayout>
   <section class="container hero">
     <h1 class="hero-name">{site.name}</h1>
-    <p class="hero-role">Software engineer</p>
+    <p class="hero-role">Developer</p>
 
     <div class="hero-intro prose measure">
-      <p>Hi, I'm Vedran — a first-year student in Skopje, North Macedonia.</p>
+      <p>Hi, I'm Vedran, a first-year CS student in Skopje, Macedonia.</p>
       <p>
-        I build things and then keep them running. Right now that's <strong>Glucoread</strong>, a
-        diabetes tracking app that's live and self-hosted. Away from the keyboard I race bikes for {
-          site.team.name
-        }.
+        I split my time between building software and racing bikes. My main project is{' '}
+        <strong>Glucoread</strong>, a diabetes tracking app that's live and running. If you want to
+        see what I'm thinking about, I write on my blog at{' '}
+        <a class="inline" href={site.urls.blog} rel="noopener">{blogHost}</a>.
       </p>
     </div>
+
+    <p class="hero-offer">
+      Currently taking on website projects. <a class="inline" href="/work-with-me">Work with me</a>
+    </p>
 
     <SocialLinks />
   </section>
 
   <section class="container work" aria-labelledby="work-heading">
-    <h2 id="work-heading" class="section-title">Work</h2>
+    <h2 id="work-heading" class="section-title">Projects</h2>
     <div class="cards">
       {projects.map((project) => <ProjectCard project={project} />)}
     </div>
@@ -65,6 +70,10 @@ const projects = home.featured
   }
   .hero-intro strong {
     font-weight: 700;
+  }
+  .hero-offer {
+    margin-top: 1.75rem;
+    font-weight: 600;
   }
   /* The icon row sits well below the text, as in the reference. */
   :global(.hero .socials) {

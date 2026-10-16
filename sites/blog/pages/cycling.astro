@@ -5,7 +5,7 @@ import WoodPanel from '../components/WoodPanel.astro';
 import PixelButton from '../components/PixelButton.astro';
 import data from '@shared/data/cycling.json';
 import { site } from '@shared/data/site';
-import { allResults, highlights, medalClass } from '@shared/lib/cycling';
+import { allResults, displayName, highlights, medalClass } from '@shared/lib/cycling';
 import { ordinal } from '@shared/lib/format';
 
 const { rider, source, generatedAt } = data;
@@ -52,7 +52,11 @@ const palmares = highlights();
 
     <WoodPanel class="profile">
       <dl class="profile-grid">
-        <div><dt class="meta-label">Country</dt><dd>{rider.nationalityName ?? '—'}</dd></div>
+        <div>
+          <dt class="meta-label">Country</dt><dd>
+            {rider.nationalityName ? displayName(rider.nationalityName) : '—'}
+          </dd>
+        </div>
         {
           age !== null && (
             <div>

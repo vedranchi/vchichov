@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-09-11T20:11:50.309Z",
+  "generatedAt": "2026-10-16T14:24:49.116Z",
   "user": "vedranchi",
   "projects": [
     {
-      "name": "rajhl-site",
+      "name": "lukarajhl-web",
       "description": "Website for producer Luka Rajhl",
-      "url": "https://github.com/vedranchi/rajhl-site",
+      "url": "https://github.com/vedranchi/lukarajhl-web",
       "homepage": "https://lukarajhl.com",
       "languages": ["TypeScript", "CSS", "JavaScript"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-09-11T20:09:01Z"
+      "updatedAt": "2026-10-16T10:15:32Z"
     },
     {
       "name": "glucoread",
@@ -29,17 +29,17 @@
         "self-hosted"
       ],
       "stars": 0,
-      "updatedAt": "2026-09-11T14:33:40Z"
+      "updatedAt": "2026-10-07T09:39:38Z"
     },
     {
-      "name": "personal-site",
+      "name": "vchichov",
       "description": "personal website",
-      "url": "https://github.com/vedranchi/personal-site",
+      "url": "https://github.com/vedranchi/vchichov",
       "homepage": "https://vchichov.com",
-      "languages": ["Astro", "TypeScript", "JavaScript", "CSS", "Python"],
+      "languages": ["Astro", "TypeScript", "CSS", "JavaScript", "Python"],
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-09-03T11:13:25Z"
+      "updatedAt": "2026-10-07T09:30:11Z"
     }
   ]
 }

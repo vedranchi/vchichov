@@ -12,10 +12,13 @@ const projects = (data.projects as Project[])
 const githubUrl = site.socials.find((s) => s.label === 'GitHub')?.href ?? 'https://github.com';
 ---
 
-<BaseLayout title="Work" description="Public repositories by Vedran Chichov, synced from GitHub.">
+<BaseLayout
+  title="Projects"
+  description="Public repositories by Vedran Chichov, synced from GitHub."
+>
   <section class="container page">
     <header class="page-head">
-      <h1 class="page-title">Work</h1>
+      <h1 class="page-title">Projects</h1>
       <p class="page-lede measure">
         Everything public, newest first. Pulled straight from GitHub, so this is whatever I'm
         actually working on.

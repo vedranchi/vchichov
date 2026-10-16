@@ -126,8 +126,9 @@ const external = site.nav.www.filter((item) => item.external);
       font-size: 1rem;
     }
   }
-  /* Smallest phones: just enough tighter to keep the four pages on one row. */
-  @media (max-width: 380px) {
+  /* Most phones: just enough tighter to keep the four pages on one row. "Work with me" is
+     the long one — at the roomier size above it wraps on a 390px iPhone. */
+  @media (max-width: 420px) {
     .nav-links {
       gap: 0;
     }

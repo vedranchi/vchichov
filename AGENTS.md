@@ -104,7 +104,10 @@ sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
     description and homepage, so changing those on GitHub means resyncing here.
     Hand-written wording goes in `src/data/home.ts` instead.
   - `src/data/cycling.json` ← `scripts/scrape_pcs.py`. Off-PCS results go in
-    `src/data/palmares.ts`.
+    `src/data/palmares.ts`. It says "North Macedonia"; Vedran says "Macedonia", so
+    `displayName()` in `src/lib/cycling.ts` swaps it on the way out — never in the data.
+  - `src/assets/og.png` (the portfolio's link-preview image) ← `npm run og`. It needs
+    Python with `fonttools` and `brotli`; rerun it after changing the name or role.
 - **The cycling scraper only runs locally.** procyclingstats.com is behind Cloudflare, so
   the scraper impersonates a real browser with `curl_cffi` — and datacenter IPs (CI
   runners) get blocked regardless. Run it on Vedran's machine and commit the result; don't
