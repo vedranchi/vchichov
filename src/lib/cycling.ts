@@ -21,6 +21,13 @@ export interface RaceResult {
   source: 'pcs' | 'manual';
 }
 
+/**
+ * Vedran says "Macedonia". PCS (and so cycling.json, which is never hand-edited) says
+ * "North Macedonia", so the name is swapped on the way out rather than in the data. Done
+ * after the merge below, so it can't change which results count as the same race.
+ */
+export const displayName = (s: string) => s.replace(/North Macedonia/g, 'Macedonia');
+
 /** A result the scraper found and one we typed in are "the same race" if date + name match. */
 const key = (r: { date: string; race: string }) => `${r.date}|${r.race.toLowerCase().trim()}`;
 
@@ -33,7 +40,13 @@ export function allResults(): RaceResult[] {
   for (const r of data.results) merged.set(key(r), { ...r, source: 'pcs' });
   for (const r of manualResults) merged.set(key(r), { ...r, source: 'manual' });
 
-  return [...merged.values()].sort((a, b) => b.date.localeCompare(a.date));
+  return [...merged.values()]
+    .map((r) => ({
+      ...r,
+      race: displayName(r.race),
+      country: r.country && displayName(r.country),
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
 }
 
 /** Top-ten finishes, best placing first — the "career highlights" set. */

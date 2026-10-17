@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '@shared/data/site';
+
+const instagram = site.socials.find((s) => s.label === 'Instagram');
+const github = site.socials.find((s) => s.label === 'GitHub');
+const strip = (u: string) => u.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+{
+  /*
+   * VEDRAN — the copy below makes no promises about reply times or prices on purpose. If
+   * you want to commit to one ("I reply within two days"), add it under "What to send";
+   * it's the line that most reassures someone writing to a stranger.
+   */
+}
+<BaseLayout
+  title="Work with me"
+  description="Vedran Chichov is taking on website projects. What I build and how to get in touch."
+>
+  <section class="container page">
+    <h1 class="page-title">Work with me</h1>
+    <p class="lede measure">
+      I'm taking on website projects: a new site for your business, or a rebuild of the one you
+      already have. I'm open to other software work too, so if you have something else in mind, ask.
+    </p>
+
+    <a class="cta box box--press" href={`mailto:${site.email}`}>Email me</a>
+
+    <h2 class="section-title">What to send</h2>
+    <ul class="asks prose measure">
+      <li>What your business or project is.</li>
+      <li>What you need: a new site, a redesign, or something else entirely.</li>
+      <li>Any deadline or budget you already have in mind.</li>
+    </ul>
+
+    <h2 class="section-title">Where to find me</h2>
+    <ul class="channels">
+      <li class="channel box">
+        <span class="channel-label">Email</span>
+        <a class="channel-value inline" href={`mailto:${site.email}`}>{site.email}</a>
+      </li>
+      {
+        instagram && (
+          <li class="channel box">
+            <span class="channel-label">Instagram</span>
+            <a class="channel-value inline" href={instagram.href} rel="me noopener">
+              @{strip(instagram.href).replace(/^instagram\.com\//, '')}
+            </a>
+          </li>
+        )
+      }
+      {
+        github && (
+          <li class="channel box">
+            <span class="channel-label">GitHub</span>
+            <a class="channel-value inline" href={github.href} rel="me noopener">
+              {strip(github.href)}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(2.5rem, 8vw, 4rem) 1rem;
+  }
+  .page-title {
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .lede {
+    margin-top: 1rem;
+  }
+  /* The one orange block on the page — black on orange, never the other way round. */
+  .cta {
+    display: inline-block;
+    margin-top: 1.75rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .cta:hover {
+    background: var(--accent-hover);
+  }
+  .section-title {
+    margin-top: clamp(2.5rem, 6vw, 3.25rem);
+    font-size: clamp(1.375rem, 3.5vw, 1.75rem);
+  }
+  .asks {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+  }
+  .channels {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    list-style: none;
+    padding: 0;
+  }
+  .channel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 1.5rem;
+    padding: 1rem 1.25rem;
+  }
+  .channel-label {
+    flex: 0 0 5.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  /* The basis makes every card wrap at the same width, so they stack together rather than
+     only the ones with long values. */
+  .channel-value {
+    flex: 1 1 16rem;
+    min-width: 0;
+    font-size: clamp(1rem, 2.5vw, 1.1875rem);
+    overflow-wrap: anywhere;
+  }
+</style>

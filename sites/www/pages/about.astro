@@ -15,48 +15,40 @@ if (beforeBirthday) age -= 1;
 {
   /*
    * Everything here comes from data already in the repo (cycling.json, palmares.ts,
-   * projects.json), so it stays true as those update.
-   *
-   * VEDRAN — the one thing I could not source is what and where you are studying. Add it
-   * to the first paragraph; the page reads fine without it, it's just thinner than it
-   * needs to be.
+   * projects.json), so it stays true as those update. The age is worked out from the
+   * birthdate in cycling.json, so it never needs editing.
    */
 }
 <BaseLayout
   title="About"
-  description="Vedran Chichov — a developer and bike racer from Skopje, North Macedonia."
+  description="Vedran Chichov — a developer and bike racer from Skopje, Macedonia."
 >
   <section class="container page">
     <h1 class="page-title">About</h1>
 
     <div class="prose measure">
       <p>
-        I'm {age}, from Skopje, and I spend my time on two things: building software and racing
-        bikes. Both reward the same habit — doing the boring part properly, over and over, long
-        before anyone sees a result.
+        I'm {age}, a first-year computer science student from Skopje. I spend most of my time
+        building things and learning how computers and software work, and lately networking too. The
+        rest goes into training and racing bikes.
       </p>
 
       <h2 class="section-title">Software</h2>
       <p>
-        The project I care most about is <strong>GlucoRead</strong>: glucose, insulin and meal
-        tracking for people managing diabetes day to day. It's a Django and PostgreSQL app, and I
-        run it myself — Docker, Caddy, backups, the lot. Building it taught me more than any
-        tutorial, mostly because something that's actually deployed can't be left half-finished.
+        My biggest project yet is <strong>Glucoread</strong>, an app for tracking glucose, insulin
+        and meals day to day. It's a personal project, not a medical tool. It's built with Django
+        and PostgreSQL, and I host it myself on an Oracle Cloud VM: Docker, Caddy, backups, the lot.
       </p>
       <p>
-        I like small, useful software that stays up. I'd rather ship one tool people rely on than
-        ten demos.
+        It's also where I've learned the most. Something that's actually deployed can't be left
+        half-finished, so it taught me more than any tutorial.
       </p>
 
       <h2 class="section-title">Racing</h2>
       <p>
-        I ride for {site.team.name}. In 2026 I won the North Macedonian national road race title in
-        the under-23 category, and took silver in the time trial the day before. I've raced abroad
-        too, including the Tour of Bosnia and Herzegovina.
-      </p>
-      <p>
-        The time trial is my discipline. It's the honest one: no wheels to hide behind, no tactics
-        to blame, just the clock telling you exactly what you were worth that day.
+        I ride for {site.team.name}. In 2026 I won the Macedonian national road race title in the
+        under-23 category, and took silver in the time trial the day before. I actively participate
+        in races abroad too.
       </p>
 
       <p class="more">

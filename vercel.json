@@ -1,6 +1,12 @@
 {
   "redirects": [
     {
+      "source": "/contact",
+      "destination": "/work-with-me",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "vchichov.com" }]
+    },
+    {
       "source": "/blog",
       "destination": "https://blog.vchichov.com/",
       "permanent": true,

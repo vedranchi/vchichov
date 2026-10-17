@@ -18,7 +18,8 @@
     "check:blog": "astro check --config astro.config.blog.mjs",
     "check:all": "npm run check && npm run check:blog",
     "format": "prettier --write .",
-    "sync:projects": "node scripts/fetch_github.mjs"
+    "sync:projects": "node scripts/fetch_github.mjs",
+    "og": "node scripts/make_og.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.1",
