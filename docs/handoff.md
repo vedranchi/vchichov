@@ -28,7 +28,10 @@ Vercel project. It is now **one site** with a new look, and it leads with the bl
   email app with the message filled in (a plain `mailto:` submission without JS). The plan
   is a small endpoint on Vedran's own server once the site is self-hosted; the comment at
   the top of `src/pages/work-with-me.astro` says what to replace.
-- **Tags:** the duplicate `racing` tag is gone; the ITT post is tagged `cycling` only.
+- **Posts:** both sample posts (the farm welcome and the national ITT one) are gone. The blog
+  has a single placeholder, `welcome.md`, written for the new site and kept at the same
+  slug so old `/welcome` links still land. It starts with a `VEDRAN:` comment saying it's
+  a placeholder to rewrite.
 - **Retired:** the pixel farm and its fonts, the neobrutalist boxes and shadows, Montserrat,
   the project screenshots and the unused podium photo. All recoverable from git history.
 
@@ -112,7 +115,7 @@ Delete Project). Nothing else uses it.
 
 ## Verification done before the PR
 
-- `npm run format`, `npm run check` (0 errors, 0 warnings) and `npm run build` (12 pages)
+- `npm run format`, `npm run check` (0 errors, 0 warnings) and `npm run build` (9 pages)
   are all clean.
 - `dist/`: canonicals, `robots.txt`, the sitemap and RSS item links all use
   `https://vchichov.com`. No file mentions `blog.vchichov.com`. No `<link>` or `<script>`
@@ -120,9 +123,9 @@ Delete Project). Nothing else uses it.
 - A temporary `draft: true` post was absent from every page, tag page, the feed and the
   sitemap, then deleted. A temporary post with a code block confirmed Shiki emits both the
   light and dark palettes, then deleted.
-- `[[welcome]]` renders as `/blog/welcome`.
-- No em or en dashes in the built UI copy (post bodies are Vedran's own writing and were
-  left alone).
+- `[[wikilinks]]` render as `/blog/<slug>` (checked with the old sample posts, which used
+  them; the placeholder has none).
+- No em or en dashes in the built UI copy.
 - Contrast computed for every token pair in both modes: all text pairs reach 4.5:1 or more
   (lowest: muted text, 6.55:1) and the orange UI shapes reach 3:1 or more (3.25:1 on the
   light ground).
@@ -140,11 +143,11 @@ Delete Project). Nothing else uses it.
 
 ## Open items
 
-| Item                                                  | Where                                                                     |
-| ----------------------------------------------------- | ------------------------------------------------------------------------- |
-| `feat/blog-folders` (no PR yet) conflicts with this   | its `generateId` change ports 1:1 into `src/content.config.ts`; rebase it |
-| The draft "host-your-own-website" post on that branch | it describes the old subdomain setup                                      |
-| PR #9 (handoff rewrite)                               | superseded by this file; close it                                         |
-| The two sample posts still describe the farm          | `src/content/blog/`, Vedran's writing                                     |
-| `.agents/`, `skills-lock.json` untracked              | design skills; commit or delete                                           |
-| Cycling scraper has no scheduled home                 | GitHub Actions IPs are Cloudflare-blocked by procyclingstats              |
+| Item                                                  | Where                                                                                                                                    |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `feat/blog-folders` (no PR yet) conflicts with this   | its `generateId` change ports 1:1 into `src/content.config.ts`; rebase it. It also moves the deleted ITT post into `cycling/`; drop that |
+| The draft "host-your-own-website" post on that branch | it describes the old subdomain setup                                                                                                     |
+| PR #9 (handoff rewrite)                               | superseded by this file; close it                                                                                                        |
+| `welcome.md` is a placeholder                         | rewrite it in Vedran's own words, or delete it once real posts are up                                                                    |
+| `.agents/`, `skills-lock.json` untracked              | design skills; commit or delete                                                                                                          |
+| Cycling scraper has no scheduled home                 | GitHub Actions IPs are Cloudflare-blocked by procyclingstats                                                                             |
