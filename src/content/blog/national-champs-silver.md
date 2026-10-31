@@ -2,7 +2,7 @@
 title: Silver at the national ITT
 description: A few thoughts after the national time-trial championships.
 pubDate: 2026-06-28
-tags: [cycling, racing]
+tags: [cycling]
 draft: false
 ---
 
