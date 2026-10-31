@@ -1,0 +1,40 @@
+---
+// A finishing position as a square badge, like a race number. A win is the orange fill;
+// the other podium places are outlined; anything else is quiet. One accent, so no gold,
+// silver or bronze.
+interface Props {
+  rank: number;
+}
+const { rank }: Props = Astro.props;
+const kind = rank === 1 ? 'win' : rank <= 3 ? 'podium' : 'plain';
+---
+
+<span class:list={['badge', `badge--${kind}`]} aria-hidden="true">{rank}</span>
+
+<style>
+  .badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 1.6rem;
+    font-stretch: var(--wide);
+    font-weight: 850;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .badge--win {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .badge--podium {
+    border-color: var(--text);
+  }
+  .badge--plain {
+    color: var(--text-muted);
+  }
+</style>

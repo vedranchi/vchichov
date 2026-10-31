@@ -1,0 +1,220 @@
+---
+import PaperPlaneTilt from '@phosphor-icons/core/assets/bold/paper-plane-tilt-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+
+const instagram = site.socials.find((s) => s.label === 'Instagram');
+const github = site.socials.find((s) => s.label === 'GitHub');
+const strip = (u: string) => u.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+{
+  /*
+   * VEDRAN — the copy below makes no promises about reply times on purpose. If you want to
+   * commit to one ("I reply within two days"), add it under the lede; it's the line that
+   * most reassures someone writing to a stranger.
+   *
+   * THE FORM, FOR NOW: the site is static, so there is nothing yet to receive a POST. Sending
+   * opens the visitor's email app with the message filled in (the script at the bottom),
+   * and without JavaScript the form falls back to a plain mailto: submission. When the site
+   * moves to its own server, the form posts to an endpoint there instead and the mailto
+   * parts go.
+   */
+}
+<BaseLayout title="Work with me" description="Get in touch with Vedran Chichov.">
+  <section class="container page">
+    <h1 class="page-title display rise">Work with me</h1>
+    <p class="lede rise" style="--i: 1">
+      Have an idea, a project, or a question? Send me a message.
+    </p>
+
+    <div class="columns">
+      <form
+        id="contact"
+        class="form"
+        action={`mailto:${site.email}`}
+        method="post"
+        enctype="text/plain"
+        aria-describedby="form-note"
+      >
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+          <p class="hint mono muted">So I can write back.</p>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="7" required></textarea>
+        </div>
+        <div class="submit">
+          <button class="btn" type="submit"
+            ><PaperPlaneTilt aria-hidden="true" /> Send message</button
+          >
+          <p id="form-note" class="hint muted">
+            This opens your email app with the message ready to send.
+          </p>
+        </div>
+        <p class="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside aria-labelledby="find-heading">
+        <h2 id="find-heading" class="section-title">Elsewhere</h2>
+        <dl class="channels">
+          <div class="channel">
+            <dt class="mono muted">Email</dt>
+            <dd><a class="inline" href={`mailto:${site.email}`}>{site.email}</a></dd>
+          </div>
+          {
+            instagram && (
+              <div class="channel">
+                <dt class="mono muted">Instagram</dt>
+                <dd>
+                  <a class="inline" href={instagram.href} rel="me noopener">
+                    @{strip(instagram.href).replace(/^instagram\.com\//, '')}
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+          {
+            github && (
+              <div class="channel">
+                <dt class="mono muted">GitHub</dt>
+                <dd>
+                  <a class="inline" href={github.href} rel="me noopener">
+                    {strip(github.href)}
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ email: site.email }}>
+  // Turn the form into a tidy email: the message as the body, signed with the sender's name
+  // and address, rather than the raw name=value lines a mailto: form submission produces.
+  const form = document.getElementById('contact');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const name = String(data.get('name')).trim();
+    const from = String(data.get('email')).trim();
+    const body = `${String(data.get('message')).trim()}\n\n${name}\n${from}`;
+    const subject = `Message from ${name} via vchichov.com`;
+    window.location.href =
+      `mailto:${email}?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+    form.querySelector('.status').textContent =
+      `Your email app should open with the message ready. If it doesn't, write to ${email}.`;
+  });
+</script>
+
+<style>
+  .lede {
+    margin-top: 1.25rem;
+  }
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 3rem clamp(2rem, 6vw, 5rem);
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  /* --- the form: labels above, hints below, nothing hiding in a placeholder ------------ */
+  .form {
+    display: grid;
+    gap: 1.4rem;
+    align-content: start;
+  }
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+  label {
+    font-weight: 650;
+  }
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    /* The field's edge is what tells you it's a field, so it uses the muted text colour
+       (6.5:1+) rather than the decorative --line hairline, which is too faint to carry it. */
+    border: 1px solid var(--text-muted);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    line-height: 1.5;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 10rem;
+  }
+  input:hover,
+  textarea:hover {
+    border-color: var(--text);
+  }
+  /* Only after someone has typed and moved on, not on a fresh, empty form. */
+  input:user-invalid,
+  textarea:user-invalid {
+    border-color: var(--text);
+    border-width: 2px;
+  }
+  .hint {
+    font-size: var(--step--1);
+  }
+  .submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+  }
+  .btn {
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .status:empty {
+    display: none;
+  }
+
+  /* --- elsewhere --------------------------------------------------------------------- */
+  .section-title {
+    margin-bottom: 1.25rem;
+  }
+  .channels {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+  .channel {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .channel dt {
+    text-transform: uppercase;
+  }
+  .channel dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 860px) {
+    .columns {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,88 @@
+/* Design tokens for vchichov.com.
+ *
+ * Editorial and sporty, carried by type rather than pictures: wide, heavy Mona Sans for
+ * display, Geist Mono for dates and numbers, neutral grounds, and one orange.
+ *
+ * THE COLOUR RULE: orange is always a filled shape with dark ink on it, never text.
+ *   ink on orange        5.24:1 (hover 6.14:1)  — passes AA
+ *   orange as text       3.25:1 on the light ground — fails, so never
+ *   orange vs light bg   3.25:1 — enough to mark a UI shape (3:1), not to carry words
+ * Text on an orange fill is --on-accent, which is the same dark ink in BOTH modes. Using
+ * --text there would put light text on orange in dark mode (3.02:1).
+ */
+
+:root {
+  /* --- raw palette ----------------------------------------------------------------- */
+  --orange: #d16c19;
+  /* Hover LIGHTENS. Darkening drops ink-on-orange under AA. */
+  --orange-lift: #dd7a24;
+  --ink: #111214;
+  --paper: #f4f4f1;
+  --paper-raised: #fbfbf9;
+  --ink-soft: #55575d;
+  --rule: #d6d6d1;
+  --night: #111214;
+  --night-raised: #1a1b1e;
+  --chalk: #ececea;
+  --chalk-soft: #a2a4aa;
+  --night-rule: #2c2d31;
+
+  /* --- semantic (light is the default; dark below) ---------------------------------- */
+  --bg: var(--paper);
+  --surface: var(--paper-raised);
+  --text: var(--ink); /* 17.0:1 */
+  --text-muted: var(--ink-soft); /* 6.6:1 — metadata only, never body copy */
+  --line: var(--rule); /* decorative hairlines; never the only edge of a control */
+  --accent: var(--orange);
+  --accent-hover: var(--orange-lift);
+  --on-accent: var(--ink);
+
+  /* --- type ------------------------------------------------------------------------- */
+  --font: 'Mona Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Display type is Mona Sans pulled out to its widest. Width is a real axis here
+     (font-stretch 75%–125%), not a synthetic stretch. */
+  --wide: 125%;
+  --wide-mid: 112.5%;
+
+  --step--1: 0.875rem; /* mono meta */
+  --step-0: 1.0625rem; /* UI body */
+  --step-post: clamp(1.0625rem, 1rem + 0.35vw, 1.1875rem); /* reading body */
+  --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem); /* list titles */
+  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem); /* h2 */
+  --step-3: clamp(2.125rem, 1.6rem + 2.6vw, 3.5rem); /* page h1 */
+  --step-4: clamp(3rem, 1.6rem + 7vw, 7rem); /* the name on the home page */
+
+  /* --- shape and motion --------------------------------------------------------------- */
+  --radius: 6px; /* one radius for everything: buttons, tiles, chips, code */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- layout ------------------------------------------------------------------------ */
+  --maxw: 1120px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 66ch;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: var(--night);
+  --surface: var(--night-raised);
+  --text: var(--chalk); /* 15.8:1 */
+  --text-muted: var(--chalk-soft); /* 7.5:1 */
+  --line: var(--night-rule);
+  color-scheme: dark;
+}
+
+/* With JavaScript off nothing sets data-theme, so mirror dark here for people whose system
+   asks for it. Once the inline script in BaseLayout runs, data-theme wins on specificity. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: var(--night);
+    --surface: var(--night-raised);
+    --text: var(--chalk);
+    --text-muted: var(--chalk-soft);
+    --line: var(--night-rule);
+    color-scheme: dark;
+  }
+}

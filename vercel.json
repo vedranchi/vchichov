@@ -7,34 +7,40 @@
       "has": [{ "type": "host", "value": "vchichov.com" }]
     },
     {
-      "source": "/blog",
-      "destination": "https://blog.vchichov.com/",
+      "source": "/",
+      "destination": "https://vchichov.com/blog",
       "permanent": true,
-      "has": [{ "type": "host", "value": "vchichov.com" }]
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
     },
     {
-      "source": "/blog/tags/:tag*",
-      "destination": "https://blog.vchichov.com/tags/:tag*",
+      "source": "/archive",
+      "destination": "https://vchichov.com/blog",
       "permanent": true,
-      "has": [{ "type": "host", "value": "vchichov.com" }]
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
     },
     {
-      "source": "/blog/:slug*",
-      "destination": "https://blog.vchichov.com/:slug*",
+      "source": "/tags/:tag*",
+      "destination": "https://vchichov.com/blog/tags/:tag*",
       "permanent": true,
-      "has": [{ "type": "host", "value": "vchichov.com" }]
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
     },
     {
-      "source": "/cycling",
-      "destination": "https://blog.vchichov.com/cycling",
+      "source": "/:file(cycling|rss\\.xml|robots\\.txt|sitemap-index\\.xml|sitemap-0\\.xml)",
+      "destination": "https://vchichov.com/:file",
       "permanent": true,
-      "has": [{ "type": "host", "value": "vchichov.com" }]
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
     },
     {
-      "source": "/rss.xml",
-      "destination": "https://blog.vchichov.com/rss.xml",
+      "source": "/:slug",
+      "destination": "https://vchichov.com/blog/:slug",
       "permanent": true,
-      "has": [{ "type": "host", "value": "vchichov.com" }]
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://vchichov.com/:path*",
+      "permanent": true,
+      "has": [{ "type": "host", "value": "blog.vchichov.com" }]
     }
   ]
 }

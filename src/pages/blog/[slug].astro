@@ -1,0 +1,165 @@
+---
+import { render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import ArrowLeft from '@phosphor-icons/core/assets/bold/arrow-left-bold.svg';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import { formatDate, readingMinutes, slugifyTag } from '../../lib/format';
+import { getPosts, postHref, transitionName } from '../../lib/posts';
+import '../../styles/prose.css';
+
+export const getStaticPaths = (async () => {
+  // getPosts() leaves drafts out of the build, so a draft never gets a page here.
+  const posts = await getPosts();
+  // /blog/tags is a route of its own; a post with that slug would be shadowed by it.
+  const clash = posts.find((post) => post.id === 'tags');
+  if (clash) throw new Error(`Post "${clash.id}" clashes with a route; rename its file.`);
+  // Posts are newest first, so the one before is newer and the one after is older.
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post, newer, older } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, draft } = post.data;
+const { Content } = await render(post);
+const minutes = readingMinutes(post.body);
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <ReadingProgress />
+  <article class="container page post">
+    <header class="post-head">
+      <a class="back-link mono" href="/blog"><ArrowLeft aria-hidden="true" /> All posts</a>
+      <h1 class="post-title display" style={`view-transition-name: ${transitionName(post.id)}`}>
+        {title}
+      </h1>
+      <p class="meta mono muted">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {
+          updatedDate && (
+            <span>
+              Updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
+            </span>
+          )
+        }
+        <span>{minutes} min read</span>
+        {draft && <span class="draft">Draft</span>}
+        {
+          tags.map((tag) => (
+            <a class="tag" href={`/blog/tags/${slugifyTag(tag)}`}>
+              #{tag}
+            </a>
+          ))
+        }
+      </p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      (newer || older) && (
+        <nav class="pager" aria-label="More posts">
+          {older && (
+            <a class="pager-link" href={postHref(older)}>
+              <span class="mono muted">Older</span>
+              <span class="pager-title">{older.data.title}</span>
+            </a>
+          )}
+          {newer && (
+            <a class="pager-link pager-link--newer" href={postHref(newer)}>
+              <span class="mono muted">Newer</span>
+              <span class="pager-title">{newer.data.title}</span>
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: calc(var(--measure) + 2 * var(--gutter));
+    margin-inline: auto;
+  }
+  .post-head {
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .post-head .back-link {
+    margin-bottom: 1.5rem;
+  }
+  .post-title {
+    font-size: var(--step-3);
+    line-height: 1.04;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    margin-top: 1.25rem;
+    text-transform: uppercase;
+  }
+  .meta .tag {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .meta .tag:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+  }
+  .draft {
+    padding-inline: 0.4rem;
+    border-radius: 4px;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: clamp(3rem, 8vw, 5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .pager-link {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 160ms ease;
+  }
+  .pager-link:hover {
+    border-color: var(--accent);
+  }
+  .pager-link--newer {
+    grid-column: 2;
+    text-align: right;
+  }
+  .pager-link .mono {
+    text-transform: uppercase;
+  }
+  .pager-title {
+    font-stretch: var(--wide-mid);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  @media (max-width: 640px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .pager-link--newer {
+      grid-column: auto;
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+
+const pages = [...site.nav, { href: '/cycling', label: 'Cycling' }];
+const elsewhere = [
+  { href: `mailto:${site.email}`, label: 'Email', rel: undefined },
+  ...site.socials.map((s) => ({
+    href: s.href,
+    label: s.label,
+    rel: s.me ? 'me noopener' : 'noopener',
+  })),
+  { href: '/rss.xml', label: 'RSS', rel: undefined },
+];
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-name">{site.name}</p>
+    <nav class="footer-col" aria-label="Site">
+      <ul>
+        {
+          pages.map((p) => (
+            <li>
+              <a href={p.href}>{p.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <nav class="footer-col" aria-label="Elsewhere">
+      <ul>
+        {
+          elsewhere.map((l) => (
+            <li>
+              <a href={l.href} rel={l.rel}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <p class="footer-meta mono muted">© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: clamp(4rem, 10vw, 7rem);
+    border-top: 1px solid var(--line);
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem 1.5rem;
+    padding-block: 2.5rem 2rem;
+  }
+  .footer-name {
+    font-stretch: var(--wide);
+    font-weight: 800;
+    font-size: var(--step-1);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .footer-col ul {
+    display: grid;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-col a {
+    font-weight: 520;
+    text-decoration: none;
+  }
+  .footer-col a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+  }
+  .footer-meta {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 640px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-name {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

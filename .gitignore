@@ -1,6 +1,5 @@
-# build output (two sites: dist/ = vchichov.com, dist-blog/ = blog.vchichov.com)
+# build output
 dist/
-dist-blog/
 # generated types
 .astro/
 # vercel cli link data — never commit

@@ -1,0 +1,319 @@
+---
+import ArrowUpRight from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PositionBadge from '../components/PositionBadge.astro';
+import data from '../data/cycling.json';
+import { site } from '../data/site';
+import { allResults, displayName, highlights, riderAge } from '../lib/cycling';
+import { formatShortDate, ordinal } from '../lib/format';
+
+const { rider, source, generatedAt } = data;
+
+// Scraped PCS results merged with the hand-written ones PCS doesn't carry.
+const results = allResults();
+const hasManual = results.some((r) => r.source === 'manual');
+const palmares = highlights();
+const age = riderAge();
+---
+
+<BaseLayout
+  title="Cycling"
+  description="Race results and career highlights for Vedran Chichov, from ProCyclingStats."
+>
+  <section class="container page">
+    <header class="head">
+      <h1 class="page-title display rise">Cycling</h1>
+      <p class="lede rise" style="--i: 1">
+        I race on the road, and I'm a time-trial rider at heart. These are my best results and
+        everything else I've raced, mostly pulled from ProCyclingStats.
+      </p>
+    </header>
+
+    <dl class="rider">
+      <div>
+        <dt class="mono muted">Country</dt>
+        <dd>{rider.nationalityName ? displayName(rider.nationalityName) : '-'}</dd>
+      </div>
+      {
+        age !== null && (
+          <div>
+            <dt class="mono muted">Age</dt>
+            <dd class="tnum">{age}</dd>
+          </div>
+        )
+      }
+      {
+        rider.team?.name && (
+          <div>
+            <dt class="mono muted">Team</dt>
+            <dd>
+              <a class="inline" href={site.team.url} rel="noopener">
+                {rider.team.name}
+              </a>
+            </dd>
+          </div>
+        )
+      }
+      <div class="rider-link">
+        <a class="arrow-link" href={source} rel="me noopener"
+          >Full profile on PCS <ArrowUpRight aria-hidden="true" /></a
+        >
+      </div>
+    </dl>
+
+    {
+      palmares.length > 0 && (
+        <section class="block" aria-labelledby="highlights-heading">
+          <h2 id="highlights-heading" class="section-title">
+            Highlights
+          </h2>
+          <ul class="highlights">
+            {palmares.map((r) => (
+              <li class="highlight">
+                <PositionBadge rank={r.rank} />
+                <div class="highlight-body">
+                  <p class="highlight-race">
+                    {r.url ? (
+                      <a href={r.url} rel="noopener">
+                        {r.race}
+                      </a>
+                    ) : (
+                      r.race
+                    )}
+                  </p>
+                  <p class="meta mono muted">
+                    {ordinal(r.rank)} · {formatShortDate(r.date)}
+                    {r.raceClass && <span class="class">{r.raceClass}</span>}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="block" aria-labelledby="results-heading">
+      <h2 id="results-heading" class="section-title">All results</h2>
+      <table class="results">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Race</th>
+            <th scope="col">Class</th>
+            <th scope="col" class="num">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            results.map((r) => (
+              <tr>
+                <td class="date mono">{formatShortDate(r.date)}</td>
+                <td class="race">
+                  {r.url ? (
+                    <a href={r.url} rel="noopener">
+                      {r.race}
+                    </a>
+                  ) : (
+                    r.race
+                  )}
+                </td>
+                <td class="class-cell mono">
+                  {r.raceClass ?? '-'}
+                  {r.source === 'manual' && (
+                    <span class="mark" title="Not listed on ProCyclingStats">
+                      *
+                    </span>
+                  )}
+                </td>
+                <td class="num">{r.rank != null ? ordinal(r.rank) : 'DNF'}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="synced mono muted">
+        Synced from ProCyclingStats, updated {formatShortDate(generatedAt.slice(0, 10))}.
+        {hasManual && <span class="synced-note">* Added by hand, not listed on PCS.</span>}
+      </p>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  /* The rider at a glance: three facts in a row, like the top of a start sheet. */
+  .rider {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1.25rem clamp(1.5rem, 5vw, 3.5rem);
+    margin: 0;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--line);
+  }
+  .rider dt {
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .rider dd {
+    margin: 0;
+    font-size: var(--step-1);
+    font-stretch: var(--wide-mid);
+    font-weight: 700;
+  }
+  .rider-link {
+    margin-left: auto;
+  }
+
+  .block {
+    margin-top: clamp(3rem, 8vw, 4.5rem);
+  }
+  .section-title {
+    margin-bottom: 1.25rem;
+  }
+
+  .highlights {
+    display: grid;
+    /* Two across on desktop: four highlights make a square rather than three and an orphan. */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .highlight {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .highlight-body {
+    min-width: 0;
+  }
+  .highlight-race {
+    font-weight: 650;
+    line-height: 1.3;
+  }
+  .meta {
+    text-transform: uppercase;
+  }
+  .highlight-race a {
+    text-decoration: none;
+  }
+  .highlight-race a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+  }
+  .class {
+    margin-left: 0.6rem;
+    padding: 0 0.35rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  /* The results sheet: mono figures, one hairline under each row and nothing else. */
+  .results {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .results th,
+  .results td {
+    padding: 0.75rem 0.75rem 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: baseline;
+  }
+  .results thead th {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .results td.mono {
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .results .race a {
+    text-decoration: none;
+  }
+  .results .race a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+  }
+  .results .num {
+    padding-right: 0;
+    text-align: right;
+    font-stretch: var(--wide);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .mark {
+    color: var(--text-muted);
+  }
+  .synced {
+    margin-top: 1.25rem;
+  }
+  .synced-note {
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  /* Phones: each result becomes an entry in a results feed — date and placing across the
+     top, the race underneath at full width, its class below that. */
+  @media (max-width: 640px) {
+    .rider-link {
+      margin-left: 0;
+      width: 100%;
+    }
+    .results thead {
+      display: none;
+    }
+    .results,
+    .results tbody {
+      display: block;
+    }
+    .results tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'date num'
+        'race race'
+        'class class';
+      gap: 0.15rem 1rem;
+      padding-block: 0.85rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .results td {
+      padding: 0;
+      border: 0;
+    }
+    .results .date {
+      grid-area: date;
+      color: var(--text-muted);
+    }
+    .results .num {
+      grid-area: num;
+    }
+    .results .race {
+      grid-area: race;
+      line-height: 1.35;
+    }
+    .results .class-cell {
+      grid-area: class;
+      color: var(--text-muted);
+    }
+  }
+</style>
