@@ -10,7 +10,7 @@ export const site = {
   email: 'vchichovv@gmail.com',
   url: 'https://vchichov.com',
   description:
-    'Vedran Chichov is a developer and computer science student in Skopje. ' +
+    'Vedran Chichov is a developer and software engineering student in Skopje. ' +
     'Writing on software and bike racing, the projects he has built, and how to work with him.',
   // Vedran's club. cycling.json carries the full team name; this is just the link for it.
   team: { name: 'Velo-M Termalift', url: 'https://cyclingvelom.com/' },
