@@ -19,10 +19,14 @@ fold what's still true into `AGENTS.md` and the handoff) once the move is done.
 ## Why
 
 - Vedran wants to run the site himself rather than on Vercel.
-- The **Work with me** form needs something to receive it. Today it has no backend: sending
-  opens the visitor's email app (`src/pages/work-with-me.astro`, see the comment at the
-  top). The plan is a small endpoint on his own server that emails him, with no
-  third-party form service.
+- Vedran wants a **contact form on Work with me** that sends by itself and answers "Your
+  message has been sent" on the page. That needs something to receive it, so the page has
+  no form until this move: today it shows his email and links. The plan is a small
+  endpoint on his own server that emails him, with no third-party form service.
+- **Hard requirement:** the form must never fall back to opening the visitor's email app
+  (`mailto:`). He tried that version and rejected it. With JS off, the form still posts to
+  the endpoint and the server answers with the sent page; it doesn't hand off to a mail
+  client.
 
 ## Decisions still open (ask Vedran)
 
@@ -116,12 +120,18 @@ contact ──SMTP 587──▶ Gmail ──▶ Vedran's inbox
     `To` = `CONTACT_TO`, and a subject like "Message from {name} via vchichov.com";
   - answer for both kinds of client: a JS `fetch` gets JSON `{ ok }`; a plain form POST
     (no JS) gets a `303` redirect to `/work-with-me?sent=1` (or `?error=1`).
-- `src/pages/work-with-me.astro`: `action="/api/contact"`, `method="post"`, drop
-  `enctype="text/plain"` and the `mailto:` script and note. Add the honeypot and timestamp
-  fields. Replace the script with a `fetch` that shows success or failure in the existing
-  `role="status"` line and keeps the typed message on failure. Read `?sent=1` / `?error=1`
-  for the no-JS path. Keep the page's existing style (labels above fields, field borders
-  in `--text-muted`, one orange button).
+- `src/pages/work-with-me.astro`: put the form back. A finished, styled version exists in
+  git: `git show 2deb5dc:src/pages/work-with-me.astro` (name, email and message fields,
+  labels above, field borders in `--text-muted`, the form beside an "Elsewhere" column,
+  one orange "Send message" button, a `role="status"` line). Take its markup and styles,
+  but change it as follows:
+  - `action="/api/contact"`, `method="post"`, no `enctype="text/plain"`;
+  - delete its `mailto:` script and the "This opens your email app" note entirely;
+  - add the honeypot and timestamp fields;
+  - add a small script that `fetch`es the endpoint, disables the button while sending,
+    then shows "Your message has been sent." (or the failure, keeping the typed text) in
+    the status line and clears the form on success;
+  - read `?sent=1` / `?error=1` for the no-JS path.
 - Never log message bodies or addresses beyond what's needed to debug a failure.
 
 ### 3. Deploy config (in the repo, no secrets)
@@ -155,8 +165,8 @@ contact ──SMTP 587──▶ Gmail ──▶ Vedran's inbox
 4. Run the verification list below.
 5. **Keep the Vercel project for about a week** as the rollback. Then remove the domains
    from it, delete it, and delete `vercel.json` (Caddy holds the redirects now).
-6. Rewrite the Deploy section of `AGENTS.md` and `docs/handoff.md`, and remove the
-   "no backend yet" notes about the form.
+6. Rewrite the Deploy section of `AGENTS.md` and `docs/handoff.md`, and replace the "no
+   contact form yet" notes there with how the form works now.
 
 **Rollback:** point the Namecheap records back at Vercel. With the lowered TTL, that takes
 effect within minutes.

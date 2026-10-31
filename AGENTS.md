@@ -58,16 +58,17 @@ src/
   `/blog/tags/` and fails the build.
 - `robots.txt` is a generated route, not a file in `public/`, so its sitemap URL follows
   the configured `site`.
-- **The Work with me form has no backend yet**: sending opens the visitor's email app with
-  the message filled in. It is meant to post to an endpoint on Vedran's own server once the
-  site is self-hosted — see the comment at the top of `src/pages/work-with-me.astro`. The
-  site doesn't advertise "website projects"; keep the copy open-ended.
+- **Work with me has no contact form yet, on purpose.** It shows the email address and
+  links. A form comes back with self-hosting (`docs/self-hosting.md`), posting to an
+  endpoint on Vedran's own server and saying "sent" on the page. **Never** make a form that
+  sends by opening the visitor's email app (`mailto:`): Vedran tried that and rejected it.
+  The site doesn't advertise "website projects"; keep the copy open-ended.
 
 ## Deploy
 
 - **A move off Vercel to self-hosting is planned but parked** until Vedran says go. The
   whole plan, its open decisions and where to resume are in `docs/self-hosting.md`. Read
-  it before changing anything about hosting, deploys or the contact form.
+  it before changing anything about hosting, deploys or adding the contact form.
 - Hosted on **Vercel**, static Astro output, no adapter: `npm run build` → `dist`. Merging
   to `main` deploys to production; every PR gets a preview URL.
 - The canonical domain is **https://vchichov.com** (apex, and the primary domain in

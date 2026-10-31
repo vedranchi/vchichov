@@ -23,12 +23,13 @@ Vercel project. It is now **one site** with a new look, and it leads with the bl
   grounds, and the orange kept as the one accent, with the same rule as before: always a
   fill with dark ink on it, never text. No photos or screenshots anywhere. The rules are in
   `AGENTS.md` under Design.
-- **Work with me is a contact form**, and the site no longer pitches "website projects"
-  anywhere. The home bio now says Vedran is passionate about constantly learning.
-- **The form has no backend yet.** The site is static, so sending opens the visitor's
-  email app with the message filled in (a plain `mailto:` submission without JS). The plan
-  is a small endpoint on Vedran's own server once the site is self-hosted; the comment at
-  the top of `src/pages/work-with-me.astro` says what to replace.
+- **Work with me** shows the email address (large, as the call to action) plus Instagram
+  and GitHub, and the site no longer pitches "website projects" anywhere. The home bio is
+  Vedran's own: software engineering in Skopje, passionate about technology, bike racing
+  and the outdoors.
+- **No contact form yet, on purpose.** A form that opened the visitor's email app was tried
+  on this branch and rejected. A real form, which sends by itself and confirms on the page,
+  comes with self-hosting (`docs/self-hosting.md`).
 - **Posts:** both sample posts (the farm welcome and the national ITT one) are gone. The blog
   has a single placeholder, `welcome.md`, written for the new site and kept at the same
   slug so old `/welcome` links still land. It starts with a `VEDRAN:` comment saying it's
