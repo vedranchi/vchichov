@@ -8,8 +8,12 @@ import { postHref, transitionName, type Post } from '../lib/posts';
 interface Props {
   posts: Post[];
   byYear?: boolean;
+  /** Give each title its view-transition name, so it morphs into the article's heading.
+   *  Turn off where the same post is already named elsewhere on the page (the home page's
+   *  orange tile) — a name used twice makes the browser skip the transition entirely. */
+  transitions?: boolean;
 }
-const { posts, byYear = false }: Props = Astro.props;
+const { posts, byYear = false, transitions = true }: Props = Astro.props;
 
 // Posts arrive newest first, so years come out newest first too.
 const groups: [number | null, Post[]][] = [];
@@ -33,7 +37,12 @@ for (const post of posts) {
                 <time class="row-date mono" datetime={post.data.pubDate.toISOString()}>
                   {formatShortDate(post.data.pubDate)}
                 </time>
-                <span class="row-title" style={`view-transition-name: ${transitionName(post.id)}`}>
+                <span
+                  class="row-title"
+                  style={
+                    transitions ? `view-transition-name: ${transitionName(post.id)}` : undefined
+                  }
+                >
                   {post.data.title}
                 </span>
                 {post.data.tags[0] && <span class="row-tag mono">{post.data.tags[0]}</span>}

@@ -16,8 +16,9 @@ Vercel project. It is now **one site** with a new look, and it leads with the bl
 - **One site, one Vercel project.** Posts moved to `vchichov.com/blog/<slug>`, cycling to
   `vchichov.com/cycling`, the feed to `vchichov.com/rss.xml`. The blog subdomain only
   redirects here now.
-- **Blog-led.** The home page opens with the newest post as a big orange tile, then the
-  rest of the writing, then projects, then "Work with me".
+- **Blog-led.** The home page opens with the newest post as a big orange tile, then a
+  Writing list of the five newest posts (the tile's included), then projects, then "Work
+  with me".
 - **New look.** Mona Sans set wide and heavy, Geist Mono for dates and results, neutral
   grounds, and the orange kept as the one accent, with the same rule as before: always a
   fill with dark ink on it, never text. No photos or screenshots anywhere. The rules are in

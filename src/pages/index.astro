@@ -11,10 +11,10 @@ import { riderAge } from '../lib/cycling';
 import { getPosts } from '../lib/posts';
 
 const posts = await getPosts();
-// The newest post leads the hero; the list below picks up from the next one, so nothing
-// shows twice.
-const [latest, ...older] = posts;
-const more = older.slice(0, 5);
+// The newest post leads the hero as the orange tile. The Writing list below is the index:
+// the five newest, the tile's post included, so the list never empties out.
+const latest = posts[0];
+const recent = posts.slice(0, 5);
 
 const all = projectData.projects as Project[];
 // Featured order comes from home.ts; anything missing is skipped rather than erroring.
@@ -44,12 +44,12 @@ const age = riderAge();
   </section>
 
   {
-    more.length > 0 && (
+    recent.length > 0 && (
       <section class="container block" aria-labelledby="writing-heading">
         <h2 id="writing-heading" class="section-title">
           Writing
         </h2>
-        <PostList posts={more} />
+        <PostList posts={recent} transitions={false} />
         <p class="more">
           <a class="arrow-link" href="/blog">
             All posts <ArrowRight aria-hidden="true" />

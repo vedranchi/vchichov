@@ -78,8 +78,8 @@ Write your post here in normal Markdown.
 ```
 
 - **Filename = URL**: `my-post.md` → `vchichov.com/blog/my-post`.
-- **The newest post** leads the home page as the big orange tile; the rest are listed
-  below it and on `/blog`, grouped by year.
+- **The newest post** leads the home page as the big orange tile. The five newest
+  (that one included) are listed below it, and every post is on `/blog`, grouped by year.
 - **Drafts**: `draft: true` hides a post in the built site but shows it in `npm run dev`.
 - **Wiki links**: `[[my-post]]` or `[[my-post|custom text]]` link to another post
   (resolves to `/blog/<slug>`). See `src/lib/remark-wikilinks.mjs`.
