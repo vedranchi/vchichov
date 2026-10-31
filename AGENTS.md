@@ -65,6 +65,9 @@ src/
 
 ## Deploy
 
+- **A move off Vercel to self-hosting is planned but parked** until Vedran says go. The
+  whole plan, its open decisions and where to resume are in `docs/self-hosting.md`. Read
+  it before changing anything about hosting, deploys or the contact form.
 - Hosted on **Vercel**, static Astro output, no adapter: `npm run build` → `dist`. Merging
   to `main` deploys to production; every PR gets a preview URL.
 - The canonical domain is **https://vchichov.com** (apex, and the primary domain in
