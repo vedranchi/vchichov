@@ -1,0 +1,54 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ArrowLeft from '@phosphor-icons/core/assets/bold/arrow-left-bold.svg';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostList from '../../../components/PostList.astro';
+import TagChips from '../../../components/TagChips.astro';
+import { slugifyTag } from '../../../lib/format';
+import { getPosts, type Post } from '../../../lib/posts';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+  // Several spellings can slugify the same way; the first one seen labels the page.
+  const tags = new Map<string, { label: string; posts: Post[] }>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const slug = slugifyTag(tag);
+      if (!tags.has(slug)) tags.set(slug, { label: tag, posts: [] });
+      tags.get(slug)!.posts.push(post);
+    }
+  }
+  return [...tags.entries()].map(([slug, { label, posts }]) => ({
+    params: { tag: slug },
+    props: { label, posts, allTags },
+  }));
+}) satisfies GetStaticPaths;
+
+const { label, posts, allTags } = Astro.props;
+---
+
+<BaseLayout
+  title={`Posts tagged ${label}`}
+  description={`Posts by Vedran Chichov tagged ${label}.`}
+>
+  <section class="container page">
+    <header class="head">
+      <a class="back-link mono" href="/blog"><ArrowLeft aria-hidden="true" /> All posts</a>
+      <h1 class="page-title display">#{label}</h1>
+      <p class="lede">
+        {posts.length} post{posts.length === 1 ? '' : 's'} tagged {label}.
+      </p>
+      <TagChips tags={allTags} current={label} />
+    </header>
+    <PostList posts={posts} />
+  </section>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+</style>

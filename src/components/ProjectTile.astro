@@ -1,0 +1,150 @@
+---
+// A project: name, year, blurb, stack, and where to see it. No screenshots — the site uses
+// no pictures, so the type does the work.
+//   tile  — a card, for the home page's grid (`large` is its lead tile)
+//   row   — an editorial row, name on the left and the details on the right, for /projects
+import ArrowUpRight from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg';
+import { home } from '../data/home';
+
+export interface Project {
+  name: string;
+  description: string;
+  url: string;
+  homepage: string | null;
+  languages: string[];
+  topics: string[];
+  stars: number;
+  updatedAt: string;
+}
+interface Props {
+  project: Project;
+  layout?: 'tile' | 'row';
+  large?: boolean;
+}
+const { project, layout = 'tile', large = false }: Props = Astro.props;
+
+const title = home.names[project.name] ?? project.name;
+const blurb = home.blurbs[project.name] ?? project.description;
+const year = new Date(project.updatedAt).getFullYear();
+// Top three only — the full list is noise at this size.
+const languages = project.languages.slice(0, 3);
+// Rows sit straight under the page's h1; tiles sit under the home page's "Projects" h2.
+const Heading = layout === 'row' ? 'h2' : 'h3';
+---
+
+<article class:list={['tile', `tile--${layout}`, { 'tile--large': large }]}>
+  <header class="tile-head">
+    <Heading class="tile-title">{title}</Heading>
+    <time class="mono muted" datetime={String(year)}>{year}</time>
+  </header>
+  <div class="tile-body">
+    <p class="tile-blurb">{blurb}</p>
+    {
+      languages.length > 0 && (
+        <ul class="stack mono muted" aria-label="Built with">
+          {languages.map((lang) => (
+            <li>{lang}</li>
+          ))}
+        </ul>
+      )
+    }
+    <p class="tile-links">
+      {
+        project.homepage && (
+          <a class="arrow-link" href={project.homepage} rel="noopener">
+            Visit <span class="sr-only">{title}</span>
+            <ArrowUpRight aria-hidden="true" />
+          </a>
+        )
+      }
+      <a class="arrow-link" href={project.url} rel="noopener">
+        Source <span class="sr-only">of {title}</span>
+        <ArrowUpRight aria-hidden="true" />
+      </a>
+    </p>
+  </div>
+</article>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    height: 100%;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .tile-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .tile-title {
+    font-size: var(--step-1);
+    font-stretch: var(--wide);
+    font-weight: 780;
+  }
+  .tile--large .tile-title {
+    font-size: var(--step-3);
+  }
+  .tile--large .tile-blurb {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 38ch;
+  }
+  .tile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    flex: 1;
+  }
+  .tile-blurb {
+    flex: 1;
+  }
+
+  /* The row: no card, just a hairline above. Name and year on the left, the rest beside. */
+  .tile--row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 1rem 3rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem) 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: none;
+  }
+  .tile--row .tile-head {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.4rem;
+  }
+  .tile--row .tile-title {
+    font-size: var(--step-2);
+  }
+  .tile--row .tile-blurb {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  @media (max-width: 760px) {
+    .tile--row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+  }
+  .tile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+</style>

@@ -1,299 +1,155 @@
-# Handoff — the two-site split
+# Handoff — one site, redesigned
 
-**Date:** 2026-09-23
-**Branch:** `feat/home-sections`
-**Status:** code complete and pushed; **not merged, not deployed**. The blog subdomain does
-not exist yet — see [Setting up the subdomain](#setting-up-the-subdomain).
+**Branch:** `feat/one-site`
+**Status:** code complete; **not merged, not deployed**. After the merge, the
+`blog.vchichov.com` domain has to be moved in Vercel by hand. See
+[After merging](#after-merging-move-the-blog-domain).
 
 ---
 
 ## What changed and why
 
-`vchichov.com` used to be one Astro site with a _Stardew Valley_ pixel theme covering
-everything: home, projects, cycling, blog. That single identity pulled in two directions —
-the pixel theme is charming, but it worked against the site's job as a portfolio that
-strangers evaluate you by.
+`vchichov.com` used to be two sites built from one repo: a neobrutalist portfolio on the
+apex and a _Stardew Valley_ pixel-farm blog on `blog.vchichov.com`, each with its own
+Vercel project. It is now **one site** with a new look, and it leads with the blog:
 
-It is now **two sites built from one repo**, each with its own Vercel project:
-
-| Site      | Domain              | `srcDir`     | Config                  | Output       | Look                             |
-| --------- | ------------------- | ------------ | ----------------------- | ------------ | -------------------------------- |
-| Portfolio | `vchichov.com`      | `sites/www`  | `astro.config.mjs`      | `dist/`      | Neobrutalism                     |
-| Blog      | `blog.vchichov.com` | `sites/blog` | `astro.config.blog.mjs` | `dist-blog/` | Cozy _Stardew Valley_ pixel farm |
-
-Projects, about and contact live on the portfolio. Blog posts **and cycling** live on the
-blog.
-
----
+- **One site, one Vercel project.** Posts moved to `vchichov.com/blog/<slug>`, cycling to
+  `vchichov.com/cycling`, the feed to `vchichov.com/rss.xml`. The blog subdomain only
+  redirects here now.
+- **Blog-led.** The home page opens with the newest post as a big orange tile, then a
+  Writing list of the five newest posts (the tile's included), then projects, then "Work
+  with me".
+- **New look.** Mona Sans set wide and heavy, Geist Mono for dates and results, neutral
+  grounds, and the orange kept as the one accent, with the same rule as before: always a
+  fill with dark ink on it, never text. No photos or screenshots anywhere. The rules are in
+  `AGENTS.md` under Design.
+- **Work with me** shows the email address (large, as the call to action) plus Instagram
+  and GitHub, and the site no longer pitches "website projects" anywhere. The home bio is
+  Vedran's own: software engineering in Skopje, passionate about technology, bike racing
+  and the outdoors.
+- **No contact form yet, on purpose.** A form that opened the visitor's email app was tried
+  on this branch and rejected. A real form, which sends by itself and confirms on the page,
+  comes with self-hosting (`docs/self-hosting.md`).
+- **Posts:** both sample posts (the farm welcome and the national ITT one) are gone. The blog
+  has a single placeholder, `welcome.md`, written for the new site and kept at the same
+  slug so old `/welcome` links still land. It starts with a `VEDRAN:` comment saying it's
+  a placeholder to rewrite.
+- **Retired:** the pixel farm and its fonts, the neobrutalist boxes and shadows, Montserrat,
+  the project screenshots and the unused podium photo. All recoverable from git history.
 
 ## Repository layout
 
+The `sites/www` + `sites/blog` split and the `@shared/*` alias are gone; it's a standard
+Astro layout under `src/`. The Obsidian vault at `src/content/blog/` **did not move**.
+
 ```text
-src/                SHARED ONLY — no pages, no components, no styles
-  assets/           project screenshots, og.png (share image), nc2026.jpg (unreferenced)
-  content/blog/     *.md + .obsidian/   ← the Obsidian vault. DO NOT MOVE.
-  data/             site.ts, home.ts, projects.json, cycling.json, palmares.ts
-  lib/              collections.ts, format.ts, cycling.ts, remark-wikilinks.mjs
-sites/www/          pages/ layouts/ components/ styles/ content.config.ts
-sites/blog/         pages/ layouts/ components/ styles/ content.config.ts
-astro.config.mjs    astro.config.blog.mjs    vercel.json
+src/pages/       index, blog/{index,[slug],tags/[tag]}, projects, about, cycling,
+                 work-with-me, 404, rss.xml.js, robots.txt.js
+src/components/  Nav, Footer, ThemeToggle, LatestPostTile, PostList, TagChips,
+                 ProjectTile, PositionBadge, ReadingProgress
+src/styles/      tokens.css, global.css, prose.css
+src/lib/posts.ts getPosts() (drafts filtered, newest first), postHref(), transitionName()
 ```
-
-Both builds keep Astro's `root` at the repo root. That is load-bearing: the content
-collection's glob `base: './src/content/blog'` resolves against `root`, so **the Obsidian
-vault path never changed** and Obsidian keeps working untouched.
-
-Shared code is imported with the `@shared/*` alias (`tsconfig.json` → `src/*`). Within a
-site, component/layout/style imports stay relative.
-
-### The one non-obvious constraint
-
-A single `tsconfig.json` type-checks both sites, and the generated types in `.astro/` are
-shared between the two builds. If only the blog declared its collections, `astro check`
-would pass or fail depending on **which build ran last**.
-
-So collections are defined once in `src/lib/collections.ts` and re-exported by _both_
-`sites/*/content.config.ts`. The portfolio renders no Markdown but declares them anyway.
-**Keep both re-exports.**
-
----
-
-## Commands
-
-```bash
-npm run dev          # portfolio, :4321
-npm run dev:blog     # blog, :4322
-npm run build:all    # both
-npm run check:all    # both — must be clean before committing
-npm run format
-```
-
-Note: in some sandboxes `astro dev` only allows one server at a time; run whichever site
-you are looking at.
-
----
 
 ## URL changes
 
-The blog flattened by one level, since `blog.vchichov.com/blog/…` repeats itself.
+| Old                                    | New                            |
+| -------------------------------------- | ------------------------------ |
+| `blog.vchichov.com/`                   | `vchichov.com/blog`            |
+| `blog.vchichov.com/archive`            | `vchichov.com/blog`            |
+| `blog.vchichov.com/<slug>`             | `vchichov.com/blog/<slug>`     |
+| `blog.vchichov.com/tags/<tag>`         | `vchichov.com/blog/tags/<tag>` |
+| `blog.vchichov.com/cycling`            | `vchichov.com/cycling`         |
+| `blog.vchichov.com/rss.xml`            | `vchichov.com/rss.xml`         |
+| `vchichov.com/blog/*` (pre-split URLs) | served directly again, no hop  |
 
-| Old (apex)         | New (subdomain) |
-| ------------------ | --------------- |
-| `/blog`            | `/`             |
-| `/blog/<slug>`     | `/<slug>`       |
-| `/blog/tags/<tag>` | `/tags/<tag>`   |
-| `/cycling`         | `/cycling`      |
-| `/rss.xml`         | `/rss.xml`      |
-
-`vercel.json` holds 301s for all of these. **Both Vercel projects read the same
-`vercel.json`**, so every rule is scoped with a `has` host condition on `vchichov.com` and
-is inert on the blog project. Order matters — the `/blog/tags/:tag*` rule must stay above
-the generic `/blog/:slug*`.
-
-Obsidian `[[wikilinks]]` now emit `/<slug>` (`src/lib/remark-wikilinks.mjs`).
+The old apex rules that sent `/blog/*`, `/cycling` and `/rss.xml` to the subdomain are
+**deleted**. Keeping them alongside the new rules would loop.
 
 ---
 
-## Portfolio design
+## After merging: move the blog domain
 
-Neobrutalism, taken from a supplied reference screenshot. Values were sampled from the
-image, not guessed.
-
-| Token   | Value                    |
-| ------- | ------------------------ |
-| Ground  | `#292016` espresso       |
-| Accent  | `#d16c19` orange         |
-| Text    | `#e2e2e2`                |
-| Borders | `#000000`, 2px           |
-| Shadow  | `4px 4px 0`, no blur     |
-| Radius  | `8px`                    |
-| Type    | Montserrat (self-hosted) |
-
-The system reduces to three tokens — `--border`, `--radius`, `--shadow` — plus one
-behaviour: an interactive `.box--press` travels exactly `--press` (4px, equal to the shadow
-offset) when clicked, so it lands where its shadow was.
-
-**The governing colour rule: orange is always a filled block with black on it, never
-text.** Black-on-orange is 5.87:1; light-on-orange is 2.76:1 and orange-as-text on the
-ground is 4.47:1 — both fail AA. Hover _lightens_ to `#dd7a24` rather than darkening,
-because darkening measured 4.46:1.
-
-Light mode is derived (`#f7efe3` cream / `#1a140e` ink, 16:1) and deliberately keeps the
-same orange block, so both modes read as the same site. With JavaScript off,
-`prefers-color-scheme` still selects correctly.
-
-The blog's pixel theme is untouched and shares nothing with this. Do not leak pixel styling
-into `sites/www`, and do not flatten the farm into the portfolio's palette.
-
----
-
-## Setting up the subdomain
-
-**Do these in order.** The blog build only exists on this branch, so creating the Vercel
-project before merging would just fail to build.
-
-> ⚠️ Between step 1 and step 4, `/blog/*` and `/cycling` on the apex will 301 to a host that
-> does not resolve yet. On a young domain with two sample posts this is near-zero cost, but
-> it is why steps 2–4 should follow the merge promptly.
+Do these in order, **after** the PR is merged. Until step 2, the new `vercel.json` rules
+for the blog host do nothing, because that host isn't attached to this project yet.
 
 ### 1. Merge the PR
 
-Open it if it is not open yet:
+The portfolio project (the one that owns `vchichov.com`) deploys the merged site.
+
+The **blog** project will also try to build from `main` and **fail**, because
+`npm run build:blog` no longer exists. That's harmless: Vercel keeps serving its last good
+deployment, so `blog.vchichov.com` stays up until you move the domain.
+
+### 2. Move `blog.vchichov.com` to the portfolio project
+
+1. Vercel → the **blog** project → **Settings → Domains** → remove `blog.vchichov.com`.
+2. Vercel → the **portfolio** project → **Settings → Domains** → add `blog.vchichov.com`.
+   Connect it to **Production**. Do **not** choose "Redirect to another domain": that would
+   keep the path (`/welcome` → `vchichov.com/welcome`, a 404). `vercel.json` maps the paths.
+
+The Namecheap `blog` CNAME stays exactly as it is; it already points at Vercel. Between
+removing and adding, the subdomain is briefly unassigned, which takes a minute at most.
+
+### 3. Verify
 
 ```bash
-gh pr create --repo vedranchi/vchichov --base main --head feat/home-sections \
-  --title "Split into a portfolio at the apex and a farm blog on a subdomain"
+curl -sI https://blog.vchichov.com/welcome       # 308 -> https://vchichov.com/blog/welcome
+curl -sI https://blog.vchichov.com/welcome/      # 308 -> the same
+curl -sI https://blog.vchichov.com/              # 308 -> https://vchichov.com/blog
+curl -sI https://blog.vchichov.com/tags/cycling  # 308 -> https://vchichov.com/blog/tags/cycling
+curl -sI https://blog.vchichov.com/cycling       # 308 -> https://vchichov.com/cycling
+curl -sI https://blog.vchichov.com/rss.xml       # 308 -> https://vchichov.com/rss.xml
+curl -sI https://vchichov.com/blog/welcome       # 200, no redirect
+curl -s  https://vchichov.com/robots.txt         # Sitemap: https://vchichov.com/sitemap-index.xml
 ```
 
-Check the preview URL before merging. Merging `main` redeploys the **existing** project,
-which now serves the new portfolio from `dist/`.
+If a trailing-slash request doesn't redirect, check the `/:slug` rule in `vercel.json`.
+If nothing on the blog host redirects, check the domain is attached to the portfolio
+project and that the `has` host value is exactly `blog.vchichov.com`.
 
-### 2. Create the second Vercel project
+### 4. Delete the blog project
 
-Vercel dashboard → **Add New… → Project** → import the **same** GitHub repo
-(`vedranchi/vchichov`). When it asks to configure:
-
-| Setting          | Value                                       |
-| ---------------- | ------------------------------------------- |
-| Project Name     | e.g. `vchichov-blog`                        |
-| Framework Preset | Astro                                       |
-| Root Directory   | `./` (leave as-is)                          |
-| Build Command    | `npm run build:blog` — override the default |
-| Output Directory | `dist-blog` — override the default          |
-| Install Command  | default                                     |
-
-Root Directory stays at the repo root because both sites build from there; only the build
-command and output directory differ.
-
-Deploy it. It should produce 9 pages. Confirm the generated `robots.txt` says
-`Sitemap: https://blog.vchichov.com/sitemap-index.xml` — that proves the build picked up
-`astro.config.blog.mjs` rather than the default config.
-
-Leave the existing project alone: it keeps `npm run build` → `dist`.
-
-### 3. Add the domain in Vercel
-
-In the **new** project → **Settings → Domains** → add `blog.vchichov.com`.
-
-Vercel will show it as **Invalid Configuration / pending** with a DNS record to create.
-That is expected — Vercel cannot edit your DNS. Continue to step 4.
-
-Do **not** add `blog.vchichov.com` to the portfolio project; the apex and `www` stay there.
-
-### 4. Add the CNAME at Namecheap
-
-**DNS for `vchichov.com` is at Namecheap, not Vercel.** This is the step that usually
-stalls people, because Vercel's UI makes it look like one click.
-
-Namecheap → **Domain List** → `vchichov.com` → **Manage** → **Advanced DNS** → **Add New
-Record**:
-
-| Field | Value                  |
-| ----- | ---------------------- |
-| Type  | `CNAME Record`         |
-| Host  | `blog`                 |
-| Value | `cname.vercel-dns.com` |
-| TTL   | Automatic              |
-
-Host is `blog`, **not** `blog.vchichov.com` — Namecheap appends the domain itself. Save.
-
-Use whatever value Vercel actually displays in step 3 if it differs from
-`cname.vercel-dns.com`; Vercel's target has changed before.
-
-### 5. Wait, then verify
-
-Propagation is usually minutes, occasionally up to an hour. Vercel's domain row flips to
-**Valid Configuration** and issues a certificate automatically.
-
-```bash
-dig +short blog.vchichov.com                      # should show the Vercel CNAME target
-curl -sI https://blog.vchichov.com/ | head -1     # 200
-curl -sI https://blog.vchichov.com/welcome        # 200
-curl -sI https://vchichov.com/blog/welcome        # 301 -> https://blog.vchichov.com/welcome
-curl -sI https://vchichov.com/cycling             # 301 -> https://blog.vchichov.com/cycling
-curl -s  https://blog.vchichov.com/robots.txt     # sitemap on the blog host
-```
-
-If the redirects do not fire, check that `vercel.json` deployed and that the `has` host
-value matches the request host exactly (`vchichov.com`, no `www.`).
-
-### 6. Optional — stop redundant rebuilds
-
-Each project currently rebuilds on every push to `main`, including commits that only touch
-the other site. In each project → **Settings → Git → Ignored Build Step**, set a command
-that exits `0` when nothing relevant changed, e.g. for the blog project:
-
-```bash
-git diff --quiet HEAD^ HEAD -- sites/blog src astro.config.blog.mjs package.json
-```
-
-Skip this until the split is confirmed working; a wrong ignore step is confusing to debug.
+Once the redirects check out, delete the blog project in Vercel (Settings → General →
+Delete Project). Nothing else uses it.
 
 ---
 
-## Verification already done
+## Verification done before the PR
 
-- `npm run check:all` — 0 errors on both sites, in either build order.
-- `npm run build:all` — portfolio 5 pages, blog 9 pages.
-- Hosts correct in both outputs: canonicals, `robots.txt`, sitemaps.
-- No cross-contamination: `dist/` has no blog routes, `dist-blog/` has no portfolio pages.
-- Wikilink `[[welcome]]` renders as `/welcome`, not `/blog/welcome`.
-- Draft posts excluded from pages, RSS and sitemap (this was a **bug fix** — `getStaticPaths`
-  was not filtering drafts, so they were built and reachable by direct URL in production).
-- Portfolio ships no pixel fonts; blog keeps all three.
-- Contrast ratios computed for every foreground/background pair in both modes.
+- `npm run format`, `npm run check` (0 errors, 0 warnings) and `npm run build` (9 pages)
+  are all clean.
+- `dist/`: canonicals, `robots.txt`, the sitemap and RSS item links all use
+  `https://vchichov.com`. No file mentions `blog.vchichov.com`. No `<link>` or `<script>`
+  points off-site; the only external URLs are ordinary links.
+- A temporary `draft: true` post was absent from every page, tag page, the feed and the
+  sitemap, then deleted. A temporary post with a code block confirmed Shiki emits both the
+  light and dark palettes, then deleted.
+- `[[wikilinks]]` render as `/blog/<slug>` (checked with the old sample posts, which used
+  them; the placeholder has none).
+- No em or en dashes in the built UI copy.
+- Contrast computed for every token pair in both modes: all text pairs reach 4.5:1 or more
+  (lowest: muted text, 6.55:1) and the orange UI shapes reach 3:1 or more (3.25:1 on the
+  light ground).
+- Looked at in headless Firefox: home, blog, a post, projects, about, cycling and
+  work-with-me, in light and dark, at 1440px and 390px.
 
 ### Not verified
 
-**No browser was available in the session that built this.** Contrast is computed rather
-than observed, and nobody has looked at the rendered pages. Still needs an eyeball on the
-preview URL:
-
-- rendered layout and spacing at 375 / 768 / 1024 / 1440
-- hover and press feel on the boxes
-- keyboard tab order and focus visibility
-- reduced-motion behaviour
-- the theme toggle in both directions
-
----
+- **Chrome-only motion**: the cross-page view transitions and the scroll-timeline reading
+  bar. Firefox doesn't do either, so they were never seen running. Both degrade to nothing
+  where unsupported.
+- Keyboard tab order and the focus ring were reviewed in the code, not by tabbing through
+  a browser.
+- Safari and real phones.
 
 ## Open items
 
-| Item                                                     | Where                                                             |
-| -------------------------------------------------------- | ----------------------------------------------------------------- |
-| Contact email is `vchichovv@gmail.com`                   | `src/data/site.ts` — change if you want a different one           |
-| Local git remote still points at the old repo name       | `git remote set-url origin git@github.com:vedranchi/vchichov.git` |
-| Root `handoff.md` documents the decommissioned Oracle VM | delete it; it is gitignored but misleading                        |
-| `src/assets/nc2026.jpg` unreferenced                     | reuse on the blog or remove                                       |
-| `.agents/`, `skills-lock.json`, `temp_ss/` untracked     | design skills and the reference screenshot; commit or delete      |
-| Cycling scraper has no scheduled home                    | GitHub Actions IPs are Cloudflare-blocked by procyclingstats      |
-
-### Retired components
-
-Recoverable with `git checkout 474a3e1 -- <path>`:
-`BlogSpotlight`, `CyclingSpotlight`, `ProjectSpotlight`, `ScreenshotWindow`, `HomeSection`,
-and the old pixel `ProjectCard`. `PixelFarmScene` survived and now heads `/archive`.
-
----
-
-## The farm (added after the split)
-
-`blog.vchichov.com/` is a small walkable farm; the card list moved to `/archive`.
-
-- **Playing it:** click the farm, walk with the arrow keys or WASD, press Enter to look at
-  what is in front of you. On a phone, tap where to go; tapping a crop walks up to it and
-  opens it.
-- **Crops are posts.** One per post, newest nearest the gate; the field adds rows as posts
-  come in. A post's first tag picks the species (wheat, tomatoes, pumpkin, sunflower), so a
-  tag always grows the same crop. A post sprouts in its first week and is ripe after a
-  month — worked out when the page loads, so crops keep growing between deploys.
-- **Also on the farm:** a signpost to vchichov.com, and the farmhouse door (a hint).
-- **Movement** is free rather than tile-stepped, eased into the tile lanes, so keys answer on
-  the next frame; the farmer always stops on a whole tile. Under reduced motion they jump
-  tile to tile.
-- **Code:** `sites/blog/farm/` — `map.ts` (layout, pathfinding), `sprites.ts` (pixel art as
-  character grids), `engine.ts` (movement, drawing, day/night), `input.ts`, `main.ts`
-  (wiring, dialog). `components/Farm.astro` is the page markup and the fallback list.
-- **The sky:** every blog page has a sky at the top (`components/Backdrop.astro`) — sun and
-  drifting clouds by day, moon and stars by night — and a grass strip along the footer. The
-  sun/moon is the site's day/night switch; the nav no longer has one.
+| Item                                                  | Where                                                                                                                                    |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `feat/blog-folders` (no PR yet) conflicts with this   | its `generateId` change ports 1:1 into `src/content.config.ts`; rebase it. It also moves the deleted ITT post into `cycling/`; drop that |
+| The draft "host-your-own-website" post on that branch | it describes the old subdomain setup                                                                                                     |
+| PR #9 (handoff rewrite)                               | superseded by this file; close it                                                                                                        |
+| `welcome.md` is a placeholder                         | rewrite it in Vedran's own words, or delete it once real posts are up                                                                    |
+| `.agents/`, `skills-lock.json` untracked              | design skills; commit or delete                                                                                                          |
+| Cycling scraper has no scheduled home                 | GitHub Actions IPs are Cloudflare-blocked by procyclingstats                                                                             |

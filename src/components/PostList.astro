@@ -1,0 +1,162 @@
+---
+// Posts as rows: date, title, first tag. The whole row is the link; hovering it sweeps the
+// orange in from the left. With `byYear`, rows are grouped under their year, which hangs in
+// a sticky column on wide screens.
+import { formatShortDate } from '../lib/format';
+import { postHref, transitionName, type Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  byYear?: boolean;
+  /** Give each title its view-transition name, so it morphs into the article's heading.
+   *  Turn off where the same post is already named elsewhere on the page (the home page's
+   *  orange tile) — a name used twice makes the browser skip the transition entirely. */
+  transitions?: boolean;
+}
+const { posts, byYear = false, transitions = true }: Props = Astro.props;
+
+// Posts arrive newest first, so years come out newest first too.
+const groups: [number | null, Post[]][] = [];
+for (const post of posts) {
+  const year = byYear ? post.data.pubDate.getFullYear() : null;
+  const last = groups.at(-1);
+  if (last && last[0] === year) last[1].push(post);
+  else groups.push([year, [post]]);
+}
+---
+
+<div class:list={['post-list', { 'by-year': byYear }]}>
+  {
+    groups.map(([year, group]) => (
+      <div class="group">
+        {year && <h2 class="year display tnum">{year}</h2>}
+        <ul class="rows">
+          {group.map((post) => (
+            <li>
+              <a class="row" href={postHref(post)}>
+                <time class="row-date mono" datetime={post.data.pubDate.toISOString()}>
+                  {formatShortDate(post.data.pubDate)}
+                </time>
+                <span
+                  class="row-title"
+                  style={
+                    transitions ? `view-transition-name: ${transitionName(post.id)}` : undefined
+                  }
+                >
+                  {post.data.title}
+                </span>
+                {post.data.tags[0] && <span class="row-tag mono">{post.data.tags[0]}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .group + .group {
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .row {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 7.5rem 1fr auto;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  /* The sweep: an orange fill that runs in from the left behind the row. A transform, so it
+     costs nothing to animate. Text on it switches to the fixed ink (--on-accent). It reaches
+     a little past the text on both sides; the hairlines stay on the container's edges. */
+  .row::before {
+    content: '';
+    position: absolute;
+    inset: 0 -0.75rem;
+    z-index: -1;
+    border-radius: var(--radius);
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms var(--ease-out);
+  }
+  .row:hover,
+  .row:focus-visible {
+    color: var(--on-accent);
+  }
+  .row:hover::before,
+  .row:focus-visible::before {
+    transform: scaleX(1);
+  }
+  .row:hover .row-date,
+  .row:focus-visible .row-date,
+  .row:hover .row-tag,
+  .row:focus-visible .row-tag {
+    color: var(--on-accent);
+  }
+  .row-date,
+  .row-tag {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    transition: color 200ms ease;
+  }
+  .row-title {
+    font-size: var(--step-1);
+    font-stretch: var(--wide-mid);
+    font-weight: 680;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .year {
+    font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
+    line-height: 1;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  @media (min-width: 900px) {
+    .by-year .group {
+      display: grid;
+      grid-template-columns: 11rem 1fr;
+      align-items: start;
+    }
+    .by-year .year {
+      position: sticky;
+      top: 1.5rem;
+      margin: 0;
+      padding-top: 0.9rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'date tag'
+        'title title';
+      gap: 0.3rem 1rem;
+      padding-block: 0.9rem;
+    }
+    .row-date {
+      grid-area: date;
+    }
+    .row-tag {
+      grid-area: tag;
+    }
+    .row-title {
+      grid-area: title;
+    }
+  }
+</style>

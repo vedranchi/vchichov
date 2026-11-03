@@ -1,0 +1,108 @@
+---
+import ArrowUpRight from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+
+const instagram = site.socials.find((s) => s.label === 'Instagram');
+const github = site.socials.find((s) => s.label === 'GitHub');
+const strip = (u: string) => u.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+{
+  /*
+   * VEDRAN — the copy below makes no promises about reply times on purpose. If you want to
+   * commit to one ("I reply within two days"), add it under the lede; it's the line that
+   * most reassures someone writing to a stranger.
+   *
+   * NO FORM YET, ON PURPOSE. A contact form comes back with self-hosting, posting to an
+   * endpoint on Vedran's own server and confirming "sent" on the page — never by opening the
+   * visitor's email app. See docs/self-hosting.md.
+   */
+}
+<BaseLayout title="Work with me" description="Get in touch with Vedran Chichov.">
+  <section class="container page">
+    <h1 class="page-title display rise">Work with me</h1>
+    <p class="lede rise" style="--i: 1">
+      Have an idea, a project, or a question? Email me, or find me on Instagram or GitHub.
+    </p>
+
+    <p class="email rise" style="--i: 2">
+      <a class="email-link display" href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+
+    <ul class="channels">
+      {
+        instagram && (
+          <li class="channel">
+            <span class="mono muted">Instagram</span>
+            <a class="arrow-link" href={instagram.href} rel="me noopener">
+              @{strip(instagram.href).replace(/^instagram\.com\//, '')}
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </li>
+        )
+      }
+      {
+        github && (
+          <li class="channel">
+            <span class="mono muted">GitHub</span>
+            <a class="arrow-link" href={github.href} rel="me noopener">
+              {strip(github.href)}
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .lede {
+    margin-top: 1.25rem;
+  }
+
+  /* The address itself is the call to action: big, wide, and underlined like every other
+     link, thickening to orange on hover. */
+  .email {
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+  .email-link {
+    font-size: clamp(1.375rem, 0.9rem + 3vw, 2.75rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+    transition:
+      text-decoration-color 160ms ease,
+      text-decoration-thickness 160ms ease;
+  }
+  .email-link:hover {
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 5px;
+  }
+
+  .channels {
+    max-width: 36rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .channel {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .channel .mono {
+    text-transform: uppercase;
+  }
+  .channel a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+</style>

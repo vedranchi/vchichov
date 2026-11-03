@@ -1,0 +1,108 @@
+/* Reading styles for rendered Markdown (blog posts). Imported by the post page only. */
+
+.prose {
+  font-size: var(--step-post);
+  line-height: 1.72;
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: 1.15em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 2.2em;
+  font-stretch: var(--wide-mid);
+  font-weight: 750;
+  line-height: 1.15;
+}
+.prose h2 {
+  font-size: var(--step-2);
+}
+.prose h3 {
+  font-size: var(--step-1);
+}
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + * {
+  margin-top: 0.6em;
+}
+
+.prose strong {
+  font-weight: 700;
+}
+
+/* Obsidian [[wiki links]] keep a dashed underline, so a link to another post reads apart
+   from a link off the site. */
+.prose a.wikilink {
+  text-decoration-style: dashed;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose li::marker {
+  color: var(--text-muted);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: 0.1em 0 0.1em 1.1em;
+  border-left: 4px solid var(--accent); /* a bar, never text — see tokens.css */
+  font-style: italic;
+}
+
+.prose img {
+  border-radius: var(--radius);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin-block: 2.5em;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+.prose :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+/* Shiki writes both palettes into each token as --shiki-light / --shiki-dark (see
+   astro.config.mjs); pick the one matching the page's theme. */
+.prose pre {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.prose pre.astro-code,
+.prose pre.astro-code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+:root[data-theme='dark'] .prose pre.astro-code,
+:root[data-theme='dark'] .prose pre.astro-code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .prose pre.astro-code,
+  :root:not([data-theme]) .prose pre.astro-code span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+}

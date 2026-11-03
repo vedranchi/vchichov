@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import TagChips from '../../components/TagChips.astro';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Writing by Vedran Chichov: notes on building software, racing bikes, and whatever he is figuring out."
+>
+  <section class="container page">
+    <header class="head">
+      <h1 class="page-title display rise">Blog</h1>
+      <p class="lede rise" style="--i: 1">
+        Notes on building software, racing bikes, and whatever else I'm figuring out. Newest first.
+      </p>
+      {tags.length > 0 && <TagChips tags={tags} />}
+    </header>
+
+    {
+      posts.length > 0 ? (
+        <PostList posts={posts} byYear />
+      ) : (
+        <p class="muted">Nothing here yet. The first post is on its way.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+</style>

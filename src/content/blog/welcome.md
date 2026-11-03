@@ -1,30 +1,26 @@
 ---
-title: Welcome to the farm
-description: Why I built this little corner of the web, and what you'll find here.
-pubDate: 2026-07-05
-tags: [meta, life]
+title: Welcome
+description: Who I am, and what I'll be writing about here.
+pubDate: 2026-10-31
+tags: [meta]
 draft: false
 ---
 
-Hey — I'm Vedran. This is a sample post so you can see how the blog looks. Delete it
-whenever you like and write your own.
+<!-- VEDRAN: placeholder welcome post. Rewrite it in your own words, or delete it once real posts are up. -->
 
-I made this site to keep three things in one cozy place: the **projects** I build, my
-**cycling** results, and the occasional **blog** post like this one. The whole thing has a
-_Stardew Valley_ pixel-farm vibe, because a personal site should feel like yours.
+Hi, I'm Vedran. I study software engineering in Skopje, and this is where I write things
+down.
 
-## How I write these
+Expect posts about three things:
 
-Posts are just Markdown files in an Obsidian vault that lives inside the site's repo. I
-open the folder in Obsidian, write, and commit — and the post shows up here.
+- **Technology**: what I'm building, and what I learn along the way.
+- **Bike racing**: races, training, and the results that go with them.
+- **The outdoors**: the rides and trips that aren't about the clock.
 
-That means I can use normal Markdown:
+## How these get written
 
-- **bold** and _italic_ text
-- lists like this one
-- `inline code` and code blocks
-- links, images, and quotes
+Every post is a Markdown file in an Obsidian vault that lives inside this site's
+repository. I write in Obsidian, commit the file, and it goes live with the next deploy.
 
-> A cozy blog is a happy blog.
-
-More soon. If you're curious about the racing side of things, see my [[national-champs-silver]] post.
+If you want to know more about me first, there's an [about page](/about). Otherwise, more
+soon.

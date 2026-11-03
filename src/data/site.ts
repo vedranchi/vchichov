@@ -1,51 +1,27 @@
-// Central config shared by BOTH sites. Edit this to change names, nav, and links everywhere.
+// Central config for the site. Edit this to change the name, nav, and links everywhere.
 //
-// This repo builds two sites: the portfolio at vchichov.com (sites/www) and the farm blog
-// at blog.vchichov.com (sites/blog). `urls` below is the single source of both domains —
-// canonical links, Open Graph URLs, rss.xml, the sitemaps and robots.txt all derive from
-// it via each build's `site` config. Never hard-code a host in a page or in public/.
-
-export const urls = {
-  www: 'https://vchichov.com',
-  blog: 'https://blog.vchichov.com',
-} as const;
+// `url` is the single source of the domain. Canonical links, Open Graph URLs, rss.xml, the
+// sitemap and robots.txt all derive from it via the build's `site` config. Never hard-code
+// a host in a page or in public/.
 
 export const site = {
   name: 'Vedran Chichov',
   shortName: 'Vedran',
   email: 'vchichovv@gmail.com',
-  urls,
-  // One description per site — they are different places with different jobs, so a single
-  // joint tagline no longer describes either.
-  descriptions: {
-    www:
-      'Vedran Chichov — a developer and computer science student in Skopje. ' +
-      'Projects, background, and how to work with me.',
-    blog:
-      'Writing and race results from Vedran Chichov: notes on building software, ' +
-      'bike racing, and whatever else is growing on the farm.',
-  },
+  url: 'https://vchichov.com',
+  description:
+    'Vedran Chichov is a developer and software engineering student in Skopje. ' +
+    'Writing on software and bike racing, the projects he has built, and how to work with him.',
   // Vedran's club. cycling.json carries the full team name; this is just the link for it.
   team: { name: 'Velo-M Termalift', url: 'https://cyclingvelom.com/' },
-  // Each site gets its own nav. Cross-site links are labelled by their destination rather
-  // than with an arrow, so it is obvious you are leaving for the other domain.
-  nav: {
-    www: [
-      { href: '/', label: 'Home', external: false },
-      { href: '/projects', label: 'Projects', external: false },
-      { href: '/about', label: 'About', external: false },
-      { href: '/work-with-me', label: 'Work with me', external: false },
-      { href: urls.blog, label: 'Blog', external: true },
-    ],
-    blog: [
-      { href: '/', label: 'farm', external: false },
-      { href: '/archive', label: 'posts', external: false },
-      { href: '/cycling', label: 'cycling', external: false },
-      { href: urls.www, label: 'vchichov.com', external: true },
-    ],
-  },
-  // `me: true` marks a profile that is Vedran himself — the footer only puts rel="me" on
-  // those. The team site is his club, not his identity, so it stays false.
+  nav: [
+    { href: '/blog', label: 'Blog' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/about', label: 'About' },
+    { href: '/work-with-me', label: 'Work with me' },
+  ],
+  // `me: true` marks a profile that is Vedran himself — only those get rel="me". The team
+  // site is his club, not his identity, so it stays false.
   socials: [
     { href: 'https://github.com/vedranchi', label: 'GitHub', me: true },
     {
@@ -58,4 +34,4 @@ export const site = {
   ],
 } as const;
 
-export type NavItem = (typeof site.nav.www)[number] | (typeof site.nav.blog)[number];
+export type NavItem = (typeof site.nav)[number];

@@ -1,0 +1,292 @@
+@import './tokens.css';
+
+/* Base layer for vchichov.com.
+ *
+ * Rhythm lives here once, wrapped in :where() so it has zero specificity and page rules
+ * can override it without a fight. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh; /* not 100vh — that jumps when iOS Safari's toolbar collapses */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  font-weight: 420;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+/* Cross-page transitions, no JavaScript: a post's title glides from the list into the
+   article. Browsers without support simply navigate. */
+@view-transition {
+  navigation: auto;
+}
+
+/* --- type ---------------------------------------------------------------------------- */
+
+:where(h1, h2, h3, h4) {
+  margin: 0;
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+:where(p, ul, ol, dl, dd, figure) {
+  margin: 0;
+}
+
+/* The display voice: Mona Sans at full width. Page titles, section headings, the name. */
+.display {
+  font-stretch: var(--wide);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.page-title {
+  font-size: var(--step-3);
+}
+
+.section-title {
+  font-size: var(--step-2);
+  font-stretch: var(--wide);
+  font-weight: 780;
+}
+
+/* Dates, counts, tags, results: the mono voice, always with tabular figures. */
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 450;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  max-width: 52ch;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* --- links --------------------------------------------------------------------------- */
+
+a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+/* Inline links read as links by their underline, which thickens and turns orange on hover.
+   The orange is a stroke under ink, never the colour of the words. */
+a.inline,
+.prose a {
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  transition:
+    text-decoration-color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+a.inline:hover,
+.prose a:hover {
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 3px;
+}
+
+/* A plain link with an arrow that nudges forward: "All posts", "Work with me", etc. */
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.arrow-link svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  transition: transform 200ms var(--ease-out);
+}
+.arrow-link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 3px;
+}
+.arrow-link:hover svg {
+  transform: translateX(3px);
+}
+
+/* "All posts" and friends: a quiet mono link back up a level. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.back-link:hover {
+  color: var(--text);
+}
+.back-link svg {
+  width: 1em;
+  height: 1em;
+}
+
+button,
+[role='button'],
+summary {
+  cursor: pointer;
+}
+
+/* Two rings: the text colour for contrast in either mode, and an orange halo outside it. */
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--accent);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 50;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+}
+.skip-link:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+}
+
+/* --- buttons -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms var(--ease-out);
+}
+.btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn svg {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+/* --- layout --------------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Every page opens the same distance below the nav. */
+.page {
+  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 4vw, 2rem);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- entrances -------------------------------------------------------------------------
+ * Only the first screen of a page animates in, so the order you read it in is the order it
+ * arrives. --i staggers siblings. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 700ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

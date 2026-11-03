@@ -1,0 +1,203 @@
+---
+import ArrowRight from '@phosphor-icons/core/assets/bold/arrow-right-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LatestPostTile from '../components/LatestPostTile.astro';
+import PostList from '../components/PostList.astro';
+import ProjectTile from '../components/ProjectTile.astro';
+import type { Project } from '../components/ProjectTile.astro';
+import { home } from '../data/home';
+import projectData from '../data/projects.json';
+import { riderAge } from '../lib/cycling';
+import { getPosts } from '../lib/posts';
+
+const posts = await getPosts();
+// The newest post leads the hero as the orange tile. The Writing list below is the index:
+// the five newest, the tile's post included, so the list never empties out.
+const latest = posts[0];
+const recent = posts.slice(0, 5);
+
+const all = projectData.projects as Project[];
+// Featured order comes from home.ts; anything missing is skipped rather than erroring.
+const [lead, ...rest] = home.featured
+  .map((name) => all.find((p) => p.name === name))
+  .filter((p): p is Project => Boolean(p));
+
+const age = riderAge();
+---
+
+<BaseLayout>
+  <section class:list={['container', 'hero', { 'hero--solo': !latest }]}>
+    <div class="hero-text">
+      <h1 class="hero-name display rise">Vedran <span>Chichov</span></h1>
+      <p class="hero-intro rise" style="--i: 1">
+        {age ? `I'm ${age} and study` : 'I study'} software engineering in Skopje. I am passionate about
+        technology, bike racing and the outdoors.
+      </p>
+    </div>
+    {
+      latest && (
+        <div class="hero-tile rise" style="--i: 2">
+          <LatestPostTile post={latest} />
+        </div>
+      )
+    }
+  </section>
+
+  {
+    recent.length > 0 && (
+      <section class="container block" aria-labelledby="writing-heading">
+        <h2 id="writing-heading" class="section-title">
+          Writing
+        </h2>
+        <PostList posts={recent} transitions={false} />
+        <p class="more">
+          <a class="arrow-link" href="/blog">
+            All posts <ArrowRight aria-hidden="true" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  {
+    lead && (
+      <section class="container block" aria-labelledby="projects-heading">
+        <h2 id="projects-heading" class="section-title">
+          Projects
+        </h2>
+        <div class="bento">
+          <div class="bento-lead">
+            <ProjectTile project={lead} large />
+          </div>
+          {rest.map((project) => (
+            <ProjectTile project={project} />
+          ))}
+        </div>
+        <p class="more">
+          <a class="arrow-link" href="/projects">
+            All projects <ArrowRight aria-hidden="true" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <section class="container block">
+    <div class="offer">
+      <h2 class="offer-title display">Have something in mind?</h2>
+      <p class="offer-text">A project, an idea, or just a question. Send me a message.</p>
+      <a class="btn offer-btn" href="/work-with-me">Work with me</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* --- hero: who I am on the left, the newest post on the right ------------------------ */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: stretch;
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem);
+  }
+  .hero--solo {
+    grid-template-columns: 1fr;
+  }
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-name {
+    font-size: var(--step-4);
+    font-weight: 850;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+  /* Each name on its own line, always — so the block keeps its shape at every width. */
+  .hero-name span {
+    display: block;
+  }
+  .hero-intro {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .hero-tile {
+    min-height: clamp(18rem, 32vw, 24rem);
+  }
+
+  /* --- sections ------------------------------------------------------------------------- */
+  .block {
+    margin-top: clamp(3.5rem, 9vw, 6.5rem);
+  }
+  .block .section-title {
+    margin-bottom: 1.25rem;
+  }
+  .more {
+    margin-top: 1.25rem;
+  }
+
+  /* Three projects: one large tile, two stacked beside it. */
+  .bento {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1rem;
+  }
+  .bento-lead {
+    grid-row: span 2;
+  }
+
+  /* --- the "work with me" band: the page's one orange button ---------------------------- */
+  .offer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'title btn'
+      'text btn';
+    align-items: center;
+    gap: 0.5rem 2rem;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .offer-title {
+    grid-area: title;
+    font-size: var(--step-3);
+  }
+  .offer-text {
+    grid-area: text;
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .offer-btn {
+    grid-area: btn;
+    justify-self: end;
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+    .hero-tile {
+      min-height: 15rem;
+    }
+    .bento {
+      grid-template-columns: 1fr;
+    }
+    .bento-lead {
+      grid-row: auto;
+    }
+    .offer {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'title' 'text' 'btn';
+    }
+    .offer-btn {
+      justify-self: start;
+      margin-top: 1rem;
+    }
+  }
+</style>

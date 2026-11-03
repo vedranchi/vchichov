@@ -1,0 +1,37 @@
+{
+  /*
+   * How far through the post you are, as a thin orange bar across the top. Driven by a CSS
+   * scroll timeline — no JavaScript, no scroll listener. Browsers without scroll timelines,
+   * and anyone who asks for reduced motion, simply don't get it.
+   */
+}
+<div class="progress" aria-hidden="true"></div>
+
+<style>
+  .progress {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .progress {
+        display: block;
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 40;
+        height: 3px;
+        background: var(--accent);
+        transform-origin: left;
+        animation: progress linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+</style>

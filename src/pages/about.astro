@@ -1,0 +1,116 @@
+---
+import ArrowRight from '@phosphor-icons/core/assets/bold/arrow-right-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PositionBadge from '../components/PositionBadge.astro';
+import { site } from '../data/site';
+import { highlights, riderAge } from '../lib/cycling';
+import { formatShortDate, ordinal } from '../lib/format';
+
+// Everything here comes from data already in the repo (cycling.json, palmares.ts), so it
+// stays true as those update. The age is worked out from the birthdate in cycling.json.
+const age = riderAge();
+const podiums = highlights()
+  .filter((r) => r.rank <= 3)
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="About"
+  description="Vedran Chichov is a developer and bike racer from Skopje, Macedonia."
+>
+  <section class="container page">
+    <h1 class="page-title display rise">About</h1>
+
+    <div class="prose-lite measure">
+      <p class="lede rise" style="--i: 1">
+        I'm {age ? `${age}, a` : 'a'} first-year software engineering student from Skopje. I spend most
+        of my time building things and learning how computers and software work, and lately networking
+        too. The rest goes into training and racing bikes.
+      </p>
+
+      <h2 class="section-title">Software</h2>
+      <p>
+        My biggest project yet is <strong>Glucoread</strong>, an app for tracking glucose, insulin
+        and meals day to day. It's a personal project, not a medical tool. It's built with Django
+        and PostgreSQL, and I host it myself on an Oracle Cloud VM: Docker, Caddy, backups, the lot.
+      </p>
+      <p>
+        It's also where I've learned the most. Something that's actually deployed can't be left
+        half-finished, so it taught me more than any tutorial.
+      </p>
+
+      <h2 class="section-title">Racing</h2>
+      <p>
+        I ride for {site.team.name}. In 2026 I won the Macedonian national road race title in the
+        under-23 category, and took silver in the time trial the day before. I actively participate
+        in races abroad too.
+      </p>
+    </div>
+
+    {
+      podiums.length > 0 && (
+        <ul class="results" aria-label="Best results">
+          {podiums.map((r) => (
+            <li class="result">
+              <PositionBadge rank={r.rank} />
+              <div>
+                <p class="result-race">{r.race}</p>
+                <p class="meta mono muted">
+                  {ordinal(r.rank)} · {formatShortDate(r.date)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <p class="more">
+      <a class="arrow-link" href="/cycling">All race results <ArrowRight aria-hidden="true" /></a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .prose-lite p + p {
+    margin-top: 1.1rem;
+  }
+  .prose-lite .section-title {
+    margin-top: clamp(2.5rem, 6vw, 3.5rem);
+    margin-bottom: 1rem;
+  }
+  .prose-lite strong {
+    font-weight: 700;
+  }
+
+  .results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    list-style: none;
+    padding: 0;
+  }
+  .result {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .result-race {
+    font-weight: 650;
+    line-height: 1.3;
+  }
+  .meta {
+    text-transform: uppercase;
+  }
+  .more {
+    margin-top: 1.5rem;
+  }
+</style>

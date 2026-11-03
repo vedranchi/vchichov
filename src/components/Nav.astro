@@ -1,0 +1,116 @@
+---
+import { site } from '../data/site';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="wordmark" href="/" aria-label={`${site.name}, home`}>{site.name}</a>
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav-links">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={['nav-link', { active: isActive(item.href) }]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 64px;
+  }
+  .wordmark {
+    margin-right: auto;
+    font-stretch: var(--wide);
+    font-weight: 800;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.7rem;
+    font-weight: 560;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  /* The current page gets an orange bar underneath — a filled shape, never orange text.
+     Hover previews the same bar at half height. */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.15rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms var(--ease-out);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+  .nav-link.active {
+    font-weight: 700;
+  }
+  .nav-link.active::after {
+    transform: scaleX(1);
+  }
+
+  /* Phones: the name and the toggle across the top, this site's four pages in a row below. */
+  @media (max-width: 640px) {
+    .header-inner {
+      flex-wrap: wrap;
+      gap: 0;
+      padding-block: 0.5rem 0.25rem;
+    }
+    .nav {
+      order: 3;
+      width: 100%;
+    }
+    .nav-links {
+      justify-content: space-between;
+      margin-inline: -0.55rem;
+    }
+    .nav-link {
+      padding-inline: 0.55rem;
+      font-size: 0.9688rem;
+    }
+    .nav-link::after {
+      left: 0.55rem;
+      right: 0.55rem;
+    }
+  }
+</style>

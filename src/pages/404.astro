@@ -1,0 +1,35 @@
+---
+import ArrowRight from '@phosphor-icons/core/assets/bold/arrow-right-bold.svg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found">
+  <section class="container page">
+    <p class="code mono muted">404</p>
+    <h1 class="page-title display">Page not found</h1>
+    <p class="lede">
+      This page doesn't exist. If you followed an old link to the blog, the posts now live under
+      <a class="inline" href="/blog">/blog</a>.
+    </p>
+    <p class="actions">
+      <a class="btn" href="/">Home</a>
+      <a class="arrow-link" href="/blog">Read the blog <ArrowRight aria-hidden="true" /></a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .code {
+    margin-bottom: 0.75rem;
+  }
+  .lede {
+    margin-top: 1.25rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: 2rem;
+  }
+</style>

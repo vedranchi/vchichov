@@ -1,15 +1,13 @@
 # Project rules — vchichov
 
-Vedran Chichov's personal site. **One repo, two sites, two Vercel projects:**
+Vedran Chichov's personal site at **https://vchichov.com**: one Astro site, one Vercel
+project. It's blog-led. The home page opens with the latest post, then his projects, then
+"Work with me". Writing lives under `/blog`, and there are pages for projects, about,
+cycling results and work-with-me.
 
-| Site      | Domain              | `srcDir`     | Config                  | Output       | Look                                                                     |
-| --------- | ------------------- | ------------ | ----------------------- | ------------ | ------------------------------------------------------------------------ |
-| Portfolio | `vchichov.com`      | `sites/www`  | `astro.config.mjs`      | `dist/`      | Neobrutalism — espresso ground, orange blocks, black borders, Montserrat |
-| Blog      | `blog.vchichov.com` | `sites/blog` | `astro.config.blog.mjs` | `dist-blog/` | Cozy _Stardew Valley_ pixel farm                                         |
-
-Projects, about and contact live on the portfolio. Blog posts **and cycling** live on the
-blog. The two looks share nothing — do not leak pixel styling into `sites/www`, and do not
-flatten the farm into the portfolio's palette.
+Until late 2026 there was also a separate pixel-farm blog at `blog.vchichov.com`. It has
+been folded into this site, and that host now only redirects here (see Deploy). The farm
+and its pixel theme are retired; they're recoverable from git history (PR #7) if ever wanted.
 
 **The repo is public.** Nothing committed here may contain secrets, server addresses, or
 personal data. The root `handoff.md` is gitignored deployment scratch — keep it that way
@@ -32,59 +30,65 @@ merges.** Opening the PR is where your part ends.
 - Write PR bodies that say what changed and _why_, and state what was actually verified —
   never imply a command passed if it wasn't run.
 - When in doubt about anything, ask before proceeding — resolve it together.
-- Remote: `git@github.com:vedranchi/vchichov.git` (renamed from `personal-site`; GitHub
-  still redirects the old URL, but update your local remote).
+- Remote: `git@github.com:vedranchi/vchichov.git`.
 
 ## Layout
 
+A standard single-site Astro layout:
+
 ```text
-src/            SHARED ONLY — no pages, no components, no styles
-  assets/  content/blog/  data/  lib/
-sites/www/      pages/ layouts/ components/ styles/
-sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
-                farm/   the walkable farm at / (canvas engine, vanilla TS)
+src/
+  pages/        index, blog/ (index, [slug], tags/[tag]), projects, about, cycling,
+                work-with-me, 404, rss.xml.js, robots.txt.js
+  layouts/      BaseLayout.astro
+  components/   Nav, Footer, ThemeToggle, LatestPostTile, PostList, TagChips,
+                ProjectTile, PositionBadge, ReadingProgress
+  styles/       tokens.css (every colour and size), global.css, prose.css (posts)
+  content/blog/ the posts — an Obsidian vault
+  content.config.ts
+  data/  lib/  assets/
 ```
 
-- Both builds keep `root` at the repo root, so `sites/blog/content.config.ts` resolves its
-  glob `base: './src/content/blog'` unchanged. **That path is an Obsidian vault — never
-  move it.**
-- Shared code is imported with the `@shared/*` alias (`tsconfig.json` → `src/*`).
-  Within a site, component/layout/style imports stay relative.
-- `.astro/` generated types live at the repo root and are **shared by both builds**, and a
-  single `tsconfig.json` type-checks both sites at once. So collections are defined once in
-  `src/lib/collections.ts` and re-exported by both `sites/*/content.config.ts`. If only the
-  blog declared them, `astro check` would pass or fail depending on which build ran last.
-  Keep both re-exports.
-- `public/` is shared by both builds. Anything host-specific (`robots.txt`) is therefore a
-  generated route, not a static file.
-- **The blog's `/` is a walkable farm; `/archive` is the plain post list.** Every post is a
-  crop, laid out from the post count, so writing a post needs nothing farm-specific. The
-  server-rendered list under the canvas is the real content (no-JS and screen-reader
-  fallback) — keep it. Its colours are `--farm-*` tokens in `sites/blog/styles/tokens.css`.
-  A post whose slug matches a route (`archive`, `cycling`, `tags`, …) fails the build.
-- **The blog's only day/night switch is the sun/moon in the sky** (`Backdrop.astro`); the
-  one click handler for anything marked `data-theme-toggle` lives in `BaseLayout.astro`.
+- `src/content.config.ts` globs `./src/content/blog`. **That folder is an Obsidian vault —
+  never move it.**
+- Every page reads posts through `getPosts()` in `src/lib/posts.ts`, which filters drafts
+  and sorts newest first. Use it rather than calling `getCollection` directly, so a draft
+  can't leak through one page that forgot the filter.
+- Posts live at `/blog/<slug>`. A post whose slug is `tags` would clash with
+  `/blog/tags/` and fails the build.
+- `robots.txt` is a generated route, not a file in `public/`, so its sitemap URL follows
+  the configured `site`.
+- **Work with me has no contact form yet, on purpose.** It shows the email address and
+  links. A form comes back with self-hosting (`docs/self-hosting.md`), posting to an
+  endpoint on Vedran's own server and saying "sent" on the page. **Never** make a form that
+  sends by opening the visitor's email app (`mailto:`): Vedran tried that and rejected it.
+  The site doesn't advertise "website projects"; keep the copy open-ended.
 
 ## Deploy
 
-- Hosted on **Vercel**, static Astro output, no adapter. Two projects from this one repo:
-  the portfolio builds `npm run build` → `dist`, the blog builds `npm run build:blog` →
-  `dist-blog`. Merging to `main` deploys both to production; every PR gets preview URLs.
-- The portfolio's canonical domain is **https://vchichov.com** (apex, and the primary domain
-  in Vercel); `www.vchichov.com` redirects to it. DNS lives at Namecheap — the blog's
-  `blog` CNAME is added there, not in Vercel.
-- **`src/data/site.ts` `urls` is the single source of both domains.** Canonical links, Open
-  Graph URLs, `rss.xml`, the sitemaps and `robots.txt` all derive from each build's own
-  `site` config (via `Astro.site` / `context.site`). Change domains there and nowhere else;
-  never hard-code a host in a page or in `public/` — a hard-coded `public/robots.txt` once
-  went stale and advertised a dead host for weeks before anyone noticed.
-- Changing a canonical host means changing **`urls` and that project's Vercel primary
-  domain in the same breath.** A mismatch leaves every canonical pointing at a URL that
-  redirects away.
-- `vercel.json` holds the 301s from the old single-site URLs (`/blog/*`, `/cycling`,
-  `/rss.xml`) to the blog subdomain. **Both projects read the same file**, so every rule is
-  scoped with a `has` host condition on `vchichov.com` and is inert on the blog project.
-  Order matters: the `/blog/tags/:tag*` rule must stay above the generic `/blog/:slug*`.
+- **A move off Vercel to self-hosting is planned but parked** until Vedran says go. The
+  whole plan, its open decisions and where to resume are in `docs/self-hosting.md`. Read
+  it before changing anything about hosting, deploys or adding the contact form.
+- Hosted on **Vercel**, static Astro output, no adapter: `npm run build` → `dist`. Merging
+  to `main` deploys to production; every PR gets a preview URL.
+- The canonical domain is **https://vchichov.com** (apex, and the primary domain in
+  Vercel); `www.vchichov.com` redirects to it. DNS lives at Namecheap.
+- **`src/data/site.ts` `url` is the single source of the domain.** Canonical links, Open
+  Graph URLs, `rss.xml`, the sitemap and `robots.txt` all derive from it via the build's
+  `site` config (`Astro.site` / `context.site`). Never hard-code a host in a page or in
+  `public/` — a hard-coded `public/robots.txt` once went stale and advertised a dead host
+  for weeks before anyone noticed. Changing it means changing the Vercel primary domain in
+  the same breath.
+- `vercel.json` holds the redirects:
+  - `/contact` → `/work-with-me` on the apex.
+  - Everything on **`blog.vchichov.com`** → the same thing here: `/` and `/archive` →
+    `/blog`, `/tags/*` → `/blog/tags/*`, `/<slug>` → `/blog/<slug>`, and `/cycling`,
+    `/rss.xml`, `robots.txt` and the sitemaps → the same path on the apex. These only work
+    because `blog.vchichov.com` is attached to this Vercel project. **Order matters**: the
+    named files must stay above the single-segment `/:slug` rule, and the `/:path*`
+    catch-all stays last.
+  - There must be **no** rule sending apex `/blog/*` anywhere. The site briefly redirected
+    those to the subdomain; reintroducing that would loop.
 - **Preview deployments sit behind Vercel Authentication.** An anonymous request to a
   preview URL answers `302` to `vercel.com/sso-api` — that's the login gate, not a broken
   build. Verify previews in a logged-in browser, or verify production after the merge.
@@ -93,46 +97,73 @@ sites/blog/     pages/ layouts/ components/ styles/ content.config.ts
   Vedran's _other_ Oracle VM runs GlucoRead; **do not deploy this project onto it, or
   couple the two in any way.** He asked for them kept entirely separate.
 
+## Design
+
+Editorial and sporty, carried by type rather than pictures. All values are in
+`src/styles/tokens.css`.
+
+- **Type:** Mona Sans (variable, weight _and_ width axes) for everything. Display type —
+  the name, page titles, section headings, list titles — is set wide (`--wide`, 125%) and
+  heavy (750–850). Geist Mono, with tabular figures, carries dates, tags, counts and
+  results. Both are self-hosted via `@fontsource-variable/*`.
+- **Colour:** neutral grounds (`#f4f4f1` light, `#111214` dark) and **one accent, the
+  orange `#d16c19`**. The hard rule: **orange is always a filled shape with dark ink
+  (`--on-accent`, `#111214` in both modes) on it, never text.** Ink on orange is 5.24:1;
+  orange as text on the light ground is 3.25:1 and fails. Hover lightens to `#dd7a24`
+  (6.14:1); darkening fails. Orange is used for the latest-post tile, the primary button,
+  the post-row hover sweep, the active nav bar, the reading-progress bar, blockquote bars,
+  position badges, `::selection` and the focus halo — nothing else.
+- **No photos or screenshots anywhere** in the site's own pages (Vedran's call). Images he
+  puts inside his own posts still render.
+- **Shape:** flat — no shadows, no heavy outlines. One radius, `--radius: 6px`, for every
+  button, tile, chip and code block. Tiles separate by tone and 1px `--line` hairlines.
+- **Motion** is transform/opacity only, and all of it switches off under
+  `prefers-reduced-motion`: the hero's staggered rise, the orange sweep on post rows,
+  cross-page view transitions (pure CSS, a post title morphs from list to article), the
+  CSS scroll-timeline reading bar, and small button lifts.
+- **Copy:** no em or en dashes in UI copy (use a comma, colon, full stop or hyphen). No
+  eyebrow labels above section headings. No decorative emojis anywhere.
+- **Icons** are Phosphor (`@phosphor-icons/core`, bold weight), imported as Astro SVG
+  components so they inline at build time. Don't hand-draw SVG icons.
+- Light and dark both follow the system, with a sun/moon toggle; the choice is stored in
+  `localStorage`, and with JS off `prefers-color-scheme` still picks correctly.
+- Design skills live in `.agents/skills/` (not `.claude/skills/`), so they are **not**
+  auto-loaded — read the `SKILL.md` files directly (the redesign followed
+  `design-taste-frontend`). Most assume React/Tailwind/GSAP; this repo is static Astro with
+  hand-rolled CSS, so take their craft rules and drop their stack directives.
+
 ## Conventions
 
-- **No external CDNs.** Self-host everything (fonts via `@fontsource*`, images bundled) so
+- **No external CDNs.** Self-host everything (fonts via `@fontsource*`, icons inlined) so
   the built site makes no third-party requests at runtime. Vercel serving our own bundle
   isn't a violation — the rule is about what the _page_ reaches out to. This overrides any
   design guidance that reaches for Google Fonts or `picsum.photos`.
-- **Generated data files are never hand-edited:**
+- **Generated files are never hand-edited:**
   - `src/data/projects.json` ← `npm run sync:projects` (GitHub API). It carries each repo's
     description and homepage, so changing those on GitHub means resyncing here.
-    Hand-written wording goes in `src/data/home.ts` instead.
+    Hand-written names and wording go in `src/data/home.ts` instead.
   - `src/data/cycling.json` ← `scripts/scrape_pcs.py`. Off-PCS results go in
     `src/data/palmares.ts`. It says "North Macedonia"; Vedran says "Macedonia", so
     `displayName()` in `src/lib/cycling.ts` swaps it on the way out — never in the data.
-  - `src/assets/og.png` (the portfolio's link-preview image) ← `npm run og`. It needs
-    Python with `fonttools` and `brotli`; rerun it after changing the name or role.
+  - `src/assets/og.png`, `public/favicon.svg` and `public/apple-touch-icon.png` ←
+    `npm run og`. It needs Python with `fonttools` and `brotli` (set `PYTHON=` to an
+    interpreter that has them); rerun it after changing the name or the look.
 - **The cycling scraper only runs locally.** procyclingstats.com is behind Cloudflare, so
   the scraper impersonates a real browser with `curl_cffi` — and datacenter IPs (CI
   runners) get blocked regardless. Run it on Vedran's machine and commit the result; don't
   move it into CI.
-- **Blog posts** are Markdown in `src/content/blog/`, which is an Obsidian vault. Filename
-  is the slug; `[[wikilinks]]` become `/<slug>` via our own dependency-free
-  `src/lib/remark-wikilinks.mjs` (the published plugins don't support Astro 7).
-- **Projects are not a content collection** — the portfolio renders
+- **Blog posts** are Markdown in `src/content/blog/`, the Obsidian vault. The filename is
+  the slug; `[[wikilinks]]` become `/blog/<slug>` via our own dependency-free
+  `src/lib/remark-wikilinks.mjs`, run through the `unified()` Markdown processor in
+  `astro.config.mjs`. Code blocks carry both Shiki palettes and follow the theme toggle.
+- **Projects are not a content collection** — `/projects` renders
   `src/data/projects.json`. There is no `src/content/projects/`.
-- **Design:** readable body text always, light and dark modes on both sites, everything
-  responsive. No decorative emojis anywhere — the blog's ☀️/🌙 theme toggle is the one
-  exception. The portfolio's one hard colour rule: the orange (`#d16c19`) is always a
-  filled block with black on it, never text — orange-as-text and light-on-orange both fail
-  AA. Hover lightens it (`#dd7a24`); darkening fails contrast.
-- Design skills live in `.agents/skills/` (not `.claude/skills/`), so they are **not**
-  auto-loaded — read the `SKILL.md` files directly. Most assume React/Tailwind/GSAP; this
-  repo is static Astro with hand-rolled CSS, so take their craft rules and drop their stack
-  directives.
 - Astro is pinned to `^7.0.6` — `create-astro` wrongly scaffolds a nonexistent `^7.0.7`.
 
 ## Working locally
 
-- Dev servers: `npm run dev` (portfolio, :4321) and `npm run dev:blog` (blog, :4322). They
-  run side by side. Drafts (`draft: true`) show in dev and are excluded from the build.
-- **Before opening a PR, all three must be clean:** `npm run format`, `npm run check:all`,
-  `npm run build:all` (both sites). Build too, not just check — each site's host is baked
-  in at build time, so the sitemaps, RSS and `robots.txt` can only really be verified in
-  `dist/` and `dist-blog/`.
+- `npm run dev` starts the dev server (it takes the next free port if 4321 is busy). Drafts
+  (`draft: true`) show in dev and are excluded from the build.
+- **Before opening a PR, all three must be clean:** `npm run format`, `npm run check`,
+  `npm run build`. Build too, not just check — the host is baked in at build time, so the
+  sitemap, RSS and `robots.txt` can only really be verified in `dist/`.
